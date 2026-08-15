@@ -1,0 +1,437 @@
+# WH40K 11th Edition Cheat Sheet - content for templates/cheatsheet.html.j2
+# Transcribed from wh40k_11e_cheat_sheet_v1.pdf.
+# Load this file and render:  template.render(**yaml.safe_load(open(...)))
+document:
+  title: 'Warhammer 40,000 - 11th Edition Cheat Sheet'
+  edition: '11e'
+  revision: '2026-08-01-00'
+  language: 'en'
+  blocks:
+
+    # ================= PAGE 1 =================
+    - type: phase
+      title: '1. COMMAND PHASE'
+
+    - type: subsection
+      title: 'Start of Phase Abilities'
+    - type: paragraph
+      text: 'Rules triggered at start of the Command phase are resolved now.'
+
+    - type: subsection
+      title: 'Gain CP'
+    - type: paragraph
+      text: 'Both players gain 1 Command Point (CP) if they have 10 or fewer CP. CP cannot be gained beyond 10.'
+
+    - type: subsection
+      title: 'Battle-Shock Test'
+    - type: paragraph
+      html: '<b>Make one roll for each unit that is:</b>'
+    - type: list
+      items:
+        - 'Currently battle-shocked, OR'
+        - 'At or below half-strength (models or wounds remaining)'
+    - type: paragraph
+      text: 'Roll 2D6 ≥ Ld to pass. If failed, unit is battle-shocked:'
+    - type: list
+      items:
+        - "OC characteristic becomes '-'"
+        - 'Cannot be targeted by stratagems'
+        - 'Cannot start or complete actions'
+
+    - type: subsection
+      title: 'Command Abilities'
+    - type: list
+      items:
+        - 'Resolve other Command phase rules (faction abilities, etc.).'
+
+    - type: subsection
+      title: 'End of Phase Abilities'
+    - type: paragraph
+      text: 'Rules triggered at end of the Command phase are resolved now.'
+
+    - type: phase
+      title: '2. MOVEMENT PHASE'
+
+    - type: subsection
+      title: 'Move Types'
+    - type: list
+      items:
+        - html: '<b>Normal Move (M"):</b> Unit must be unengaged.'
+        - html: '<b>Advance (M+D6"):</b> Unit must be unengaged. Cannot declare charge or start action this turn.'
+        - html: '<b>Fall-back (M"):</b> Unit must be engaged. Cannot shoot, charge, or start action this turn.'
+          sub:
+            - 'Ordered Retreat: only available if unit is not battle-shocked'
+            - 'Desperate Escape: mandatory if battle-shocked, Hazard roll per model, move through enemy models'
+        - html: '<b>Remain Stationary:</b> Any unit.'
+    - type: callout
+      variant: 'warn'
+      text: 'Engagement Range is 2" horizontal + 5" vertical'
+    - type: callout
+      variant: 'warn'
+      text: 'Coherency: within 2" of ≥1 other model AND within 9" horizontal and 5" vertical of every other model in the unit (check at End of Turn)'
+
+    - type: subsection
+      title: 'Flying & Surging'
+    - type: list
+      items:
+        - 'Surge when triggered if not battle-shocked, unengaged, and has not moved this phase. Must move toward closest enemy.'
+        - 'Declare take to the skies before moving. -2" from max distance. Can move through all models and terrain.'
+
+    - type: subsection
+      title: 'Embarking'
+    - type: list
+      items:
+        - 'After normal, advance, or fall-back move.'
+        - 'All models must end within 3" of the transport; unit not set up this turn; sufficient capacity.'
+
+    - type: subsection
+      title: 'Disembarking'
+    - type: paragraph
+      html: '<b>Rapid (set-up within 3"):</b> Transport made a normal or ingress move. Cannot declare charge this turn.'
+    - type: paragraph
+      html: '<b>Tactical (set-up within 3"):</b> Transport stationary or not yet moved. Unit then makes a normal or advance move.'
+    - type: paragraph
+      html: '<b>Combat (set-up within 6"):</b> Otherwise. Hazard roll per model. Battle-shocked; cannot charge.'
+    - type: paragraph
+      html: '<b>Emergency (transport destroyed):</b> Hazard roll per model. Set up wholly within 6". Battle-shocked; cannot charge.'
+
+    - type: subsection
+      title: 'Strategic Reserves / Ingress Move'
+    - type: list
+      items:
+        - 'Max 50% of points. Arrive from battle round 2 onwards.'
+        - 'Set up wholly within 6" of a battlefield edge, more than 8" from all enemies.'
+        - "Before round 3: cannot set up in opponent's deployment zone."
+    - type: callout
+      variant: 'warn'
+      text: 'After an ingress move, unit cannot make any other move until the start of the next Charge phase.'
+    - type: list
+      items:
+        - 'Not arrived by end of battle round 3 = destroyed (except units in arrived transports and repositioned units).'
+
+    - type: phase
+      title: '3. SHOOTING PHASE'
+
+    - type: subsection
+      title: 'Shooting Types'
+    - type: paragraph
+      html: '<b>Normal:</b> Unengaged, did not advance.'
+    - type: paragraph
+      html: '<b>Assault:</b> Unengaged, advanced, has [ASSAULT] weapons. Only [ASSAULT] weapons may be used.'
+    - type: paragraph
+      html: '<b>Close-Quarters:</b> Engaged, did not advance, has [CLOSE-QUARTERS] weapons or is MONSTER / VEHICLE.'
+    - type: list
+      items:
+        - 'Non-MONSTER / VEHICLE: [CLOSE-QUARTERS] weapons only; must target an engaged enemy unit.'
+        - 'MONSTER / VEHICLE: -1 to hit unless using [CLOSE-QUARTERS] weapon vs engaged target. [BLAST] weapons cannot target engaged units.'
+    - type: paragraph
+      html: '<b>Indirect:</b> Unengaged, did not advance, has [INDIRECT FIRE].'
+
+    - type: subsection
+      title: 'Targeting Rules'
+    - type: list
+      items:
+        - 'Normal/Assault: target visible, within range, unengaged.'
+        - 'Indirect: target need not be visible; target has BoC; cannot re-roll hits; unmodified 1-5 fails (1-3 if unit remained stationary and target visible to a friendly unit).'
+        - 'Engaged MONSTER / VEHICLE units can be target; -1 to hit.'
+        - 'Different weapons on the same model may target different units; one weapon cannot be split across targets.'
+
+    - type: subsection
+      title: 'Attack Sequence'
+    - type: keyvals
+      items:
+        - label: '1. Hit Roll'
+          text: 'D6 ≥ BS/WS. Unmodified 1 always fails, unmodified 6 is a Critical Hit.'
+        - label: '2. Wound Roll'
+          text: 'D6 vs table. Unmodified 1 always fails, unmodified 6 is a Critical Wound.'
+        - label: '3. Save Roll'
+          text: 'D6 - AP vs Sv or D6 vs InSv. Unmodified 1 always fails.'
+        - label: '4. Damage'
+          text: 'Model loses wounds = D. Excess damage lost.'
+    - type: table
+      columns: ['S vs T', 'Need']
+      rows:
+        - ['S ≥ 2xT', '2+']
+        - ['S > T', '3+']
+        - ['S = T', '4+']
+        - ['S < T', '5+']
+        - ['S ≤ ½T', '6+']
+
+    - type: subsection
+      title: 'Wound Allocation'
+    - type: paragraph
+      html: '<b>Groups:</b> One per CHARACTER; one per matching W/Sv/InSv set of non-CHARACTERs.'
+    - type: paragraph
+      html: '<b>Order:</b> Wounded non-CHARACTER → unwounded non-CHARACTER → CHARACTER (last).'
+    - type: callout
+      variant: 'warn'
+      text: 'No CHARACTER group may be allocated before any non-CHARACTER group. Once all non-CHARACTERs are gone, wounds reach CHARACTERs normally (no blanket immunity).'
+    - type: list
+      items:
+        - 'Work through saves lowest to highest. Select model with lost wounds first within a group.'
+
+    - type: subsection
+      title: 'Benefit of Cover (BoC)'
+    - type: list
+      items:
+        - html: "Worsen attacker's BS by 1 if <b>every</b> model in the target unit is INFANTRY / BEASTS / SWARM within a terrain area OR not fully visible due to intervening terrain/obscuring area."
+
+    - type: subsection
+      title: 'Mortal Wounds'
+    - type: list
+      items:
+        - '1 MW = 1 wound lost, no saves. Inflicted after all normal damage from the same attack. "Feel no Pain" rolls can still be made.'
+
+    - type: subsection
+      title: 'Hazard Rolls'
+    - type: list
+      items:
+        - 'Roll a D6: 1-2 suffers 1 MW (or 3 MW if MONSTER / VEHICLE)'
+
+    - type: subsection
+      title: 'Objectives'
+    - type: list
+      items:
+        - 'Terrain objective: objective = the terrain area itself; within range = wholly within that area.'
+        - 'Objective marker: within range = within 3" horizontally and 5" vertically.'
+        - 'Level of Control (LOC): total OC of all your models within range.'
+        - 'Higher LOC controls; equal LOC = contested. Assessed at end of each phase and turn.'
+        - "Secured objective: remain controlled even with no models in range, until opponent's LOC exceeds yours at end of a phase."
+
+    # ================= PAGE 2 =================
+    - type: phase
+      title: 'ACTIONS'
+    - type: paragraph
+      html: '<b>A unit cannot start an action if:</b>'
+    - type: list
+      items:
+        - 'Not on the battlefield.'
+        - 'AIRCRAFT or FORTIFICATION unit.'
+        - 'Battle-shocked.'
+        - 'OC = 0 or -.'
+        - 'Engaged (unless TITANIC).'
+        - 'Made an advance or fall-back move this turn.'
+        - 'Already started another action this turn.'
+    - type: paragraph
+      html: '<b>Starting an action:</b> unit is not eligible to shoot (exc. TITANIC) or declare a charge until action ends or turn ends.'
+    - type: paragraph
+      html: '<b>Fails to complete if:</b> unit makes any move (exc. pile-in/consolidation) or leaves the battlefield'
+
+    - type: phase
+      title: 'TERRAIN'
+    - type: subsection
+      title: 'Movement by Category'
+    - type: paragraph
+      html: '<b>Exposed &amp; Light:</b> All models can move freely horizontally and vertically through these terrains.'
+    - type: paragraph
+      html: '<b>Dense:</b>'
+    - type: list
+      items:
+        - 'INFANTRY / BEASTS / SWARM / MOBILE can move horizontally freely'
+        - 'INFANTRY / BEASTS / SWARM can move vertically freely'
+        - 'All others move horizontal through sections ≤ 2" height only; climb vertically through taller sections.'
+        - 'Cannot end on elevated surface unless all models are INFANTRY / BEASTS / SWARM / FLY / MONSTER and no part of the base overhangs outer edge.'
+    - type: subsection
+      title: 'Visibility'
+    - type: paragraph
+      html: '<b>Solid (dense terrain):</b> LOS cannot cross enclosed gaps ≤ 3" from ground level.'
+    - type: paragraph
+      html: '<b>Obscuring terrain area:</b> If every LOS between two models crosses an obscuring area (neither model in it), they cannot see each other.'
+    - type: paragraph
+      html: '<b>Hidden:</b> INFANTRY / BEASTS / SWARM inside dense area, no ranged attacks this turn. Only visible within 15".'
+    - type: paragraph
+      html: '<b>Plunging Fire:</b> +1 BS if attacker is on terrain ≥ 3" high, or has TOWERING and target is within 12".'
+
+    - type: phase
+      title: '4. CHARGE PHASE'
+    - type: list
+      items:
+        - 'Targets must be within 12" (need not be visible).'
+    - type: paragraph
+      html: '<b>Charge Roll:</b> 2D6 = max distance of charge move.'
+    - type: paragraph
+      html: '<b>Charge move conditions:</b>'
+    - type: list
+      items:
+        - 'Select charge targets before moving.'
+        - 'Each model must move closer to a charge target; within 1" if possible; engaged if possible.'
+        - 'Must end engaged with all charge targets; cannot end engaged with non-targets.'
+        - 'Each model in charging unit gains Fights First.'
+
+    - type: phase
+      title: '5. FIGHT PHASE'
+    - type: subsection
+      title: 'Pile In - both players; active player first'
+    - type: list
+      items:
+        - 'Up to 3" if engaged OR made charge move OR was selected for overrun fight.'
+        - 'Select targets first: every engaged enemy unit (if engaged); or ≥1 within 5" (if not).'
+        - 'Models in base contact cannot move. Each model moved must end closer to closest target, engaged if possible.'
+        - 'Must end engaged. Each model that started engaged must remain engaged.'
+    - type: subsection
+      title: 'Fight'
+    - type: paragraph
+      html: '<b>Eligible:</b> Engaged at start of Fight step or made charge move'
+    - type: paragraph
+      html: '<b>1. Fights First:</b> Alternate selections, active player starts.'
+    - type: paragraph
+      html: '<b>2. Remaining Combats:</b> Start with the player who moved this sequence onto this step, alternate selections'
+    - type: list
+      items:
+        - html: '<b>Normal Fight:</b> Unit is engaged.'
+        - html: '<b>Overrun Fight:</b> Unit is unengaged (or was at start of step). One extra pile-in move, then fights.'
+    - type: paragraph
+      text: 'If a new Fights First becomes eligible while resolving Remaining Combats, return to Fights First step. When all eligible units are more than 5" from all enemy units, player may pass.'
+    - type: subsection
+      title: 'Consolidate - both players; active player first'
+    - type: list
+      items:
+        - 'Up to 3" if the unit was eligible to fight this phase.'
+    - type: paragraph
+      html: '<b>Select mode (first applicable):</b>'
+    - type: paragraph
+      html: '<b>Ongoing:</b> Unit engaged. Stay engaged; move closer to enemies.'
+    - type: paragraph
+      html: '<b>Engaging:</b> Within 3" of enemies. Must end engaged; newly engaged enemy units that have not fought must fight next.'
+    - type: paragraph
+      html: '<b>Objective:</b> Within 3" of objective. Must end within range of it.'
+
+    # ---- Core Abilities glossary (full-width) ----
+    - type: column_reset
+
+    - type: glossary
+      title: 'CORE ABILITIES'
+      spanning: yes
+      terms:
+        - {term: 'ANTI-X Y+', text: 'Unmodified wound roll of Y+ = Critical Wound vs keyword X.'}
+        - {term: 'ASSAULT', text: 'Enables Assault Shooting.'}
+        - {term: 'BLAST X', text: '+X attack dice per 5 models in target unit (round down).'}
+        - {term: 'CLEAVE X', text: '+X attack dice per 5 models in target unit (round down).'}
+        - {term: 'CLOSE-QUARTERS', text: 'Enables Close-Quarters Shooting (also [PISTOL]).'}
+        - {term: 'DEADLY DEMISE X', text: 'On destruction, roll D6; on 6, units within 6" suffer X MW (if random X, roll per unit).'}
+        - {term: 'DEEP STRIKE', html: "Ingress move can be anywhere &gt; 8\" from enemies, including opponent's deployment zone."}
+        - {term: 'DEVASTATING WOUNDS', html: 'Critical Wound → attack ends; target suffers MW = D characteristic. Max 1 model per Critical Wound; excess MW lost.'}
+        - {term: 'EXTRA ATTACKS', text: 'When fighting: must use all [EXTRA ATTACKS] weapons plus one other melee weapon.'}
+        - {term: 'FEEL NO PAIN X+', text: 'Each time model would lose a wound (including MW), roll D6; on X+, wound not lost.'}
+        - {term: 'FIGHTS FIRST', text: 'Every model must have this; unit fights in Fights First step.'}
+        - {term: 'FIRING DECK X', text: 'Select up to X embarked models; TRANSPORT gains their ranged weapons this phase. Those units cannot shoot.'}
+        - {term: 'HAZARDOUS', text: 'One hazard roll per [HAZARDOUS] weapon used.'}
+        - {term: 'HEAVY', text: '+1 to hit if unengaged, not set up this turn, moved ≤ 3".'}
+        - {term: 'HOVER', text: 'Taking to skies: do not subtract 2" from max distance.'}
+        - {term: 'IGNORES COVER', text: 'Target cannot have BoC against this attack.'}
+        - {term: 'INDIRECT FIRE', text: 'Enables Indirect Shooting.'}
+        - {term: 'INFILTRATORS', html: "Deploy &gt; 8\" from opponent's deployment zone and all enemies."}
+        - {term: 'LANCE', text: '+1 to wound if unit made a charge move this turn.'}
+        - {term: 'LEADER / SUPPORT', html: "Leader and Support each attach to one bodyguard unit (one Leader + one Support max per bodyguard). Bodyguard's T used for wound rolls. See Wound Allocation for CHARACTER protection rules."}
+        - {term: 'LETHAL HITS', html: 'Critical Hit → may auto-wound (no wound roll; cannot result in Critical Wound).'}
+        - {term: 'LONE OPERATIVE', text: 'Not visible beyond 12". Cannot be targeted by [INDIRECT FIRE] beyond 12".'}
+        - {term: 'MELTA X', text: 'If target within half range at Select Targets, add X to D.'}
+        - {term: 'ONE SHOT', text: 'Once per battle. Revived models cannot re-use it.'}
+        - {term: 'PRECISION', text: 'May select a visible CHARACTER allocation group as current allocation group.'}
+        - {term: 'PSYCHIC', text: 'May ignore modifiers to BS/WS. Counts as psychic attack.'}
+        - {term: 'RAPID FIRE X', text: '+X attack dice if target within half range when selected.'}
+        - {term: 'SCOUTS X"', html: "Pre-battle: scout move up to X\" (must end &gt;8\" from enemies) OR redeploy from reserves into deployment zone."}
+        - {term: 'STEALTH', text: 'If every model has this: unit BoC against all ranged attacks.'}
+        - {term: 'SUPER-HEAVY WALKER', text: 'Move through models (not TITANIC); horizontal through terrain ≤ 4" high. May grant MOBILE for the move (on 1 after move ends: battle-shocked).'}
+        - {term: 'SUSTAINED HITS X', text: 'Critical Hit = X additional hits.'}
+        - {term: 'TORRENT', text: 'Automatically hits.'}
+        - {term: 'TWIN-LINKED', text: 'Re-roll wound roll.'}
+
+    # ================= PAGE 3 - STRATAGEMS =================
+    - type: page_break
+    - type: spanning_headline
+      title: 'STRATAGEMS'
+
+    - type: stratagem
+      title: 'Command Re-roll'
+      cost: '1CP'
+      timing: 'either'
+      when: 'Any phase, just after making an Advance roll, Charge roll, Damage roll, Hazard roll, Hit roll, Save roll, Wound roll, or a roll to determine the number of attacks generated with a weapon, for a friendly unit or model.'
+      target: 'That unit or model.'
+      effect: 'Re-roll that roll. If rolling more than one dice together, select one dice to re-roll. Charge rolls must be re-rolled in full.'
+
+    - type: stratagem
+      title: 'Epic Challenge'
+      cost: '1CP'
+      timing: 'your'
+      when: 'Fight phase, just after a friendly CHARACTER unit is selected to fight.'
+      target: 'That CHARACTER unit.'
+      effect: "Select one CHARACTER model in your unit. Until end of phase, that model's melee weapons have [PRECISION]."
+
+    - type: stratagem
+      title: 'Insane Bravery'
+      cost: '1CP'
+      timing: 'your'
+      when: 'Battle-shock step of your Command phase, just before making a battle-shock roll for a friendly unit.'
+      target: 'That unit.'
+      effect: 'That battle-shock roll automatically succeeds.'
+      restrictions: 'Once per battle.'
+
+    - type: stratagem
+      title: '★ Explosives'
+      cost: '1CP'
+      timing: 'your'
+      when: 'Your Shooting phase.'
+      target: 'One friendly unengaged EXPLOSIVES/GRENADES unit eligible to shoot that did not advance this turn.'
+      effect: 'Select one EXPLOSIVES/GRENADES model and one unengaged enemy unit within 8" and visible to it. Roll six D6: for each 4+, that enemy unit suffers 1 mortal wound.'
+
+    - type: stratagem
+      title: '★ Crushing Impact'
+      cost: '1CP'
+      timing: 'your'
+      when: 'Your Charge phase, just after a friendly MONSTER/VEHICLE unit ends a charge move.'
+      target: 'That MONSTER/VEHICLE unit.'
+      effect: "Select one engaged enemy unit and one model in your unit engaged with it. Roll D6s equal to that model's T: each 1 = your unit suffers 1 MW; each 5+ = enemy suffers 1 MW (max 6 MW)."
+
+    - type: stratagem
+      title: 'Rapid Ingress'
+      cost: '1CP'
+      timing: 'opponent'
+      when: "End of your opponent's Movement phase."
+      target: 'One friendly unit in strategic reserves (excluding AIRCRAFT).'
+      effect: 'Your unit makes an ingress move.'
+      restrictions: 'Cannot be used during the first battle round.'
+
+    - type: stratagem
+      title: 'Fire Overwatch'
+      cost: '1CP'
+      timing: 'opponent'
+      when: "End of your opponent's Movement phase."
+      target: 'One friendly unit (excluding TITANIC).'
+      effect: 'Your unit uses snap shooting - target one visible enemy unit within 24"; hits only on unmodified 6; cannot re-roll hit rolls. Unit cannot start an action until end of phase.'
+
+    - type: stratagem
+      title: 'Smokescreen'
+      cost: '1CP'
+      timing: 'opponent'
+      when: "Start of your opponent's Shooting phase."
+      target: 'One friendly SMOKE unit.'
+      effect: 'Until end of phase, each time an attack targets your SMOKE unit, or a unit not fully visible to the attacker due to your SMOKE unit, that target has Benefit of Cover.'
+
+    - type: stratagem
+      title: 'Heroic Intervention'
+      cost: '1CP / 2CP'
+      timing: 'opponent'
+      when: "End of your opponent's Charge phase."
+      target: 'One friendly unengaged unit within 12" of one or more enemy units. VEHICLE only if CHARACTER/WALKER.'
+      effect_html: 'Resolve a charge. Select mode before charge roll:<ul><li><b>Leap to Defend (1CP):</b> charge targets must be units that made a charge move this phase and are within max distance.</li><li><b>Into the Fray (2CP):</b> charge roll result &gt;6 becomes 6; charge targets can be any enemy within 6" and within max distance.</li></ul>'
+
+    - type: stratagem
+      title: 'Counteroffensive'
+      cost: '2CP'
+      timing: 'opponent'
+      when: "Fight step of your opponent's Fight phase, just after an enemy unit has resolved its attacks."
+      target: 'One friendly unit eligible to fight.'
+      effect: 'Until end of phase, your unit has Fights First and must be the next unit selected to fight.'
+
+    - type: column_reset
+
+    - type: spanning_headline
+      title: 'USING STRATAGEMS'
+    - type: list
+      single_column: yes
+      items:
+        - "To use: select targets → reduce CP by the stratagem's cost → resolve effect. Cannot use if insufficient CP."
+        - 'Cannot use the same stratagem more than once in the same phase.'
+        - 'Unless otherwise stated, cannot target the same unit with more than one stratagem in the same phase.'
+        - 'If a stratagem has an additional cost section (e.g. +1CP), it can only be used by paying that extra cost.'

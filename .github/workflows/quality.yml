@@ -1,0 +1,119 @@
+name: quality
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: ["feature/**", "develop", "release/**", "hotfix/**", "main"]
+
+jobs:
+  validate-version:
+    if: startsWith(github.head_ref || github.ref_name, 'release/') || startsWith(github.head_ref || github.ref_name, 'hotfix/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync environment
+        run: uv sync --locked
+
+      - name: Validate branch version against pyproject.toml
+        run: uv run wh40k-cheatsheet validate-version "${{ github.head_ref || github.ref_name }}"
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install WeasyPrint native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libharfbuzz0b libcairo2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync environment
+        run: uv sync --locked
+
+      - name: Run quality gates
+        run: uv run poe check
+
+  build:
+    needs: [validate-version]
+    if: always() && (needs.validate-version.result == 'success' || needs.validate-version.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install WeasyPrint native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libharfbuzz0b libcairo2
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync environment
+        run: uv sync --locked
+
+      - name: Build every declared edition/language
+        run: uv run wh40k-cheatsheet package
+
+      - name: Upload built PDFs
+        if: github.ref_name == 'main' || startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: cheatsheet-pdfs
+          path: dist/*.pdf
+
+  publish-release:
+    # `success()` must be explicit here: providing a job's own `if:` replaces GitHub Actions'
+    # implicit "all `needs:` succeeded" check entirely, rather than being ANDed with it — so
+    # without this, publish-release would run even if `check` or `build` failed, violating FR-009.
+    if: success() && github.ref == 'refs/heads/main'
+    needs: [check, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync environment
+        run: uv sync --locked
+
+      - name: Download built PDFs
+        uses: actions/download-artifact@v4
+        with:
+          name: cheatsheet-pdfs
+          path: dist
+
+      - name: Compute release version
+        id: version
+        run: |
+          uv run python - <<'PYEOF' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          from wh40k_cheatsheet.versioning import read_project_version, is_prerelease
+          v = read_project_version(Path("."))
+          print(f"version={v}")
+          print(f"prerelease={'true' if is_prerelease(v) else 'false'}")
+          PYEOF
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.pdf --clobber
+          elif [ "$PRERELEASE" = "true" ]; then
+            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" --prerelease
+          else
+            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA"
+          fi

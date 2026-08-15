@@ -1,0 +1,342 @@
+# WH40K 10. Edition Cheatsheet - Inhalt für templates/cheatsheet.html.j2
+document:
+  title: 'Warhammer 40.000 - Cheatsheet 10. Edition'
+  edition: '10e'
+  revision: '2026-08-16-00'
+  language: 'de'
+  i18n:
+    page: 'Seite'
+    timing_your: 'DEIN ZUG'
+    timing_opponent: 'ZUG DES GEGNERS'
+    timing_either: 'ZUG BEIDER SPIELER'
+  blocks:
+
+    # ================= SEITE 1 =================
+    - type: phase
+      title: '1. BEFEHLSPHASE'
+
+    - type: subsection
+      title: 'Befehlspunkte (BP) generieren'
+    - type: paragraph
+      text: 'Beide Spieler erhalten zu Beginn jeder Befehlsphase 1 BP. Pro Schlachtrunde kann ein Spieler maximal 1 zusätzlichen BP aus beliebigen Quellen erhalten.  BP werden nicht über 10 hinaus erhalten.'
+
+    - type: subsection
+      title: 'Befehls-Fähigkeiten'
+    - type: paragraph
+      text: 'Fähigkeiten abhandeln, die in der Befehlsphase angewendet werden (z. B. Fraktionsfähigkeiten, Auren, Anführer-Effekte).'
+
+    - type: subsection
+      title: 'Infanterie- & Erschütterungstest (Musterungstest)'
+    - type: paragraph
+      html: '<b>Führe einen Musterungstest (Battle-shock Test) durch für jede Einheit, die:</b>'
+    - type: list
+      items:
+        - 'unter halbe Stärke gefallen ist (weniger als die Hälfte der ursprünglichen Modelle ODER Lebenspunkte).'
+    - type: paragraph
+      text: 'Wirf 2W6 ≥ Führungswert (Ld), um zu bestehen. Bei Misserfolg ist die Einheit Bis zum Beginn deiner nächsten Befehlsphase Erschüttert (Battle-shocked):'
+    - type: list
+      items:
+        - 'Missionskontrollwert (OC) wird zu 0'
+        - 'Kann nicht von Gefechtsoptionen (Stratagems) anvisiert werden'
+        - 'Fällt bei einem Rückzug automatisch einen Test für Verzweifelte Flucht ab'
+
+    - type: phase
+      title: '2. BEWEGUNGSPHASE'
+
+    - type: subsection
+      title: 'Bewegungsarten'
+    - type: list
+      items:
+        - html: '<b>Normale Bewegung (B"):</b> Einheit bewegt sich bis zu ihrem Bewegungswert. Muss außerhalb der Nahkampfreichweite (1") von Feinden bleiben.'
+        - html: '<b>Vorrücken (B+W6"):</b> Bewegungswert + 1W6". Kann diesen Zug weder schießen (außer mit [STURM]-Waffen) noch einen Angriff ansagen.'
+        - html: '<b>Rückzug (B"):</b> Einheit verlässt die Nahkampfreichweite. Kann diesen Zug nicht schießen oder angreifen.'
+          sub:
+            - 'Verzweifelte Flucht: Wenn erschüttert oder komplett umstellt, muss für jedes Modell gewürfelt werden (1 = Modell wird zerstört).'
+        - html: '<b>Stationär bleiben:</b> Einheit bewegt sich gar nicht. Erhält ggf. Boni durch [SCHWER].'
+    - type: callout
+      variant: 'warn'
+      text: 'Nahkampfreichweite (Engagement Range) beträgt 1" horizontal + 5" vertikal.'
+    - type: callout
+      variant: 'warn'
+      text: 'Formationsabstand (Unit Coherency): Innerhalb 2" horizontal + 5" vertikal von mindestens 1 Modell (bei 2–6 Modellen) bzw. 2 Modellen (bei 7+ Modellen).'
+
+    - type: subsection
+      title: 'Einsteigen & Aussteigen'
+    - type: list
+      items:
+        - '<b>Aussteigen:</b> Zu Beginn der Phase, bevor der Transporter sich bewegt. Alle Modelle müssen innerhalb von 3" um den Transporter aufgestellt werden. Dürfen danach normal agieren (schießen, angreifen).'
+        - '<b>Einsteigen:</b> Am Ende einer Bewegung (Normal, Vorrücken, Rückzug). Alle Modelle müssen vollständig innerhalb von 3" um den Transporter enden.'
+        - '<b>Notfall-Aussteigen (Transporter zerstört):</b> Modelle innerhalb 3" aufstellen. Bei 1 auf 1W6 pro Modell erleidet die Einheit 1 Tödliche Wunde. Einheit ist Erschüttert.'
+
+    - type: subsection
+      title: 'Strategische Reserven & Schocktruppen'
+    - type: list
+      items:
+        - 'Treffen ab Schlachtrunde 2 am Ende der Bewegung phase ein.'
+        - '<b>Schocktruppen (Deep Strike):</b> Aufstellen mehr als 9" von allen feindlichen Modellen entfernt.'
+        - '<b>Strategische Reserve:</b> Innerhalb 6" von Spielfeldkanten aufstellen (Runde 2: eigene/neutrale Kanten; Runde 3+: auch feindliche Kante), mehr als 9" von Feinden entfernt.'
+    - type: list
+      items:
+        - 'Einheiten, die bis Ende von Runde 3 nicht aufgestellt wurden, gelten als zerstört (außer Einheiten in Transportern/Reserve-Fähigkeiten).'
+
+    - type: phase
+      title: '3. SCHUSSPHASE'
+
+    - type: subsection
+      title: 'Schussberechtigung'
+    - type: paragraph
+      html: '<b>Normal:</b> Ungebunden, nicht vorgerückt.'
+    - type: paragraph
+      html: '<b>Sturm:</b> Vorgerückt, nutzt ausschließlich [STURM]-Waffen.'
+    - type: paragraph
+      html: '<b>Pistole:</b> Darf abgefeuert werden, wenn gebunden (visiert gebundene Einheit an) ODER ungebunden (kann dann keine anderen Waffen abfeuern).'
+    - type: paragraph
+      html: '<b>MONSTER / FAHRZEUG (Big Guns Never Tire):</b> Dürfen schießen/anvisiert werden, während sie gebunden sind (-1 auf Trefferwurf, außer bei [PISTOLE]). [EXPLOSIV]-Waffen dürfen keine Nahkampfziele anvisieren.'
+
+    - type: subsection
+      title: 'Zielauswahl & Sichtlinie'
+    - type: list
+      items:
+        - 'Ziel muss sichtbar und in Reichweite sein.'
+        - 'Sichtlinie: Jedes schießende Modell muss mindestens einen Teil des Zielmodells sehen können.'
+        - 'Modelle derselben Einheit können ihre Attacken auf verschiedene feindliche Einheiten aufteilen.'
+
+    - type: subsection
+      title: 'Attackenablauf'
+    - type: keyvals
+      items:
+        - label: '1. Trefferwurf'
+          text: 'W6 ≥ BF/KG. Unmodifizierte 1 verfehlt immer, unmodifizierte 6 ist ein Kritischer Treffer (automatisch Erfolg).'
+        - label: '2. Verwundungswurf'
+          text: 'W6 vergleicht Stärke (S) mit Widerstand (W). Unmodifizierte 1 verfehlt, 6 ist Kritische Verwundung.'
+        - label: '3. Schutzwurf'
+          text: 'Verteidiger wählt Rüstungswurf (modifiziert durch Durchschlag DS) oder Rettungswurf (ReW, ignoriert DS). 1 schlägt immer fehl.'
+        - label: '4. Schaden'
+          text: 'Zielmodell verliert Lebenspunkte = Schadenswert (S/D) der Waffe. Überschüssiger Schaden verfällt (außer bei Tödlichen Wunden).'
+    - type: table
+      columns: ['Stärke vs Widerstand', 'Nötiger Wurf']
+      rows:
+        - ['S ≥ 2x W', '2+']
+        - ['S > W', '3+']
+        - ['S = W', '4+']
+        - ['S < W', '5+']
+        - ['S ≤ ½ W', '6+']
+
+    - type: subsection
+      title: 'Verwundungen zuteile'
+    - type: list
+      items:
+        - 'Der Verteidiger teilt Verwundungen Modell für Modell zu.'
+        - 'Zuerst müssen Modelle gewählt werden, die bereits Schaden erlitten haben.'
+        - 'Anführer/Charaktermodelle in angeschlossenen Einheiten (Attached Units) dürfen erst Schaden erhalten, wenn alle Leibwächter zerstört sind (außer durch [PRÄZISION]).'
+
+    - type: subsection
+      title: 'Deckungsvorteil (Benefit of Cover)'
+    - type: list
+      items:
+        - html: "Verbessert den Rüstungswurf des Ziels um +1 (Maximaler Schutzwurf 3+ gegen DS 0). Bringt keinen Vorteil gegen Rettungswürfe."
+
+    - type: subsection
+      title: 'Tödliche Wunden (Mortal Wounds)'
+    - type: list
+      items:
+        - 'Tödliche Wunden umgehen Rüstungs- und Rettungswürfe. Jede Tödliche Wunde verursacht 1 Schaden. Überschüssiger Schaden wird auf andere Modelle der Einheit übertragen.'
+
+    - type: subsection
+      title: 'Missionsziele'
+    - type: list
+      items:
+        - 'Missionszielmarker: Innerhalb von 3" horizontal und 5" vertikal um den Mittelpunkt des Markers.'
+        - 'Missionskontrolle: Berechne die Summe der OC-Werte (Objective Control) aller eigenen Modelle in Reichweite.'
+        - 'Wer den höheren Gesamtwert hat, kontrolliert das Missionsziel. Bei Gleichstand bleibt es unverändert oder umkämpft.'
+
+    # ================= SEITE 2 =================
+    - type: phase
+      title: 'AKTIONEN / MISSIONSTASK'
+    - type: paragraph
+      html: '<b>In der 10. Edition führen Einheiten Missionsaktionen (z.B. Signale geben, Säubern) gemäß den Sekundärmissionskarten durch. Eine Einheit ist meist berechtigt, wenn sie:</b>'
+    - type: list
+      items:
+        - 'Nicht vorgerückt ist oder zurückgezogen ist.'
+        - 'Nicht im Nahkampf gebunden ist.'
+        - 'Schießen darf (und auf Schießen/Angreifen in diesem Zug verzichtet).'
+
+    - type: phase
+      title: 'GELÄNDE'
+    - type: subsection
+      title: 'Gelaendekategorien'
+    - type: paragraph
+      html: '<b>Ruinen (Ruins):</b> Blockieren Sichtlinien vollständig durch ihre Standfläche (Grundriss) für Modelle außerhalb. INFANTERIE und BARKASSEN können Wände durchqueren.'
+    - type: paragraph
+      html: '<b>Krater / Schutt:</b> Gewährt INFANTERIE Deckung, wenn sie sich vollständig darauf befindet.'
+    - type: paragraph
+      html: '<b>Wälder / Barrikaden:</b> Verleihen Deckungsvorteil, wenn Sichtlinie durch das Gelände verdeckt wird.'
+
+    - type: phase
+      title: '4. ANGRIFFSPHASE'
+    - type: list
+      items:
+        - 'Ziele müssen innerhalb von 12" sein und angesagt werden.'
+    - type: paragraph
+      html: '<b>Angriffswurf:</b> 2W6" Würfeln.'
+    - type: paragraph
+      html: '<b>Bedingungen der Angriffsbewegung:</b>'
+    - type: list
+      items:
+        - 'Das Wurf-Ergebnis muss ausreichen, um in Basekontakt (oder 1" Nahkampfreichweite) mit ALLEN angesagten Zielen zu gelangen.'
+        - 'Das erste bewegte Modell muss in Basekontakt mit einem Zielmodell kommen, wenn möglich.'
+        - 'Einheiten müssen Formationsabstand einhalten.'
+
+    - type: phase
+      title: '5. KAMPFPHASE'
+    - type: subsection
+      title: 'Ablauf der Phase'
+    - type: paragraph
+      html: '<b>1. Kämpft zuerst (Fights First):</b> Alle Einheiten, die in diesem Zug angegriffen haben oder die Regel [SCHLÄGT ZUERST ZU] besitzen. Aktiver Spieler wählt zuerst.'
+    - type: paragraph
+      html: '<b>2. Verbleibende Kämpfe:</b> Alle anderen gebundenen Einheiten. Der NICHT-aktive Spieler wählt die erste Einheit.'
+    - type: subsection
+      title: 'Ablauf pro Einheit'
+    - type: list
+      items:
+        - html: '<b>1. Heranrücken (Pile In):</b> Modelle dürfen sich bis zu 3" bewegen. Jedes Modell muss sich näher an das nächste feindliche Modell bewegen und wenn möglich Basekontakt herstellen.'
+        - html: '<b>2. Attacken abhandeln:</b> Nahkampfwaffen wählen, Treffen, Verwunden, Schutzwürfe und Schaden abarbeiten.'
+        - html: '<b>3. Neu ordnen (Consolidate):</b> Modelle dürfen sich bis zu 3" bewegen. Müssen in Basekontakt / Nahkampfreichweite zu einem Feind enden ODER in Reichweite eines Missionsziels.'
+
+    # ---- Kernfähigkeiten (Glossar, volle Breite) ----
+    - type: column_reset
+
+    - type: glossary
+      title: 'KERNFÄHIGKEITEN'
+      spanning: yes
+      terms:
+        - {term: 'ANTI-X Y+', text: 'Unmodifizierter Verwundungswurf von Y+ ist eine Kritische Verwundung gegen Ziel-Keyword X.'}
+        - {term: 'STURM (Assault)', text: 'Waffe kann abgefeuert werden, selbst wenn die Einheit in diesem Zug vorgerückt ist.'}
+        - {term: 'EXPLOSIV (Blast)', text: '+1 Attacke pro 5 Modelle in der Zieleinheit (abgerundet). Kann nicht gegen Ziele im Nahkampf abgefeuert werden.'}
+        - {term: 'PISTOLE (Pistol)', text: 'Kann abgefeuert werden, während die Einheit gebunden ist. Visiert feindliche Einheit im Nahkampf an.'}
+        - {term: 'TÖDLICHE EXPLOSION X (Deadly Demise X)', text: 'Bei Zerstörung W6 werfen; bei einer 6 erleidet jede Einheit innerhalb von 6" X Tödliche Wunden.'}
+        - {term: 'SCHOCKTRUPPEN (Deep Strike)', html: 'Kann in der Bewegungsphase aus den Reserven mehr als 9" von feindlichen Modellen aufgestellt werden.'}
+        - {term: 'VERHEERENDE WUNDEN (Devastating Wounds)', html: 'Kritische Verwundungen ignorieren Rüstungs- und Rettungswürfe (verursachen Schaden direkt als Tödliche Wunden/Schaden).'}
+        - {term: 'ZUSÄTZLICHE ATTACKEN (Extra Attacks)', text: 'Das Modell darf mit dieser Waffe zusätzlich zu seinen normalen Nahkampfwaffen attackieren.'}
+        - {term: 'VERLETZUNGEN IGNORIEREN X+ (Feel No Pain X+)', text: 'Bei jedem Lebenspunktverlust W6 werfen. Bei X+ wird der Schadenspunkt ignoriert.'}
+        - {term: 'SCHLÄGT ZUERST ZU (Fights First)', text: 'Einheit kämpft im Schritt „Kämpft zuerst" der Kampfphase.'}
+        - {term: 'FEUERLUKE X (Firing Deck X)', text: 'Transporter darf Fernkampfwaffen von bis zu X eingestiegenen Modellen abfeuern.'}
+        - {term: 'GEFÄHRLICH (Hazardous)', text: 'Nach dem Schießen W6 werfen. Bei einer 1 erleidet das Modell 3 Tödliche Wunden (oder wird als nicht-Monster/Fahrzeug zerstört).'}
+        - {term: 'SCHWER (Heavy)', text: '+1 auf Trefferwurf, wenn die Einheit in diesem Zug stationär geblieben ist.'}
+        - {term: 'SCHWEBEN (Hover)', text: 'Flugzeug verliert die Sonderregeln für Flugzeuge und erhält B=20", verhält sich wie ein schnelles Fahrzeug.'}
+        - {term: 'IGNORIERT DECKUNG (Ignores Cover)', text: 'Das Ziel erhält gegen diese Attacken keinen Deckungsvorteil.'}
+        - {term: 'INDIREKTES FEUER (Indirect Fire)', text: 'Kann Ziele ohne Sichtlinie anvisieren. Ziel erhält Deckung; -1 auf Trefferwurf; unmodifizierte 1-3 verfehlt immer ohne Sichtlinie.'}
+        - {term: 'INFILTRATOREN (Infiltrators)', html: 'Aufstellung überall auf dem Feld möglich, mehr als 9" von der feindlichen Aufstellungszone und allen Feinden entfernt.'}
+        - {term: 'LANZE (Lance)', text: '+1 auf Verwundungswurf im Nahkampf, wenn die Einheit in diesem Zug erfolgreich angegriffen hat.'}
+        - {term: 'ANFÜHRER (Leader)', text: 'Schließt sich vor der Schlacht einer Leibwächtereinheit (Bodyguard) an. Erhält deren Widerstandswert für Verwundungen.'}
+        - {term: 'TÖDLICHE TREFFER (Lethal Hits)', html: 'Kritischer Trefferwurf verwundet das Ziel automatisch.'}
+        - {term: 'EINZELGÄNGER (Lone Operative)', text: 'Kann aus mehr als 12" Entfernung nicht als Ziel für Fernkampfattacken gewählt werden.'}
+        - {term: 'MELTER X (Melta X)', text: '+X Schaden, wenn das Ziel innerhalb der halben Reichweite der Waffe liegt.'}
+        - {term: 'EINMALIG (One Shot)', text: 'Waffe kann pro Schlacht nur ein einziges Mal abgefeuert werden.'}
+        - {term: 'PRÄZISION (Precision)', text: 'Bei Kritischen Treffern/Verwundungen kann der Schaden gezielt auf ein Anführer-Modell in der Zieleinheit zugeteilt werden.'}
+        - {term: 'PSYCHISCH (Psychic)', text: 'Attacke gilt als psionisch. Kann durch Anti-Psyker/Ppsi-Schutzwürfe beeinflusst werden.'}
+        - {term: 'SCHNELLFEUER X (Rapid Fire X)', text: 'Erhöht die Anzahl der Attacken um X, wenn das Ziel innerhalb der halben Reichweite liegt.'}
+        - {term: 'SCOUTS X"', html: 'Kostenlose Bewegung um bis zu X" vor dem ersten Zug (muss mehr als 9" vom Feind enden).'}
+        - {term: 'TARNUNG (Stealth)', text: 'Fernkampfattacken gegen diese Einheit erleiden einen Modifikator von -1 auf den Trefferwurf.'}
+        - {term: 'ANHALTENDE TREFFER X (Sustained Hits X)', text: 'Kritischer Treffer erzeugt X zusätzliche Treffer.'}
+        - {term: 'STROM (Twin-linked / Torrent)', text: 'Trifft automatisch (kein Trefferwurf erforderlich).'}
+        - {term: 'GEKOPPELT (Twin-linked)', text: 'Verwundungswürfe für diese Waffe dürfen wiederholt werden.'}
+
+    # ================= SEITE 3 - GEFECHTSOPTIONEN =================
+    - type: page_break
+    - type: spanning_headline
+      title: 'GEFECHTSOPTIONEN'
+
+    - type: stratagem
+      title: 'Kommando-Wiederholungswurf (Command Re-roll)'
+      cost: '1 BP'
+      timing: 'either'
+      when: 'In jeder Phase, direkt nach einem Vorrück-, Angriffs-, Schadens-, Gefahren-, Treffer-, Rüstungs-/Rettungs- oder Verwundungswurf.'
+      target: 'Eine verbündete Einheit.'
+      effect: 'Wiederhole diesen Wurf. (Bei einem Angriffswurf müssen beide W6 wiederholt werden).'
+
+    - type: stratagem
+      title: 'Epische Herausforderung (Epic Challenge)'
+      cost: '1 BP'
+      timing: 'your'
+      when: 'Kampfphase, wenn eine CHARAKTER-Einheit zum Kämpfen gewählt wird.'
+      target: 'Diese CHARAKTER-Einheit.'
+      effect: 'Die Nahkampfwaffen des Charaktermodells erhalten für diese Phase [PRÄZISION].'
+
+    - type: stratagem
+      title: 'Wahnsinnige Tapferkeit (Insane Bravery)'
+      cost: '1 BP'
+      timing: 'your'
+      when: 'Befehlsphase, direkt nachdem ein Musterungstest für eine Einheit fehlgeschlagen ist.'
+      target: 'Diese Einheit.'
+      effect: 'Die Einheit gilt stattdessen als nicht Erschüttert (Test bestanden).'
+      restrictions: 'Nur einmal pro Schlacht verwendbar.'
+
+    - type: stratagem
+      title: 'Granate (Grenade)'
+      cost: '1 BP'
+      timing: 'your'
+      when: 'Deine Schussphase.'
+      target: 'Eine verbündete GRANATEN-Einheit, die nicht vorgerückt ist und nicht im Nahkampf gebunden ist.'
+      effect: 'Wähle ein Ziel innerhalb von 8" und in Sichtlinie. Wirf 6 W6: Für jede 4+ erleidet das Ziel 1 Tödliche Wunde (max. 6 TW).'
+
+    - type: stratagem
+      title: 'Panzerschock (Tank Shock)'
+      cost: '1 BP'
+      timing: 'your'
+      when: 'Deine Angriffsphase, nachdem eine FAHRZEUG-Einheit eine Angriffsbewegung beendet hat.'
+      target: 'Diese FAHRZEUG-Einheit.'
+      effect: 'Wähle ein feindliches Modell in Nahkampfreichweite und eine eigene Nahkampfwaffe. Wirf W6 in Höhe der Stärke der Waffe (+2 W6, wenn S > W des Ziels). Jede 5+ = 1 Tödliche Wunde (max. 6 TW).'
+
+    - type: stratagem
+      title: 'Rapid Ingress (Schneller Einmarsch)'
+      cost: '1 BP'
+      timing: 'opponent'
+      when: 'Ende der Bewegungsphase deines Gegners.'
+      target: 'Eine verbündete Einheit in Reserve/Strategischer Reserve.'
+      effect: 'Deine Einheit darf jetzt wie in deiner Bewegungsphase aufgestellt werden.'
+      restrictions: 'Nicht in Schlachtrunde 1 einsetzbar.'
+
+    - type: stratagem
+      title: 'Abwehrfeuer (Fire Overwatch)'
+      cost: '1 BP'
+      timing: 'opponent'
+      when: 'Bewegungs- oder Angriffsphase des Gegners, wenn eine feindliche Einheit eine Bewegung startet oder beendet.'
+      target: 'Eine verbündete Einheit innerhalb von 24" zum Feind.'
+      effect: 'Deine Einheit darf Schießen. Attacken treffen nur auf unmodifizierte 6en (Snap Shots).'
+      restrictions: 'Nur einmal pro Zug.'
+
+    - type: stratagem
+      title: 'Nebelvorhang (Smokescreen)'
+      cost: '1 BP'
+      timing: 'opponent'
+      when: 'Schussphase des Gegners, wenn eine RAUCH-Einheit als Ziel gewählt wird.'
+      target: 'Eine verbündete RAUCH (Smoke)-Einheit.'
+      effect: 'Die Einheit erhält [TARNUNG] (-1 auf Treffer) und Deckungsvorteil bis zum Ende der Phase.'
+
+    - type: stratagem
+      title: 'Heldenhafte Intervention (Heroic Intervention)'
+      cost: '2 BP'
+      timing: 'opponent'
+      when: 'Angriffsphase des Gegners, nachdem eine feindliche Angriffsbewegung beendet wurde.'
+      target: 'Eine ungebundene verbündete Einheit innerhalb von 6" um die feindliche Einheit.'
+      effect: 'Die Einheit führt einen Angriffswurf gegen die feindliche Einheit aus. Erhält in dieser Phase keinen Angriffsbonus (kein Fights First).'
+
+    - type: stratagem
+      title: 'Gegenoffensive (Counter-Offensive)'
+      cost: '2 BP'
+      timing: 'opponent'
+      when: 'Kampfphase, direkt nachdem eine feindliche Einheit gekämpft hat.'
+      target: 'Eine verbündete gebundene Einheit, die noch nicht gekämpft hat.'
+      effect: 'Deine Einheit darf als Nächstes kämpfen.'
+
+    - type: column_reset
+
+    - type: spanning_headline
+      title: 'GEFECHTSOPTIONEN REGELN'
+    - type: list
+      single_column: yes
+      items:
+        - 'BP-Kosten bezahlen → Ziel wählen → Effekt abhandeln.'
+        - 'Jede Gefechtsoption kann pro Phase nur EINMAL verwendet werden (außer Fähigkeiten erlauben es explizit).'
+        - 'Regeländerung 10e Slate: Fähigkeiten, die Kosten auf 0 BP reduzieren, gelten nur noch für Modifikatoren auf Gefechtsoptionen vom Typ "Schlachtfeld-Taktik" (Battle Tactic).'

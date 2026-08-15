@@ -1,0 +1,148 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wh40k-cheatsheet"
+version = "0.1.0"
+description = "Generates templated, multi-language, multi-edition Warhammer 40,000 cheat sheet PDFs"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "pydantic>=2.9",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "weasyprint>=62",
+]
+
+[project.scripts]
+wh40k-cheatsheet = "wh40k_cheatsheet.cli:main"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8",
+    "pylint>=3.3",
+    "bandit>=1.7",
+    "ty>=0.0.1a1",
+    "pytest>=8.3",
+    "poethepoet>=0.31",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wh40k_cheatsheet"]
+
+# --------------------------------------------------------------------------
+# ruff — format + fast lint (style/format and lint gates)
+# --------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = ["src", "tests"]
+extend-exclude = ["tests/fixtures/bad_example.py"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",     # pycodestyle
+    "F",          # pyflakes
+    "I",          # isort
+    "N",          # pep8-naming
+    "UP",         # pyupgrade (keep code on 3.12+ idioms)
+    "B",          # flake8-bugbear
+    "A",          # flake8-builtins
+    "C4",         # flake8-comprehensions
+    "SIM",        # flake8-simplify
+    "PTH",        # flake8-use-pathlib
+    "RUF",        # ruff-specific
+    "S",          # flake8-bandit subset
+    "PL",         # pylint parity
+    "TID",        # flake8-tidy-imports
+    "TCH",        # flake8-type-checking
+    "PERF",       # perflint
+    "FURB",       # refurb
+    "DTZ",        # flake8-datetimez
+    "RET",        # flake8-return
+    "ARG",        # flake8-unused-arguments
+    "ERA",        # eradicate (commented-out code)
+    "D",          # pydocstyle (Google-style docstrings)
+]
+ignore = [
+    "S603",  # subprocess call check — no subprocess usage planned
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 6  # generate()/_generate_one() need a 6th (print_friendly) opt-in flag param
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "D"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --------------------------------------------------------------------------
+# pylint — deeper correctness lint (disable what ruff already owns)
+# --------------------------------------------------------------------------
+[tool.pylint.main]
+py-version = "3.12"
+jobs = 0
+load-plugins = ["pylint.extensions.docparams"]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.design]
+max-args = 6  # generate()/_generate_one() need a 6th (print_friendly) opt-in flag param
+
+[tool.pylint.basic]
+no-docstring-rgx = "^$"
+
+[tool.pylint.parameter_documentation]
+accept-no-param-doc = false
+accept-no-return-doc = false
+accept-no-raise-doc = false
+accept-no-yields-doc = false
+default-docstring-type = "google"
+
+[tool.pylint."messages control"]
+disable = [
+    "line-too-long",       # owned by ruff E501
+    "wrong-import-order",  # owned by ruff I
+    "unused-import",       # owned by ruff F401
+    "C0103",                # naming — owned by ruff N
+]
+
+# --------------------------------------------------------------------------
+# bandit — security scan
+# --------------------------------------------------------------------------
+[tool.bandit]
+targets = ["src"]
+exclude_dirs = ["tests", ".venv"]
+
+# --------------------------------------------------------------------------
+# ty — type checking
+# --------------------------------------------------------------------------
+[tool.ty.environment]
+python-version = "3.12"
+
+# --------------------------------------------------------------------------
+# pytest
+# --------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+# --------------------------------------------------------------------------
+# poe — the single aggregate command + per-gate tasks
+# --------------------------------------------------------------------------
+[tool.poe.tasks]
+format-check = "ruff format --check src tests"
+lint = { shell = "ruff check src tests && pylint src" }
+security = "bandit -c pyproject.toml -r src"
+types = "ty check src"
+test = "pytest"
+check = { shell = "poe format-check && poe lint && poe security && poe types && poe test" }
+fix = { shell = "ruff format src tests && ruff check --fix src tests" }
+generate = "python -m wh40k_cheatsheet.cli generate"
+list = "python -m wh40k_cheatsheet.cli list"

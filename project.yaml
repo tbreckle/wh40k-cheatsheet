@@ -1,0 +1,10 @@
+editions:
+  10e:
+    template: cheatsheet.html.j2
+    languages:
+      de: {}
+  11e:
+    template: cheatsheet.html.j2
+    languages:
+      en: {}
+      de: {}
