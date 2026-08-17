@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from tests.binary_compare import assert_bytes_equal
 from wh40k_cheatsheet.config import load_project_config
 from wh40k_cheatsheet.pipeline import Paths, generate
 
@@ -27,5 +28,5 @@ def test_regenerating_the_same_edition_language_twice_yields_identical_output():
     second_html = second.html_path.read_bytes()
     second_pdf = second.pdf_path.read_bytes()
 
-    assert first_html == second_html
-    assert first_pdf == second_pdf
+    assert_bytes_equal("HTML", first_html, second_html)
+    assert_bytes_equal("PDF", first_pdf, second_pdf)

@@ -28,9 +28,10 @@ def render_pdf(html: str, base_url: Path, output_path: Path, *, stage_context: s
     output_path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
     try:
-        # WeasyPrint does not embed a wall-clock timestamp, so identical HTML
-        # input reliably produces byte-identical PDF output across runs.
-        weasyprint.HTML(string=html, base_url=str(base_url)).write_pdf(str(tmp_path))
+        # full_fonts=True: WeasyPrint's default font subsetting (HarfBuzz/fontTools) is
+        # not run-to-run deterministic — observed byte-level differences between two
+        # back-to-back generations of identical HTML. Embedding whole fonts avoids it.
+        weasyprint.HTML(string=html, base_url=str(base_url)).write_pdf(str(tmp_path), full_fonts=True)
     except Exception as exc:
         tmp_path.unlink(missing_ok=True)
         raise PdfError(f"failed to render PDF to {output_path}: {exc}") from exc

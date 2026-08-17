@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 
+from tests.binary_compare import assert_bytes_equal
 from wh40k_cheatsheet.cli import main
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -34,5 +35,5 @@ def test_html_and_pdf_bytes_identical_with_and_without_verbose(tmp_path, capsys)
     verbose_html = (root / "out" / "11e" / revision / "en.html").read_bytes()
     verbose_pdf = (root / "out" / "11e" / revision / "en.pdf").read_bytes()
 
-    assert plain_html == verbose_html
-    assert plain_pdf == verbose_pdf
+    assert_bytes_equal("HTML", plain_html, verbose_html)
+    assert_bytes_equal("PDF", plain_pdf, verbose_pdf)

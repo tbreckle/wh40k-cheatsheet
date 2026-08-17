@@ -10,6 +10,7 @@ jobs:
   validate-version:
     if: startsWith(github.head_ref || github.ref_name, 'release/') || startsWith(github.head_ref || github.ref_name, 'hotfix/')
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
 
@@ -24,6 +25,7 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
 
@@ -38,13 +40,33 @@ jobs:
       - name: Sync environment
         run: uv sync --locked
 
-      - name: Run quality gates
-        run: uv run poe check
+      # Split rather than a single `poe check` so a stalling gate is identifiable from the step
+      # list alone, and so one slow gate can't consume the whole job's budget.
+      - name: Gate — format
+        timeout-minutes: 2
+        run: uv run poe format-check
+
+      - name: Gate — lint
+        timeout-minutes: 5
+        run: uv run poe lint
+
+      - name: Gate — security
+        timeout-minutes: 2
+        run: uv run poe security
+
+      - name: Gate — types
+        timeout-minutes: 2
+        run: uv run poe types
+
+      - name: Gate — tests
+        timeout-minutes: 10
+        run: uv run pytest -v
 
   build:
     needs: [validate-version]
     if: always() && (needs.validate-version.result == 'success' || needs.validate-version.result == 'skipped')
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
 
@@ -76,6 +98,7 @@ jobs:
     if: success() && github.ref == 'refs/heads/main'
     needs: [check, build]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:

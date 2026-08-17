@@ -132,6 +132,9 @@ python-version = "3.12"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+# Dump every thread's stack if a single test exceeds this, so a hung test identifies itself
+# in CI logs instead of stalling silently until the job timeout. Stdlib faulthandler, no dep.
+faulthandler_timeout = 120
 
 # --------------------------------------------------------------------------
 # poe — the single aggregate command + per-gate tasks
