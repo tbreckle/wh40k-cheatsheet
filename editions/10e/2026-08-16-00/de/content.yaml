@@ -80,7 +80,7 @@ document:
         - 'Einheiten, die bis Ende von Runde 3 nicht aufgestellt wurden, gelten als zerstört (außer Einheiten in Transportern/Reserve-Fähigkeiten).'
 
     - type: phase
-      title: '3. SCHUSSPHASE'
+      title: '3. FERNKAMPFPHASE'
 
     - type: subsection
       title: 'Schussberechtigung'
@@ -188,7 +188,7 @@ document:
         - 'Einheiten müssen Formationsabstand einhalten.'
 
     - type: phase
-      title: '5. KAMPFPHASE'
+      title: '5. NAHKAMPFPHASE'
     - type: subsection
       title: 'Ablauf der Phase'
     - type: paragraph

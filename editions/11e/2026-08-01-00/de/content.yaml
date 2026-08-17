@@ -114,7 +114,7 @@ document:
         - 'Nicht bis zum Ende von Schlachtrunde 3 eingetroffen = zerstört (außer Einheiten in eingetroffenen Transportern und neu positionierte Einheiten).'
 
     - type: phase
-      title: '3. SCHUSSPHASE'
+      title: '3. FERNKAMPFPHASE'
 
     - type: subsection
       title: 'Schussarten'
@@ -263,7 +263,7 @@ document:
         - 'Jedes Modell der angreifenden Einheit erhält Kämpft zuerst.'
 
     - type: phase
-      title: '5. KAMPFPHASE'
+      title: '5. NAHKAMPFPHASE'
     - type: subsection
       title: 'Nachrücken - beide Spieler; aktiver Spieler zuerst'
     - type: list
