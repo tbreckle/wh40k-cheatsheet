@@ -16,6 +16,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-suffix: ${{ github.job }}
 
       - name: Sync environment
         run: uv sync --locked
@@ -36,6 +38,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-suffix: ${{ github.job }}
 
       - name: Sync environment
         run: uv sync --locked
@@ -77,6 +81,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-suffix: ${{ github.job }}
 
       - name: Sync environment
         run: uv sync --locked
@@ -85,7 +91,6 @@ jobs:
         run: uv run wh40k-cheatsheet package
 
       - name: Upload built PDFs
-        if: github.ref_name == 'main' || startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/')
         uses: actions/upload-artifact@v7
         with:
           name: cheatsheet-pdfs
@@ -106,6 +111,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-suffix: ${{ github.job }}
 
       - name: Sync environment
         run: uv sync --locked
