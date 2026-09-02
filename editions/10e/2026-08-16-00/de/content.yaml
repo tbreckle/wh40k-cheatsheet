@@ -9,6 +9,10 @@ document:
     timing_your: 'DEIN ZUG'
     timing_opponent: 'ZUG DES GEGNERS'
     timing_either: 'ZUG BEIDER SPIELER'
+    label_when: 'WANN'
+    label_target: 'ZIEL'
+    label_effect: 'EFFEKT'
+    label_restrictions: 'EINSCHRÄNKUNGEN'
   blocks:
 
     # ================= SEITE 1 =================

@@ -172,6 +172,31 @@ The list spans the complete two-column width instead of being confined to one. O
 (or setting it to `false`) renders exactly as before this feature. Full contract:
 `specs/009-list-single-column/contracts/list-single-column-flag.md`.
 
+### Translating the template's own labels (`document.i18n`)
+
+Some text on the sheet comes from the template rather than from authored blocks: the page footer and
+the stratagem card's timing banner and body labels. Translate them with an optional `document.i18n`
+map:
+
+```yaml
+document:
+  language: "de"
+  i18n:
+    page: "Seite"                         # footer: "Seite 1 / 3"
+    timing_your: "DEIN ZUG"               # stratagem timing banner
+    timing_opponent: "ZUG DES GEGNERS"
+    timing_either: "ZUG BEIDER SPIELER"
+    label_when: "WANN"                    # stratagem body labels
+    label_target: "ZIEL"
+    label_effect: "EFFEKT"
+    label_restrictions: "EINSCHRÄNKUNGEN"
+```
+
+Every key is optional and falls back to its English default (`Page`, `YOUR TURN`, `OPPONENT'S TURN`,
+`EITHER PLAYER'S TURN`, `WHEN`, `TARGET`, `EFFECT`, `RESTRICTIONS`), so an English `content.yaml` can
+omit `i18n` entirely and a translation can supply only the keys it needs. Write the `label_*` values
+**without** the trailing colon — the template adds it.
+
 ## Page logo watermark
 
 Every generated page shows the Warhammer 40,000 logo (`images/logo_40k.png`) as a large, faint

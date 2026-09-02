@@ -34,6 +34,15 @@ subtitle: "Quick reference" # optional
 edition: "11e"
 revision: "2026-08-01-00" # shown in footer
 language: "en"
+i18n: # optional UI strings for the template's own chrome
+  page: "Seite" # (footer, stratagem labels); each key falls
+  timing_your: "DEIN ZUG" # back to its English default when missing,
+  timing_opponent: "ZUG DES GEGNERS" # so a content.yaml may omit i18n entirely
+  timing_either: "ZUG BEIDER SPIELER"
+  label_when: "WANN" # stratagem body labels; the ":" after each
+  label_target: "ZIEL" # one is added by the template, not authored
+  label_effect: "EFFEKT"
+  label_restrictions: "EINSCHRÄNKUNGEN"
 blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
   # split into separate pages at page_break markers,
   # or realigned to a left column (same page if
@@ -190,14 +199,18 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         {%- else -%}◆ {{ i18n.timing_either | default("EITHER PLAYER'S TURN") }}{%- endif -%}
       </div>
       <div class="stratagem__body">
-        {%- if block.when is defined or block.when_html is defined %}<p><span class="lbl">WHEN:</span> {{
+        {%- if block.when is defined or block.when_html is defined %}<p><span class="lbl">{{
+          i18n.label_when | default('WHEN') }}:</span> {{
           (block.when_html | safe) if block.when_html is defined else block.when }}</p>{% endif -%}
-        {%- if block.target is defined or block.target_html is defined %}<p><span class="lbl">TARGET:</span> {{
+        {%- if block.target is defined or block.target_html is defined %}<p><span class="lbl">{{
+          i18n.label_target | default('TARGET') }}:</span> {{
           (block.target_html | safe) if block.target_html is defined else block.target }}</p>{% endif -%}
-        {%- if block.effect is defined or block.effect_html is defined %}<p><span class="lbl">EFFECT:</span> {{
+        {%- if block.effect is defined or block.effect_html is defined %}<p><span class="lbl">{{
+          i18n.label_effect | default('EFFECT') }}:</span> {{
           (block.effect_html | safe) if block.effect_html is defined else block.effect }}</p>{% endif -%}
         {%- if block.restrictions is defined or block.restrictions_html is defined %}<p><span
-            class="lbl">RESTRICTIONS:</span> {{ (block.restrictions_html | safe) if block.restrictions_html is defined
+            class="lbl">{{ i18n.label_restrictions | default('RESTRICTIONS') }}:</span> {{
+          (block.restrictions_html | safe) if block.restrictions_html is defined
           else block.restrictions }}</p>{% endif -%}
       </div>
     </section>
