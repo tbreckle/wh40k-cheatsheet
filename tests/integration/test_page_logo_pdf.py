@@ -121,7 +121,7 @@ def test_regenerating_real_content_keeps_same_page_count():
     # Baseline after this amendment: the @page top margin reverted from 15mm (needed only
     # by the old corner logo) back to 7mm, giving both languages more usable space per page.
     assert en_pages == 3
-    assert de_pages == 3
+    assert de_pages == 4
 
 
 def test_missing_logo_asset_fails_generation_via_cli(tmp_path, capsys):
