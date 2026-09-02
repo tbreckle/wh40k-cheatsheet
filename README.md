@@ -90,6 +90,7 @@ for the full option list.
 
 ## More information
 
+- Review status of each edition and revision: see [docs/STATUS.md](docs/STATUS.md)
 - Contributing content or code: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 - Authoring or editing cheat sheet content: see [docs/CONTENT_AUTHORING.md](docs/CONTENT_AUTHORING.md)
 
@@ -97,8 +98,8 @@ for the full option list.
 
 The 11th edition content in `editions/11e/2026-08-01-00/en/content.yaml` is transcribed from a
 community-made cheat sheet shared on Reddit — thank you to its original creator [Kaysette](https://www.reddit.com/user/Kaysette/):
-[11th edition cheat sheet thread](https://www.reddit.com/r/Warhammer40k/comments/1tv312v/11th_edition_cheat_sheet/). The
-translations are a derivative work of that content.
+[11th edition cheat sheet thread](https://www.reddit.com/r/Warhammer40k/comments/1tv312v/11th_edition_cheat_sheet/, revision 3rd
+June 2026). The translations are a derivative work of that content.
 
 ## Legal
 

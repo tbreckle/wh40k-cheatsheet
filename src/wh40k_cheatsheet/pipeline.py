@@ -226,11 +226,13 @@ def _generate_one(
     """
     stage_context = f"{edition_id}/{revision.id}/{language}"
     template_name = config.editions[edition_id].resolve_template(language)
+    logger.debug("[%s] resolved template: %s", stage_context, template_name)
     logger.info("[%s] resolving revision", stage_context)
     context = resolve_content(paths.editions_root, edition_id, str(revision.id), language)
     logger.info("[%s] resolving content", stage_context)
 
     out_dir = paths.out_root / edition_id / str(revision.id)
+    logger.debug("[%s] output directory: %s", stage_context, out_dir)
     html_path, pdf_path = _render_and_write(
         paths, template_name, context, out_dir=out_dir, filename_stem=language, stage_context=stage_context
     )
@@ -289,6 +291,14 @@ def generate(
     _verify_logo_asset(paths)
     resolved_revision = _resolve_revision(paths, edition_id, revision)
     languages = _resolve_languages(edition, edition_id, language)
+    logger.info(
+        "generating edition '%s' revision '%s': %d language(s) (%s)%s",
+        edition_id,
+        resolved_revision.id,
+        len(languages),
+        ", ".join(languages),
+        " [print-friendly]" if print_friendly else "",
+    )
     return [
         _generate_one(config, paths, edition_id, resolved_revision, lang, print_friendly=print_friendly)
         for lang in languages

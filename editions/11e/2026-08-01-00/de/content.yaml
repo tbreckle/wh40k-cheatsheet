@@ -65,7 +65,7 @@ document:
           sub:
             - "Geordneter Rückzug: nur verfügbar, wenn die Einheit nicht erschüttert ist"
             - "Verzweifelte Flucht: verpflichtend, wenn erschüttert; Gefahrenwurf pro Modell, Bewegung durch feindliche Modelle"
-        - html: "<b>Stehen bleiben:</b> Jede Einheit."
+        - html: "<b>Stehen bleiben:</b> Jede Einheit. (09.04)"
     - type: callout
       variant: "warn"
       text: 'Nahkampfreichweite beträgt 2" horizontal + 5" vertikal (03.04)'
@@ -74,35 +74,35 @@ document:
       text: 'Kohärenz: innerhalb 2" von ≥1 anderen Modell UND innerhalb 9" horizontal und 5" vertikal von jedem anderen Modell der Einheit (am Ende des Zuges prüfen) (03.03)'
 
     - type: subsection
-      title: "Fliegen & Vorstoßen"
+      title: "Fliegen & Ansturm"
     - type: list
       items:
-        - "Vorstoß wird ausgelöst, wenn die Einheit nicht erschüttert und ungebunden ist und sich diese Phase nicht bewegt hat. Muss sich zum nächsten Gegner bewegen."
-        - 'Kündige „In die Lüfte erheben" vor der Bewegung an. -2" von der Maximaldistanz. Kann sich durch alle Modelle und Gelände bewegen.'
+        - "Ansturmbewegung wird ausgelöst, wenn die Einheit nicht erschüttert und ungebunden ist und sich diese Phase nicht bewegt hat. Muss sich zum nächsten Gegner bewegen. (21.02)"
+        - 'Kündige "In die Lüfte erheben" vor der Bewegung an. -2" von der Maximaldistanz. Kann sich durch alle Modelle und Gelände bewegen. (21.03)'
 
     - type: subsection
-      title: "Einsteigen"
+      title: "Einsteigen (18.02)"
     - type: list
       items:
         - "Nach einer normalen Bewegung, einem Vorrücken oder einem Rückzug."
         - 'Alle Modelle müssen innerhalb 3" des Transporters enden; Einheit wird diesen Zug nicht aufgestellt; ausreichende Kapazität.'
 
     - type: subsection
-      title: "Aussteigen"
+      title: "Aussteigen (18.03)"
     - type: paragraph
-      html: '<b>Schnell (Aufstellung innerhalb 3"):</b> Transporter hat eine normale Bewegung oder schnellen Einmarsch gemacht. Kann diesen Zug keinen Angriff ansagen.'
+      html: '<b>Schnell (Aufstellung innerhalb 3"):</b> Transporter hat eine normale Bewegung oder schnellen Einmarsch gemacht. Kann diesen Zug keinen Angriff ansagen. (18.04)'
     - type: paragraph
-      html: '<b>Taktisch (Aufstellung innerhalb 3"):</b> Transporter steht still oder hat sich noch nicht bewegt. Einheit macht dann eine normale Bewegung oder ein Vorrücken.'
+      html: '<b>Taktisch (Aufstellung innerhalb 3"):</b> Transporter steht still oder hat sich noch nicht bewegt. Einheit macht dann eine normale Bewegung oder ein Vorrücken. (18.04)'
     - type: paragraph
-      html: '<b>Kampf (Aufstellung innerhalb 6"):</b> Andernfalls. Gefahrenwurf pro Modell. Erschüttert; kann nicht angreifen.'
+      html: '<b>Kampf (Aufstellung innerhalb 6"):</b> Andernfalls. Gefahrenwurf pro Modell. Erschüttert; kann nicht angreifen. (18.04)'
     - type: paragraph
-      html: '<b>Notfall (Transporter zerstört):</b> Gefahrenwurf pro Modell. Vollständig innerhalb 6" aufstellen. Erschüttert; kann nicht angreifen.'
+      html: '<b>Notfall (Transporter zerstört):</b> Gefahrenwurf pro Modell. Vollständig innerhalb 6" aufstellen. Erschüttert; kann nicht angreifen. (18.05)'
 
     - type: subsection
       title: "Strategische Reserven / Schneller Einmarsch"
     - type: list
       items:
-        - "Max. 50 % der Punkte. Treffen ab Schlachtrunde 2 ein."
+        - "Max. 50 % der Punkte. Treffen ab Schlachtrunde 2 ein. (20.03)"
         - 'Vollständig innerhalb 6" einer Spielfeldkante aufstellen, mehr als 8" von allen Gegnern entfernt.'
         - "Vor Runde 3: keine Aufstellung in der Aufstellungszone des Gegners."
     - type: callout
@@ -116,19 +116,19 @@ document:
       title: "3. FERNKAMPFPHASE"
 
     - type: subsection
-      title: "Schussarten"
+      title: "Schussarten (10.02)"
     - type: paragraph
-      html: "<b>Normal:</b> Ungebunden, nicht vorgerückt."
+      html: "<b>Normal:</b> Ungebunden, nicht vorgerückt. (10.04)"
     - type: paragraph
-      html: "<b>Sturm:</b> Ungebunden, vorgerückt, hat [STURM]-Waffen. Nur [STURM]-Waffen dürfen verwendet werden."
+      html: "<b>Sturm:</b> Ungebunden, vorgerückt, hat [STURM]-Waffen. Nur [STURM]-Waffen dürfen verwendet werden. (10.05)"
     - type: paragraph
-      html: "<b>Nahbeschuss:</b> Gebunden, nicht vorgerückt, hat [NAHBESCHUSS]-Waffen oder ist MONSTER / FAHRZEUG."
+      html: "<b>Nahbeschuss:</b> Gebunden, nicht vorgerückt, hat [NAHBEREICH]-Waffen oder ist MONSTER / FAHRZEUG. (10.06)"
     - type: list
       items:
-        - "Nicht-MONSTER / FAHRZEUG: nur [NAHBESCHUSS]-Waffen; muss eine gebundene feindliche Einheit anvisieren."
-        - "MONSTER / FAHRZEUG: -1 auf Treffer, außer bei einer [NAHBESCHUSS]-Waffe gegen ein gebundenes Ziel. [EXPLOSIV]-Waffen können gebundene Einheiten nicht anvisieren."
+        - "Nicht-MONSTER / FAHRZEUG: nur [NAHBEREICH]-Waffen; muss eine gebundene feindliche Einheit anvisieren."
+        - "MONSTER / FAHRZEUG: -1 auf Treffer, außer bei einer [NAHBEREICH]-Waffe gegen ein gebundenes Ziel. [EXPLOSIV]-Waffen können gebundene Einheiten nicht anvisieren."
     - type: paragraph
-      html: "<b>Indirekt:</b> Ungebunden, nicht vorgerückt, hat [INDIREKTES FEUER]."
+      html: "<b>Indirekt:</b> Ungebunden, nicht vorgerückt, hat [INDIREKTES FEUER]. (10.07)"
 
     - type: subsection
       title: "Zielregeln"
@@ -143,26 +143,27 @@ document:
       title: "Attackenablauf"
     - type: keyvals
       items:
-        - label: "1. Trefferwurf"
+        - label: "1. Trefferwurf (05.01)"
           text: "W6 ≥ BF/KG. Unmodifizierte 1 verfehlt immer, unmodifizierte 6 ist ein Kritischer Treffer."
-        - label: "2. Verwundungswurf"
-          text: "W6 gegen untenstehende Tabelle. Unmodifizierte 1 verfehlt immer, unmodifizierte 6 ist eine Kritische Verwundung."
-        - label: "3. Rettungswurf (RW)"
-          text: "W6 - DS gegen RW oder W6 gegen unverwundbaren RW. Unmodifizierte 1 verfehlt immer."
-        - label: "4. Schaden"
-          text: "Modell verliert Lebenspunkte = S. Überschüssiger Schaden verfällt."
+        - label: "2. Verwundungswurf (05.02)"
+          text: "W6 gegen Tabelle. Unmodifizierte 1 verfehlt immer, unmodifizierte 6 ist eine Kritische Verwundung."
     - type: table
-      header: "Verwundungswurf-Tabelle"
-      columns: ["St vs W", "Nötig"]
+      columns: ["Stärke vs Widerstand", "Nötiger Wurf"]
       rows:
-        - ["St ≥ 2xW", "2+"]
-        - ["St > W", "3+"]
-        - ["St = W", "4+"]
-        - ["St < W", "5+"]
-        - ["St ≤ ½W", "6+"]
+        - ["S ≥ 2xW", "2+"]
+        - ["S > W", "3+"]
+        - ["S = W", "4+"]
+        - ["S < W", "5+"]
+        - ["S ≤ ½W", "6+"]
+    - type: keyvals
+      items:
+        - label: "3. Rettungswurf (RW) (05.03)"
+          text: "W6 - DS gegen RW oder W6 gegen unverwundbaren RW. Unmodifizierte 1 verfehlt immer."
+        - label: "4. Schaden (05.04)"
+          text: "Modell verliert Lebenspunkte = S. Überschüssiger Schaden verfällt."
 
     - type: subsection
-      title: "Verwundungen zuteilen"
+      title: "Verwundungen zuteilen (05.04)"
     - type: paragraph
       html: "<b>Gruppen:</b> Eine pro CHARAKTER; eine pro übereinstimmendem Satz LP/RW/unverw. RW der Nicht-CHARAKTERE."
     - type: paragraph
@@ -175,19 +176,19 @@ document:
         - "Rettungswürfe von niedrig nach hoch abarbeiten. Innerhalb einer Gruppe zuerst das Modell mit verlorenen Lebenspunkten wählen."
 
     - type: subsection
-      title: "Deckungsvorteil"
+      title: "Deckungsvorteil (06.01)"
     - type: list
       items:
         - html: "Verschlechtere die BF des Angreifers um 1, wenn <b>jedes</b> Modell der Zieleinheit INFANTERIE / BESTIEN / SCHWARM innerhalb eines Geländestücks ist ODER durch dazwischenliegendes Gelände/verdeckende Fläche nicht vollständig sichtbar ist."
 
     - type: subsection
-      title: "Tödliche Wunden"
+      title: "Tödliche Wunden (TW) (06.02)"
     - type: list
       items:
         - "1 TW = 1 verlorener Lebenspunkt, keine Rettungswürfe. Wird nach dem gesamten normalen Schaden derselben Attacke zugefügt. Verletzungen ignorieren-Würfe können weiterhin gemacht werden."
 
     - type: subsection
-      title: "Gefahrenwürfe"
+      title: "Gefahrenwürfe (06.03)"
     - type: list
       items:
         - "Wirf einen W6: 1-2 erleidet 1 TW (oder 3 TW bei MONSTER / FAHRZEUG)"
@@ -206,7 +207,7 @@ document:
     - type: phase
       title: "AKTIONEN"
     - type: paragraph
-      html: "<b>Eine Einheit kann keine Aktion beginnen, wenn sie:</b>"
+      html: "<b>Eine Einheit kann keine Aktion beginnen, wenn sie: (16.01)</b>"
     - type: list
       items:
         - "nicht auf dem Schlachtfeld ist."
@@ -224,11 +225,11 @@ document:
     - type: phase
       title: "GELÄNDE"
     - type: subsection
-      title: "Bewegung nach Kategorie"
+      title: "Bewegung nach Kategorie (13.06)"
     - type: paragraph
-      html: "<b>Offen &amp; Leicht:</b> Alle Modelle können sich frei horizontal und vertikal durch dieses Gelände bewegen."
+      html: "<b>Exponiert (13.03) &amp; Leicht (13.04):</b> Alle Modelle können sich frei horizontal und vertikal durch dieses Gelände bewegen."
     - type: paragraph
-      html: "<b>Dicht:</b>"
+      html: "<b>Dicht (13.05):</b>"
     - type: list
       items:
         - "INFANTERIE / BESTIEN / SCHWARM / MOBIL können sich horizontal frei bewegen"
@@ -236,36 +237,36 @@ document:
         - 'Alle anderen bewegen sich horizontal nur durch Abschnitte ≤ 2" Höhe; klettern vertikal durch höhere Abschnitte.'
         - "Können nicht auf erhöhter Fläche enden, außer alle Modelle sind INFANTERIE / BESTIEN / SCHWARM / FLIEGT / MONSTER und kein Teil der Base ragt über die Außenkante hinaus."
     - type: subsection
-      title: "Sichtbarkeit"
+      title: "Sichtbarkeit (13.07)"
     - type: paragraph
-      html: '<b>Solide (dichtes Gelände):</b> Sichtlinie kann geschlossene Lücken ≤ 3" über dem Boden nicht durchqueren.'
+      html: '<b>Fest (dichtes Gelände):</b> Sichtlinie kann geschlossene Lücken ≤ 3" über dem Boden nicht durchqueren. (13.11)'
     - type: paragraph
-      html: "<b>Verdeckende Geländefläche:</b> Wenn jede Sichtlinie zwischen zwei Modellen eine verdeckende Fläche durchquert (kein Modell darin), können sie sich nicht sehen."
+      html: "<b>Verdeckende Geländefläche:</b> Wenn jede Sichtlinie zwischen zwei Modellen eine verdeckende Fläche durchquert (kein Modell darin), können sie sich nicht sehen. (13.10)"
     - type: paragraph
-      html: '<b>Verborgen:</b> INFANTERIE / BESTIEN / SCHWARM in einer dichten Fläche, keine Fernkampfattacken diesen Zug. Nur innerhalb 15" sichtbar.'
+      html: '<b>Versteckt:</b> INFANTERIE / BESTIEN / SCHWARM in einer dichten Fläche, keine Fernkampfattacken diesen Zug. Nur innerhalb 15" sichtbar. (13.09)'
     - type: paragraph
-      html: '<b>Erhöhter Beschuss:</b> +1 BF, wenn der Angreifer auf Gelände ≥ 3" Höhe steht oder ÜBERGROSS hat und das Ziel innerhalb 12" ist.'
+      html: '<b>Erhöhter Beschuss:</b> +1 BF, wenn der Angreifer auf Gelände ≥ 3" Höhe steht oder AUFRAGEND hat und das Ziel innerhalb 12" ist. (22.05)'
 
     - type: phase
       title: "4. ANGRIFFSPHASE"
     - type: list
       items:
-        - 'Ziele müssen innerhalb 12" sein (müssen nicht sichtbar sein).'
+        - 'Ziele müssen innerhalb 12" sein (müssen nicht sichtbar sein). (11.02)'
     - type: paragraph
-      html: "<b>Angriffswurf:</b> 2W6 = maximale Distanz der Angriffsbewegung."
+      html: "<b>Angriffswurf:</b> 2W6 = maximale Distanz der Angriffsbewegung. (11.02)"
     - type: paragraph
-      html: "<b>Bedingungen der Angriffsbewegung:</b>"
+      html: "<b>Bedingungen der Angriffsbewegung: (11.02)</b>"
     - type: list
       items:
         - "Angriffsziele vor der Bewegung wählen."
-        - 'Jedes Modell muss sich näher zu einem Angriffsziel bewegen; innerhalb 1", wenn möglich; gebunden, wenn möglich.'
+        - 'Jedes Modell muss sich näher zu einem Angriffsziel bewegen; wenn möglich innerhalb 1"; wenn möglich gebunden.'
         - "Muss mit allen Angriffszielen gebunden enden; darf nicht mit Nicht-Zielen gebunden enden."
         - "Jedes Modell der angreifenden Einheit erhält Kämpft zuerst."
 
     - type: phase
       title: "5. NAHKAMPFPHASE"
     - type: subsection
-      title: "Nachrücken - beide Spieler; aktiver Spieler zuerst"
+      title: "Nachrücken - beide Spieler; aktiver Spieler zuerst (12.02)"
     - type: list
       items:
         - 'Bis zu 3", wenn gebunden ODER eine Angriffsbewegung gemacht ODER für einen Überrennen-Nahkampf gewählt.'
@@ -273,7 +274,7 @@ document:
         - "Modelle in Basekontakt können sich nicht bewegen. Jedes bewegte Modell muss näher zum nächsten Ziel enden, gebunden wenn möglich."
         - "Muss gebunden enden. Jedes Modell, das gebunden begonnen hat, muss gebunden bleiben."
     - type: subsection
-      title: "Kampf"
+      title: "Kampf (12.04)"
     - type: paragraph
       html: "<b>Berechtigt:</b> Zu Beginn des Kampfschritts gebunden oder Angriffsbewegung gemacht."
     - type: paragraph
@@ -282,17 +283,17 @@ document:
       html: "<b>2. Übrige Kämpfe:</b> Beginne mit dem Spieler, der diesen Ablauf zu diesem Schritt gebracht hat, abwechselnd wählen."
     - type: list
       items:
-        - html: "<b>Normaler Kampf:</b> Einheit ist gebunden."
-        - html: "<b>Überrennen-Nahkampf:</b> Einheit ist ungebunden (oder war es zu Beginn des Schritts). Eine zusätzliche Nachrücken-Bewegung, dann kämpft sie."
+        - html: "<b>Normaler Kampf:</b> Einheit ist gebunden. (12.05)"
+        - html: "<b>Überrennen-Nahkampf:</b> Einheit ist ungebunden (oder war es zu Beginn des Schritts). Eine zusätzliche Nachrücken-Bewegung, dann kämpft sie. (12.06)"
     - type: paragraph
-      text: 'Wird ein neues „Kämpft zuerst" während der Abhandlung der Übrigen Kämpfe berechtigt, kehre zum Schritt „Kämpft zuerst" zurück. Sind alle berechtigten Einheiten mehr als 5" von allen feindlichen Einheiten entfernt, darf der Spieler passen.'
+      text: 'Wird ein neues "Kämpft zuerst" während der Abhandlung der Übrigen Kämpfe berechtigt, kehre zum Schritt "Kämpft zuerst" zurück. Sind alle berechtigten Einheiten mehr als 5" von allen feindlichen Einheiten entfernt, darf der Spieler passen.'
     - type: subsection
-      title: "Konsolidierung - beide Spieler; aktiver Spieler zuerst"
+      title: "Neu ordnen - beide Spieler; aktiver Spieler zuerst (12.07)"
     - type: list
       items:
         - 'Bis zu 3", wenn die Einheit diese Phase kampfberechtigt war.'
     - type: paragraph
-      html: "<b>Modus wählen (erster zutreffender):</b>"
+      html: "<b>Modus wählen (erster zutreffender): (12.08)</b>"
     - type: paragraph
       html: "<b>Andauernd:</b> Einheit gebunden. Bleibe gebunden; bewege dich näher zu Gegnern."
     - type: paragraph
@@ -301,132 +302,140 @@ document:
       html: '<b>Missionsziel:</b> Innerhalb 3" eines Missionsziels. Muss in dessen Reichweite enden.'
 
     # ---- Kernfähigkeiten (Glossar, volle Breite) ----
+    - type: page_break
     - type: column_reset
-
     - type: glossary
       title: "KERNFÄHIGKEITEN"
       spanning: yes
       terms:
         - {
-            term: "ANTI-X Y+",
+            term: "ANTI-X Y+ (24.03)",
             text: "Unmodifizierter Verwundungswurf von Y+ = Kritische Verwundung gegen Schlüsselwort X.",
           }
-        - { term: "STURM", text: "Ermöglicht Sturm-Schießen." }
+        - { term: "STURM (24.04)", text: "Ermöglicht Sturm-Schießen." }
         - {
-            term: "EXPLOSIV X",
+            term: "EXPLOSIV X (24.05)",
             text: "+X Attackenwürfel pro 5 Modelle in der Zieleinheit (abrunden).",
           }
         - {
-            term: "SPALTEN X",
+            term: "SPALTEN X (24.06)",
             text: "+X Attackenwürfel pro 5 Modelle in der Zieleinheit (abrunden).",
           }
         - {
-            term: "NAHBESCHUSS",
-            text: "Ermöglicht Nahbeschuss (auch [PISTOLE]).",
+            term: "NAHBEREICH (24.07)",
+            text: "Ermöglicht Nahbereichbeschuss, alt: [PISTOLE].",
           }
         - {
-            term: "TÖDLICHE EXPLOSION X",
+            term: "GEFÄHRLICHES ENDE X (24.08)",
             text: 'Bei Zerstörung W6 werfen; bei 6 erleiden Einheiten innerhalb 6" X TW (bei zufälligem X pro Einheit werfen).',
           }
         - {
-            term: "SCHOCKTRUPPEN",
+            term: "SCHOCKTRUPPEN (24.09)",
             html: 'Schockbewegung kann überall &gt; 8" von Gegnern erfolgen, auch in der Aufstellungszone des Gegners.',
           }
         - {
-            term: "VERHEERENDE WUNDEN",
+            term: "VERHEERENDE VERWUNDUNGEN (24.10)",
             html: "Kritische Verwundung → Attacke endet; Ziel erleidet TW = S-Wert. Max. 1 Modell pro Kritischer Verwundung; überschüssige TW verfallen.",
           }
         - {
-            term: "ZUSÄTZLICHE ATTACKEN",
-            text: "Im Kampf: müssen alle [ZUSÄTZLICHE ATTACKEN]-Waffen plus eine weitere Nahkampfwaffe verwenden.",
+            term: "ZUSATZATTACKEN (24.11)",
+            text: "Im Kampf: müssen alle [ZUSATZATTACKEN]-Waffen plus eine weitere Nahkampfwaffe verwenden.",
           }
         - {
-            term: "VERLETZUNGEN IGNORIEREN X+",
+            term: "VERLETZUNGEN IGNORIEREN X+ (24.12)",
             text: "Jedes Mal, wenn ein Modell einen Lebenspunkt verlieren würde (auch TW), W6 werfen; bei X+ geht der Lebenspunkt nicht verloren.",
           }
         - {
-            term: "SCHLÄGT ZUERST ZU",
-            text: 'Jedes Modell muss dies haben; Einheit kämpft im Schritt „SCHLÄGT ZUERST ZU".',
+            term: "ERSTSCHLAG (24.13)",
+            text: 'Jedes Modell muss dies haben; Einheit kämpft im Schritt "SCHLÄGT ZUERST ZU".',
           }
         - {
-            term: "FEUERLUKE X",
+            term: "FEUERPLATFORM X (24.14)",
             text: "Bis zu X eingestiegene Modelle wählen; TRANSPORTER erhält diese Phase deren Fernkampfwaffen. Diese Einheiten können nicht schießen.",
           }
         - {
-            term: "GEFÄHRLICH",
-            text: "Ein Gefahrenwurf pro verwendeter [GEFÄHRLICH]-Waffe.",
+            term: "RISKANT (24.15)",
+            text: "Ein Gefahrenwurf pro verwendeter [RISKANT]-Waffe.",
           }
         - {
-            term: "SCHWER",
+            term: "SCHWER (24.16)",
             text: '+1 auf Treffer, wenn ungebunden, diesen Zug nicht aufgestellt, ≤ 3" bewegt.',
           }
         - {
-            term: "SCHWEBEN",
+            term: "SCHWEBER (24.17)",
             text: 'In die Lüfte erheben: ziehe nicht 2" von der Maximaldistanz ab.',
           }
         - {
-            term: "IGNORIERT DECKUNG",
+            term: "DECKUNG IGNORIEREN (24.18)",
             text: "Ziel kann gegen diese Attacke keinen Deckungsvorteil haben.",
           }
-        - { term: "INDIREKTES FEUER", text: "Ermöglicht indirektes Schießen." }
+        - { term: "INDIREKTES FEUER (24.19)", text: "Ermöglicht indirektes Schießen." }
         - {
-            term: "INFILTRATOREN",
+            term: "INFILTRATOREN (24.20)",
             html: 'Aufstellung &gt; 8" von der Aufstellungszone des Gegners und allen Gegnern entfernt.',
           }
         - {
-            term: "LANZE",
+            term: "LANZE (24.21)",
             text: "+1 auf Verwundung, wenn die Einheit diesen Zug eine Angriffsbewegung gemacht hat.",
           }
         - {
-            term: "ANFÜHRER / UNTERSTÜTZUNG",
+            term: "ANFÜHRER / UNTERSTÜTZUNG (24.22)",
             text: "Anführer und Unterstützung schließen sich je einer Leibwächtereinheit an (max. ein Anführer + eine Unterstützung pro Leibwächter). W des Leibwächters wird für Verwundungswürfe genutzt. Siehe Wundzuweisung für CHARAKTER-Schutzregeln.",
           }
         - {
-            term: "TÖDLICHE TREFFER",
+            term: "TÖDLICHE TREFFER (24.23)",
             html: "Kritischer Treffer → darf automatisch verwunden (kein Verwundungswurf; kann keine Kritische Verwundung ergeben).",
           }
         - {
-            term: "EINZELGÄNGER",
+            term: "EINSAMER WOLF (24.24)",
             text: 'Jenseits von 12" nicht sichtbar. Kann jenseits von 12" nicht durch [INDIREKTES FEUER] anvisiert werden.',
           }
         - {
-            term: "MELTER X",
-            text: 'Wenn das Ziel bei „Ziele wählen" innerhalb halber Reichweite ist, addiere X zu S.',
+            term: "MELTER X (24.25)",
+            text: 'Wenn das Ziel bei "Ziele wählen" innerhalb halber Reichweite ist, addiere X zu S.',
           }
         - {
-            term: "EINMALIG",
+            term: "EINMALIG EINSETZBAR (24.26)",
             text: "Einmal pro Schlacht. Wiederbelebte Modelle können es nicht erneut nutzen.",
           }
         - {
-            term: "PRÄZISION",
+            term: "PISTOLE (24.27)",
+            text: "[PISTOLE] und [NAHBEREICH] sind für alle Regelbelange identisch. Siehe [NAHBEREICH].",
+          }
+        - {
+            term: "PRÄZISION (24.28)",
             text: "Darf eine sichtbare CHARAKTER-Zuweisungsgruppe als aktuelle Zuweisungsgruppe wählen.",
           }
         - {
-            term: "PSYCHISCH",
+            term: "PSIONISCH (24.29)",
             text: "Darf Modifikatoren auf BF/KG ignorieren. Zählt als psionische Attacke.",
           }
         - {
-            term: "SCHNELLFEUER X",
+            term: "SCHNELLFEUER X (24.30)",
             text: "+X Attackenwürfel, wenn das Ziel bei der Auswahl innerhalb halber Reichweite ist.",
           }
         - {
-            term: 'SCOUTS X"',
+            term: 'KUNDSCHAFTER X (24.31)',
             html: 'Vor der Schlacht: Späherbewegung bis zu X" (muss &gt;8" von Gegnern enden) ODER aus der Reserve in die Aufstellungszone verlegen.',
           }
         - {
-            term: "TARNUNG",
+            term: "TARNUNG (24.33)",
             text: "Wenn jedes Modell dies hat: Einheit hat Deckungsvorteil gegen alle Fernkampfattacken.",
           }
         - {
-            term: "ÜBERSCHWERER LÄUFER",
+            term: "UNTERSTÜTZUNG (24.34)",
+            text: "Siehe Angeschlossene Einheiten. Kann nur eine Unterstützungseinheit haben.",
+          }
+        - {
+            term: "ÜBERSCHWERER LÄUFER (24.35)",
             text: 'Bewegt sich durch Modelle (nicht TITANISCH); horizontal durch Gelände ≤ 4" Höhe. Kann MOBIL für die Bewegung gewähren (bei 1 nach Ende der Bewegung: erschüttert).',
           }
         - {
-            term: "ANHALTENDE TREFFER X",
+            term: "TREFFERHAGEL X (24.36)",
             text: "Kritischer Treffer = X zusätzliche Treffer.",
           }
-        - { term: "STROM", text: "Trifft automatisch." }
-        - { term: "GEKOPPELT", text: "Verwundungswurf wiederholen." }
+        - { term: "SCHWALL (24.37)", text: "Trifft automatisch." }
+        - { term: "SYNCHRONISIERT (24.38)", text: "Verwundungswurf wiederholen." }
 
     # ================= SEITE 3 - GEFECHTSOPTIONEN =================
     - type: page_break
@@ -434,7 +443,7 @@ document:
       title: "GEFECHTSOPTIONEN"
 
     - type: stratagem
-      title: "Kommando-Wiederholung"
+      title: "Befehlswiederholungswurf (15.02)"
       cost: "1BP"
       timing: "either"
       when: "In jeder Phase, direkt nach einem Vorrück-, Angriffs-, Schadens-, Gefahren-, Treffer-, Rettungs- oder Verwundungswurf oder einem Wurf zur Bestimmung der Attackenanzahl einer Waffe, für eine verbündete Einheit oder ein Modell."
@@ -442,7 +451,7 @@ document:
       effect: "Wiederhole diesen Wurf. Werden mehrere Würfel zusammen geworfen, wähle einen Würfel zum Wiederholen. Angriffswürfe müssen vollständig wiederholt werden."
 
     - type: stratagem
-      title: "Epische Herausforderung"
+      title: "Epische Herausforderung (15.03)"
       cost: "1BP"
       timing: "your"
       when: "Kampfphase, direkt nachdem eine verbündete CHARAKTER-Einheit zum Kämpfen gewählt wurde."
@@ -450,7 +459,7 @@ document:
       effect: "Wähle ein CHARAKTER-Modell in deiner Einheit. Bis zum Ende der Phase haben die Nahkampfwaffen dieses Modells [PRÄZISION]."
 
     - type: stratagem
-      title: "Wahnsinnige Tapferkeit"
+      title: "Wahnsinniger Mut (15.04)"
       cost: "1BP"
       timing: "your"
       when: "Erschütterungsschritt deiner Befehlsphase, direkt vor einem Erschütterungswurf für eine verbündete Einheit."
@@ -459,7 +468,7 @@ document:
       restrictions: "Einmal pro Schlacht."
 
     - type: stratagem
-      title: "★ Sprengstoffe"
+      title: "★ Sprengsätze (15.05)"
       cost: "1BP"
       timing: "your"
       when: "Deine Schussphase."
@@ -467,7 +476,7 @@ document:
       effect: 'Wähle ein EXPLOSIV/GRANATEN-Modell und eine ungebundene feindliche Einheit innerhalb 8" und für es sichtbar. Wirf sechs W6: für jede 4+ erleidet diese feindliche Einheit 1 tödliche Wunde.'
 
     - type: stratagem
-      title: "★ Zerschmetternder Aufprall"
+      title: "★ Zerschmetternder Aufprall (15.06)"
       cost: "1BP"
       timing: "your"
       when: "Deine Angriffsphase, direkt nachdem eine verbündete MONSTER/FAHRZEUG-Einheit eine Angriffsbewegung beendet."
@@ -475,7 +484,7 @@ document:
       effect: "Wähle eine gebundene feindliche Einheit und ein damit gebundenes Modell deiner Einheit. Wirf so viele W6 wie der W-Wert dieses Modells: jede 1 = deine Einheit erleidet 1 TW; jede 5+ = Gegner erleidet 1 TW (max. 6 TW)."
 
     - type: stratagem
-      title: "Schneller Vorstoß"
+      title: "Schneller Einsatz (15.07)"
       cost: "1BP"
       timing: "opponent"
       when: "Ende der Bewegungsphase deines Gegners."
@@ -484,7 +493,7 @@ document:
       restrictions: "Kann nicht während der ersten Schlachtrunde verwendet werden."
 
     - type: stratagem
-      title: "Abwehrfeuer"
+      title: "Abwehrfeuer geben (15.08)"
       cost: "1BP"
       timing: "opponent"
       when: "Ende der Bewegungsphase deines Gegners."
@@ -492,7 +501,7 @@ document:
       effect: 'Deine Einheit nutzt Schnappschüsse - visiere eine sichtbare feindliche Einheit innerhalb 24" an; trifft nur bei unmodifizierter 6; Trefferwürfe können nicht wiederholt werden. Einheit kann bis zum Ende der Phase keine Aktion beginnen.'
 
     - type: stratagem
-      title: "Nebelvorhang"
+      title: "Rauchvorhang (15.10)"
       cost: "1BP"
       timing: "opponent"
       when: "Beginn der Schussphase deines Gegners."
@@ -500,7 +509,7 @@ document:
       effect: "Bis zum Ende der Phase hat jedes Ziel Deckungsvorteil, wenn eine Attacke deine RAUCH-Einheit anvisiert oder eine Einheit, die dem Angreifer wegen deiner RAUCH-Einheit nicht vollständig sichtbar ist."
 
     - type: stratagem
-      title: "Heldenhafte Intervention"
+      title: "Heroische Intervention (15.11)"
       cost: "1BP / 2BP"
       timing: "opponent"
       when: "Ende der Angriffsphase deines Gegners."

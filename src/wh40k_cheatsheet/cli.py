@@ -248,6 +248,7 @@ def main(argv: list[str] | None = None) -> int:
         return args.func(args)
     except KNOWN_ERRORS as exc:
         logger.critical("Error: %s", exc)
+        logger.debug("full traceback (re-run with --verbose if this is empty):", exc_info=True)
         return 1
 
 

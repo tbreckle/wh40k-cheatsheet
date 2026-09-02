@@ -61,9 +61,11 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
     items:[ {label:"1. Hit Roll", text:".."}, .. ] }
     { type: "glossary", title:"CORE ABILITIES",
     spanning: true|false, # optional, default false; when true
-    # the title bar spans both columns like
-    # spanning_headline (terms list unaffected)
-    terms:[ {term:"ASSAULT", text:".."}, .. ] }
+    # the title bar AND the term list span both
+    # columns as one full-width, 2-column unit
+    terms:[ {term:"ASSAULT", text:".."}, .. ] } # always rendered sorted alphabetically
+    # by term (accent-folded, case-insensitive);
+    # authored order has no effect
     { type: "stratagem", title:"COMMAND RE-ROLL", cost:"1CP",
     timing:"either"|"your"|"opponent",
     when:"..", target:"..", effect:"..", restrictions:".." }
@@ -157,14 +159,23 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
     </div>
 
     {%- elif t == 'glossary' -%}
-    <h2 class="phase{{ ' phase--spanning' if block.spanning | default(false) else '' }}">{{ block.title | default('Core
+    {%- set glossary_spanning = block.spanning | default(false) -%}
+    <h2 class="phase{{ ' phase--spanning' if glossary_spanning else '' }}">{{ block.title | default('Core
       Abilities') }}</h2>
-    <div class="glossary{{ ' glossary--spanning' if block.spanning | default(false) else '' }}">
-      {%- for g in block['terms'] | default([]) -%}
+    {#- The spanning glossary is wrapped in a separate full-width element rather than carrying
+        `column-span: all` on the `.glossary` div itself: an element that is BOTH a multi-column
+        container (`.glossary` sets `column-count: 2`) AND spans its parent's columns crashes
+        WeasyPrint's layout engine (`assert not page_is_empty`, layout/page.py) whenever it lands
+        at a page boundary. Splitting the two roles across two elements renders identically and
+        avoids the bug entirely. See specs/013-.../contracts/glossary-term-ordering.md. -#}
+    {%- if glossary_spanning %}<div class="block--full-width">{% endif %}
+    <div class="glossary">
+      {%- for g in sort_glossary_terms(block['terms'] | default([])) -%}
       <p class="term"><span class="term__name">{{ g.term }}:</span> {{ (g.html | safe) if g.html is defined else g.text
         }}</p>
       {%- endfor -%}
     </div>
+    {%- if glossary_spanning %}</div>{% endif %}
 
     {%- elif t == 'stratagem' -%}
     {%- set timing = block.timing | default('either') -%}
@@ -327,7 +338,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         }
 
         .sheet>h2.phase:first-child {
-          margin-top: 0;
+          margin-top: 5.0pt;
         }
 
         h2.phase--spanning {
@@ -432,7 +443,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
           width: 100%;
           border-collapse: collapse;
           margin: 2pt 0;
-          font-size: 7.3pt;
+          font-size: 7.0pt;
         }
 
         table.data th {
@@ -470,7 +481,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         .glossary {
           column-count: 2;
           column-gap: 5mm;
-          font-size: 7.1pt;
+          font-size: 7.7pt;
         }
 
         .glossary--spanning {

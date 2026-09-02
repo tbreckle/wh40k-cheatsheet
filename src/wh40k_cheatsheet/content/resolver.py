@@ -47,4 +47,12 @@ def resolve_content(editions_root: Path, edition_id: str, revision_id: str, lang
     document = data["document"]
     if not isinstance(document, dict) or "blocks" not in document:
         raise ContentError(f"{content_path}: 'document' must contain a 'blocks' list")
+    blocks = document["blocks"]
+    if isinstance(blocks, list):
+        type_counts: dict[str, int] = {}
+        for block in blocks:
+            block_type = block.get("type", "?") if isinstance(block, dict) else "?"
+            type_counts[block_type] = type_counts.get(block_type, 0) + 1
+        summary = ", ".join(f"{block_type}={count}" for block_type, count in sorted(type_counts.items()))
+        logger.debug("resolved %d top-level block(s): %s", len(blocks), summary)
     return data

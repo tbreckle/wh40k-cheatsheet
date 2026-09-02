@@ -112,7 +112,7 @@ def test_glossary_spanning_true_term_list_also_spans_both_columns():
 
 
 def test_glossary_term_list_content_identical_regardless_of_spanning_flag():
-    # The wrapping <div>'s class differs (spanning adds `glossary--spanning`), but the
+    # Spanning adds a `.block--full-width` wrapper around the glossary div, but the
     # terms themselves render identically either way.
     spanning_html = _render([_glossary("TITLE", spanning=True)])
     non_spanning_html = _render([_glossary("TITLE", spanning=False)])
@@ -129,3 +129,29 @@ def test_glossary_spanning_false_matches_omitted_rendering():
     omitted_html = _render([_glossary("CORE ABILITIES")])
     false_html = _render([_glossary("CORE ABILITIES", spanning=False)])
     assert omitted_html == false_html
+
+
+def test_spanning_glossary_at_a_page_boundary_does_not_crash_layout():
+    # Regression (2026-09-02): an element that is BOTH a multi-column container
+    # (`.glossary` sets `column-count: 2`) AND spans its parent's columns
+    # (`column-span: all`) crashes WeasyPrint's layout engine with a bare `AssertionError`
+    # ("assert not page_is_empty", weasyprint/layout/page.py) whenever the block lands at a
+    # page boundary. Real 11e German content hit this once enough text had been added ahead
+    # of the CORE ABILITIES glossary. Fixed by splitting the two roles across two elements:
+    # a `.block--full-width` wrapper spans, the inner `.glossary` keeps its own columns.
+    # Sweeping the filler count walks the glossary across a page boundary; every amount must
+    # render. Needs a realistically tall glossary -- a two-term one never reaches the seam.
+    tall_glossary = {
+        "type": "glossary",
+        "title": "CORE ABILITIES",
+        "spanning": True,
+        "terms": [
+            {"term": f"TERM {i:02d}", "text": "A description with enough text that the entry wraps realistically."}
+            for i in range(35)
+        ],
+    }
+    for filler_count in range(20, 46, 2):
+        blocks = [_paragraph(f"Filler paragraph {i} " + "word " * 28) for i in range(filler_count)]
+        blocks.append(tall_glossary)
+        html = _render(blocks)
+        weasyprint.HTML(string=html, base_url=str(TEMPLATES_ROOT)).render()

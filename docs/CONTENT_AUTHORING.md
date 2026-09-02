@@ -150,6 +150,13 @@ unaffected either way. Omitting the flag (or setting it to `false`) renders exac
 addition. Full contract:
 `specs/007-spanning-headline/contracts/glossary-spanning-flag.md`.
 
+A `{type: glossary}` block's `terms` always render in alphabetical order by `term`, regardless of
+the order they're written in `content.yaml` — you don't need to keep entries sorted by hand when
+authoring or translating. Accented characters sort under their base letter (German `Ä`/`Ö`/`Ü` sort
+with `A`/`O`/`U`, `ß` with `ss`), matching that language's dictionary order. Ordering never affects
+an entry's `text`/`html` content, only its position. Full contract:
+`specs/013-glossary-alphabetical-sort/contracts/glossary-term-ordering.md`.
+
 A `{type: list}` block can opt into the same full-width treatment, by adding `single_column: true`:
 
 ```yaml

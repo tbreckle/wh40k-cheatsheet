@@ -143,12 +143,13 @@ document:
         - label: '1. Hit Roll'
           text: 'D6 ≥ BS/WS. Unmodified 1 always fails, unmodified 6 is a Critical Hit.'
         - label: '2. Wound Roll'
-          text: 'D6 vs table. Unmodified 1 always fails, unmodified 6 is a Critical Wound.'
+          text: 'D6 vs belows table. Unmodified 1 always fails, unmodified 6 is a Critical Wound.'
         - label: '3. Save Roll'
           text: 'D6 - AP vs Sv or D6 vs InSv. Unmodified 1 always fails.'
         - label: '4. Damage'
           text: 'Model loses wounds = D. Excess damage lost.'
     - type: table
+      header: 'Wound Roll Table'
       columns: ['S vs T', 'Need']
       rows:
         - ['S ≥ 2xT', '2+']
@@ -199,6 +200,7 @@ document:
         - "Secured objective: remain controlled even with no models in range, until opponent's LOC exceeds yours at end of a phase."
 
     # ================= PAGE 2 =================
+    - type: page_break
     - type: phase
       title: 'ACTIONS'
     - type: paragraph
@@ -298,7 +300,6 @@ document:
 
     # ---- Core Abilities glossary (full-width) ----
     - type: column_reset
-
     - type: glossary
       title: 'CORE ABILITIES'
       spanning: yes
@@ -307,7 +308,7 @@ document:
         - {term: 'ASSAULT', text: 'Enables Assault Shooting.'}
         - {term: 'BLAST X', text: '+X attack dice per 5 models in target unit (round down).'}
         - {term: 'CLEAVE X', text: '+X attack dice per 5 models in target unit (round down).'}
-        - {term: 'CLOSE-QUARTERS', text: 'Enables Close-Quarters Shooting (also [PISTOL]).'}
+        - {term: 'CLOSE-QUARTERS', text: 'Enables Close-Quarters Shooting (old: [PISTOL]).'}
         - {term: 'DEADLY DEMISE X', text: 'On destruction, roll D6; on 6, units within 6" suffer X MW (if random X, roll per unit).'}
         - {term: 'DEEP STRIKE', html: "Ingress move can be anywhere &gt; 8\" from enemies, including opponent's deployment zone."}
         - {term: 'DEVASTATING WOUNDS', html: 'Critical Wound → attack ends; target suffers MW = D characteristic. Max 1 model per Critical Wound; excess MW lost.'}
@@ -327,6 +328,7 @@ document:
         - {term: 'LONE OPERATIVE', text: 'Not visible beyond 12". Cannot be targeted by [INDIRECT FIRE] beyond 12".'}
         - {term: 'MELTA X', text: 'If target within half range at Select Targets, add X to D.'}
         - {term: 'ONE SHOT', text: 'Once per battle. Revived models cannot re-use it.'}
+        - {term: 'PISTOL', text: 'Same as [CLOSE-QUARTERS], see [CLOSE-QUARTERS].'}
         - {term: 'PRECISION', text: 'May select a visible CHARACTER allocation group as current allocation group.'}
         - {term: 'PSYCHIC', text: 'May ignore modifiers to BS/WS. Counts as psychic attack.'}
         - {term: 'RAPID FIRE X', text: '+X attack dice if target within half range when selected.'}

@@ -114,6 +114,7 @@ document:
         - label: '4. Schaden'
           text: 'Zielmodell verliert Lebenspunkte = Schadenswert (S/D) der Waffe. Überschüssiger Schaden verfällt (außer bei Tödlichen Wunden).'
     - type: table
+      header: 'Verwundungswurf-Tabelle'
       columns: ['Stärke vs Widerstand', 'Nötiger Wurf']
       rows:
         - ['S ≥ 2x W', '2+']

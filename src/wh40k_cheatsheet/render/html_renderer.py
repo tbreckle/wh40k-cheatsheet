@@ -1,11 +1,14 @@
 """Renders a document's blocks to HTML via Jinja2, and segments them by page/column breaks."""
 
 import logging
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError, select_autoescape
+
+from wh40k_cheatsheet.render.glossary import sort_glossary_terms
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +67,12 @@ def group_by_breaks(blocks: list[dict[str, Any]]) -> list[Segment]:
             current.append(block)
     if current:
         segments.append(Segment(current, pending))
+    logger.debug(
+        "grouped %d block(s) into %d segment(s) (breaks: %s)",
+        len(blocks),
+        len(segments),
+        [s.break_type for s in segments[1:]],
+    )
     return segments
 
 
@@ -75,7 +84,7 @@ def _environment(templates_root: Path) -> Environment:
 
     Returns:
         A configured `Environment` with strict undefined handling, autoescaping, and
-        `group_by_breaks` registered as a template global.
+        `group_by_breaks`/`sort_glossary_terms` registered as template globals.
     """
     env = Environment(
         loader=FileSystemLoader(str(templates_root)),
@@ -87,6 +96,7 @@ def _environment(templates_root: Path) -> Environment:
     # ty infers env.globals' value type from Jinja2's built-in defaults (range, dict, ...),
     # which is narrower than the dict's actual runtime type; assigning any callable is valid.
     env.globals["group_by_breaks"] = group_by_breaks  # ty: ignore[invalid-assignment]
+    env.globals["sort_glossary_terms"] = sort_glossary_terms  # ty: ignore[invalid-assignment]
     return env
 
 
@@ -110,11 +120,14 @@ def render_html(
     """
     env = _environment(templates_root)
     logger.debug("resolved template name: %s", template_name)
+    started = time.perf_counter()
     try:
         template = env.get_template(template_name)
         html = template.render(**context)
     except TemplateError as exc:
+        logger.debug("template rendering failed after %.3fs", time.perf_counter() - started, exc_info=True)
         raise RenderError(f"failed to render template '{template_name}': {exc}") from exc
+    logger.debug("rendered HTML: %d bytes in %.3fs", len(html), time.perf_counter() - started)
     if stage_context:
         logger.info("[%s] template rendered", stage_context)
     else:
