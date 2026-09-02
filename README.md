@@ -15,6 +15,79 @@ official releases.
 Head to the **[Releases page](https://github.com/tbreckle/wh40k-cheatsheet/releases)** to grab the
 latest PDF for your edition and language.
 
+## Run it yourself
+
+Prefer to generate the PDFs locally instead of grabbing a release? You'll need Python 3.12+ and
+[uv](https://docs.astral.sh/uv/):
+
+```bash
+git clone https://github.com/tbreckle/wh40k-cheatsheet.git
+cd wh40k-cheatsheet
+uv sync
+```
+
+WeasyPrint (the PDF renderer) needs native libraries on your machine — Pango, cairo, GDK-PixBuf,
+HarfBuzz — install them via your OS package manager first.
+
+<details>
+<summary><strong>Debian / Ubuntu</strong></summary>
+
+```bash
+sudo apt-get update
+sudo apt-get install libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libharfbuzz0b libcairo2
+```
+
+</details>
+
+<details>
+<summary><strong>Fedora</strong></summary>
+
+```bash
+sudo dnf install pango cairo-gobject gdk-pixbuf2 harfbuzz
+```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+Via [Homebrew](https://brew.sh/):
+
+```bash
+brew install pango
+```
+
+(Homebrew's `pango` formula pulls in cairo, HarfBuzz, and GDK-PixBuf as dependencies.)
+
+</details>
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+WeasyPrint needs the GTK3 runtime, which bundles Pango, cairo, GDK-PixBuf, and HarfBuzz. Download
+and run the latest installer from the
+[GTK3 Windows Runtime Environment Installer](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases)
+project, then make sure the option to add GTK3 to your `PATH` is checked (or add its `bin`
+directory to `PATH` yourself) before opening a new terminal.
+
+See WeasyPrint's own
+[install guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation) for
+more detail or troubleshooting.
+
+</details>
+
+List what's available, then generate a PDF:
+
+```bash
+uv run wh40k-cheatsheet list
+uv run wh40k-cheatsheet generate --edition 11e --language en
+```
+
+`--edition` is required; `--revision` and `--language` default to the latest revision and all
+languages if omitted. Add `--print-friendly` for an extra black/white/grey PDF with no background
+watermark. Output lands in `out/`. Run `uv run wh40k-cheatsheet --help` (or `<subcommand> --help`)
+for the full option list.
+
 ## More information
 
 - Contributing content or code: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)

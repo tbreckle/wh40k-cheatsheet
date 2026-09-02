@@ -128,6 +128,11 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
 
     {%- elif t == 'table' -%}
     <table class="data">
+      {%- if block.header is defined -%}
+      <thead>
+        <tr><th colspan="{{ block.columns | length }}">{{ block.header }}</th></tr>
+      </thead>
+      {%- endif -%}
       {%- if block.columns is defined -%}
       <thead>
         <tr>{% for c in block.columns %}<th>{{ c }}</th>{% endfor %}</tr>
@@ -209,6 +214,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
      already do most of that work; see data-model.md §2/§5). #}
         :root {
           --green-dark: {{ '#262626' if print_friendly else '#1e4d34' }};
+          --green-very-light: {{ '#f2f2f2' if print_friendly else '#66cdaa' }};
           /* phase header bars */
           --green-sub: {{ '#595959' if print_friendly else '#5f8a6e' }};
           /* subsection bars   */
@@ -430,7 +436,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         }
 
         table.data th {
-          background: var(--green-dark);
+          background: var(--green-very-light);
           color: #fff;
           text-align: left;
           padding: 1.3pt 4pt;
