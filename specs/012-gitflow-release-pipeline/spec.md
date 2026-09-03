@@ -26,6 +26,17 @@ to Github Releases."
   branches? → A: Yes — hotfix branches use the identical version-validation, build, and (on merge
   to `main`) publish mechanism as release branches, since a hotfix is itself a real patch release.
 
+### Session 2026-09-03
+
+- Q: Should a push directly to a `release/*`/`hotfix/*` branch publish anything to the public
+  GitHub Releases page, rather than only producing a downloadable CI artifact? → A: Yes — this
+  supersedes the first 2026-08-15 clarification. Every push to a `release/*` or `hotfix/*` branch
+  now creates or updates a GitHub Release tagged with that branch's version, always marked
+  **pre-release** regardless of whether the version string itself carries a SemVer pre-release
+  component. When that branch is later merged into `main`, the same tag is updated in place and
+  promoted: un-marked as pre-release unless the version string still carries its own pre-release
+  component (FR-010 still governs the final state).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Publish a finished release automatically (Priority: P1)
@@ -95,23 +106,27 @@ without needing to reach a release branch first.
 
 While stabilizing a `release/*` or `hotfix/*` branch — before it's ready to merge into `main` — the
 maintainer wants to download and inspect the exact PDFs that branch currently produces, to verify
-the release is correct, without those in-progress builds ever appearing as public GitHub Releases.
+the release is correct. Those in-progress builds are published to the Releases page too, always
+clearly marked pre-release, so the maintainer (or an early tester) can grab them the same way they'd
+grab any other release, without mistaking one for a finished release.
 
 **Why this priority**: A convenience and safety check during stabilization; valuable but not
 essential to the pipeline's core purpose, and depends on User Story 2's build step already
 existing.
 
 **Independent Test**: Push a commit to a `release/X.Y.Z` branch. Confirm the CI run for that push
-offers a downloadable artifact containing every edition/language PDF, and confirm no GitHub Release
-appears on the repository's Releases page as a result of that push.
+publishes (or updates) a GitHub Release tagged `vX.Y.Z`, marked pre-release, containing every
+edition/language PDF.
 
 **Acceptance Scenarios**:
 
 1. **Given** a push to a `release/*` or `hotfix/*` branch, **When** CI completes successfully,
    **Then** the built PDFs (every edition/language) are attached to that CI run as a downloadable
-   artifact.
-2. **Given** the same push, **When** it completes, **Then** no entry is added to the repository's
-   GitHub Releases page.
+   artifact, **and** a GitHub Release tagged with that branch's version is created or updated on the
+   repository's Releases page, marked pre-release.
+2. **Given** a second push to the same `release/*`/`hotfix/*` branch, **When** CI completes, **Then**
+   the existing pre-release for that version is updated in place (assets replaced) rather than a
+   duplicate release being created.
 
 ---
 
@@ -133,6 +148,13 @@ appears on the repository's Releases page as a result of that push.
 - What happens if the build step fails for just one edition/language out of many? The whole build
   step fails (no partial release, no partial artifact) — a release is all-editions-and-languages or
   nothing.
+- What happens if a release/hotfix branch is deleted (its release finished, or abandoned) after its
+  pre-release was published? The pre-release entry remains on the Releases page — cleaning up
+  abandoned pre-releases is a manual maintainer action, out of scope for this feature.
+- What happens if a `release/X.Y.Z` branch is merged into `main` and its pre-release already exists
+  under tag `vX.Y.Z`? FR-007's publish step updates that same release in place (assets replaced,
+  pre-release flag promoted per FR-010) — it is never left marked pre-release after a successful
+  merge to `main`, unless the version itself still carries a SemVer pre-release component.
 
 ## Requirements *(mandatory)*
 
@@ -155,32 +177,37 @@ appears on the repository's Releases page as a result of that push.
   (build no PDFs, publish nothing) if they disagree or the branch-name version is malformed.
 - **FR-005**: On every successful push to a `release/*` or `hotfix/*` branch, CI MUST attach the
   built PDFs (every edition/language) to that CI run as a downloadable build artifact.
-- **FR-006**: CI MUST NOT create or update a public GitHub Release as a result of a push directly
-  to a `release/*` or `hotfix/*` branch — only FR-005's downloadable artifact is produced at that
-  point.
+- **FR-006**: On every successful push directly to a `release/*` or `hotfix/*` branch (not a pull
+  request, not `main`), CI MUST create or update a public GitHub Release tagged with that branch's
+  version, with one PDF asset attached per (edition, language), always marked GitHub "pre-release"
+  regardless of whether the version string itself carries a SemVer pre-release component.
 - **FR-007**: When a `release/*` or `hotfix/*` branch is merged into `main`, CI MUST build every
   edition/language combination and publish them to GitHub Releases as a single release, tagged with
   the SemVer version from `pyproject.toml` (e.g. `v1.2.0`), with one PDF asset attached per
-  (edition, language).
+  (edition, language) — updating FR-006's pre-release in place if one already exists for that tag.
 - **FR-008**: Each release asset's filename MUST identify its edition and language (e.g. include
   the edition id and language code), so a downloader can tell which file is which without opening
   it.
-- **FR-009**: Publishing a GitHub Release (FR-007) MUST only happen after that same commit's
+- **FR-009**: Publishing a GitHub Release (FR-006, FR-007) MUST only happen after that same commit's
   quality gate (FR-001) and full build (FR-002) have both succeeded — a release is never published
   from a commit that fails either.
-- **FR-010**: A SemVer version containing a pre-release component (e.g. `1.3.0-rc.1`) MUST be
-  published as a GitHub "pre-release"; a version without one MUST be published as a full release.
-- **FR-011**: If a GitHub Release for a given version's tag already exists at publish time, CI MUST
-  update its assets in place rather than failing or creating a duplicate release.
+- **FR-010**: At the point a `release/*`/`hotfix/*` branch is merged into `main` (FR-007), a SemVer
+  version containing a pre-release component (e.g. `1.3.0-rc.1`) MUST be published as a GitHub
+  "pre-release"; a version without one MUST be promoted to a full release, even if a prior push to
+  the branch (FR-006) had already marked that tag pre-release.
+- **FR-011**: If a GitHub Release for a given version's tag already exists at publish time (FR-006
+  or FR-007), CI MUST update its assets in place rather than failing or creating a duplicate release.
 - **FR-012**: CI MUST NOT publish a GitHub Release as a result of any push to `feature/*` or
-  `develop` branches, nor from any push that isn't a merge into `main`.
+  `develop` branches, nor from a pull request; publishing only ever results from a direct push to a
+  `release/*`/`hotfix/*` branch (FR-006, always pre-release) or a merge into `main` (FR-007).
 
 ### Key Entities
 
 - **GitFlow Branch**: One of `feature/*`, `develop`, `release/*`, `hotfix/*`, or `main`. Every
-  branch type always gets the quality gate + full build (FR-001/FR-002). Only `release/*`/`hotfix/*`
-  branches additionally carry a target version and produce a downloadable artifact (FR-005). Only
-  `main` ever triggers a published GitHub Release, and only via a release/hotfix merge (FR-007).
+  branch type always gets the quality gate + full build (FR-001/FR-002). `release/*`/`hotfix/*`
+  branches additionally carry a target version, produce a downloadable artifact (FR-005), and
+  publish/update a pre-release GitHub Release on every push (FR-006). `main` promotes that same
+  release on a release/hotfix merge (FR-007).
 - **SemVer Version**: A `MAJOR.MINOR.PATCH[-prerelease][+build]` string per SemVer 2.0.0. Its
   authoritative source is `pyproject.toml`'s `[project].version`; a release/hotfix branch's name
   must restate the same value for validation (FR-004).
@@ -188,8 +215,10 @@ appears on the repository's Releases page as a result of that push.
   single CI run, attached to that run for download. Ephemeral and not publicly listed — distinct
   from a GitHub Release.
 - **GitHub Release**: A published, publicly-listed, versioned release on the repository's Releases
-  page, tagged `vX.Y.Z`, containing one PDF asset per declared edition/language, marked pre-release
-  or full release depending on whether its version has a pre-release component.
+  page, tagged `vX.Y.Z`, containing one PDF asset per declared edition/language. Always pre-release
+  while its tag's version is still on a `release/*`/`hotfix/*` branch (FR-006); on merge to `main` it
+  is promoted to a full release unless its version string itself has a pre-release component
+  (FR-010).
 
 ## Success Criteria *(mandatory)*
 
@@ -203,8 +232,10 @@ appears on the repository's Releases page as a result of that push.
 - **SC-003**: 100% of version mismatches between a release/hotfix branch name and the project's
   package version are caught by CI before anything is built or published.
 - **SC-004**: A maintainer can download and inspect the exact PDFs a release/hotfix branch
-  currently produces at any point during stabilization, without running any local build command and
-  without that build appearing on the public Releases page.
+  currently produces at any point during stabilization, without running any local build command,
+  via either the CI run's downloadable artifact or the branch's pre-release entry on the public
+  Releases page — and that entry is unambiguously marked pre-release, never mistakable for a
+  finished release.
 - **SC-005**: Adding a new edition or language to the project's configuration requires zero changes
   to the CI pipeline for it to be included in every future build and release.
 - **SC-006**: A maintainer can tell, from the GitHub Releases page alone, which published release is

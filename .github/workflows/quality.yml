@@ -96,6 +96,57 @@ jobs:
           name: cheatsheet-pdfs
           path: dist/*.pdf
 
+  publish-prerelease:
+    # Every push directly to a release/*/hotfix/* branch (not a PR, not main) publishes/updates a
+    # GitHub Release for that branch's version, always marked pre-release — so a maintainer can
+    # inspect exactly what will ship, on the public Releases page, before merging into main.
+    # `success()` must be explicit — see the comment on publish-release below for why.
+    if: success() && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
+    needs: [check, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-suffix: ${{ github.job }}
+
+      - name: Sync environment
+        run: uv sync --locked
+
+      - name: Download built PDFs
+        uses: actions/download-artifact@v8
+        with:
+          name: cheatsheet-pdfs
+          path: dist
+
+      - name: Compute release version
+        id: version
+        run: |
+          uv run python - <<'PYEOF' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          from wh40k_cheatsheet.versioning import read_project_version
+          v = read_project_version(Path("."))
+          print(f"version={v}")
+          PYEOF
+
+      - name: Create or update GitHub pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.pdf --clobber
+            gh release edit "$TAG" --target "$GITHUB_SHA" --prerelease
+          else
+            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" --prerelease \
+              --notes "Pre-release build from \`${{ github.ref_name }}\`. Not yet merged into main."
+          fi
+
   publish-release:
     # `success()` must be explicit here: providing a job's own `if:` replaces GitHub Actions'
     # implicit "all `needs:` succeeded" check entirely, rather than being ANDed with it — so
@@ -140,10 +191,14 @@ jobs:
           TAG: v${{ steps.version.outputs.version }}
           PRERELEASE: ${{ steps.version.outputs.prerelease }}
         run: |
+          # A release for this tag may already exist and be marked pre-release, published by
+          # publish-prerelease from a push to the release/hotfix branch that's now being merged —
+          # `gh release edit` here promotes it (or re-affirms pre-release status, per FR-010).
+          PRERELEASE_FLAG="--prerelease=false"
+          [ "$PRERELEASE" = "true" ] && PRERELEASE_FLAG="--prerelease"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/*.pdf --clobber
-          elif [ "$PRERELEASE" = "true" ]; then
-            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" --prerelease
+            gh release edit "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG
           else
-            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA"
+            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG
           fi
