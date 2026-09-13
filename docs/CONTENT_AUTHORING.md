@@ -79,6 +79,23 @@ the latest marked.
 stratagem cards, glossary, etc.) and `editions/11e/2026-08-01-00/{en,de}/content.yaml` for a
 complete worked example (English and German).
 
+For a heading nested one level below a `phase` — e.g. a named step within a phase — use
+`{type: subphase}`:
+
+```yaml
+document:
+  blocks:
+    - type: phase
+      title: "1. COMMAND PHASE"
+    - type: subphase
+      title: "1a. Battle-shock Step"
+```
+
+It carries a `title` like a normal `phase` heading and reuses its typography/padding — the only
+difference is a slightly brighter background color, which is what makes it visually distinguishable
+as a heading nested inside a `phase` without needing a different width or shape. Full contract:
+`specs/014-subphase-block/contracts/subphase-block.md`.
+
 To force a new page at a specific point, insert `{type: page_break}` between two blocks:
 
 ```yaml

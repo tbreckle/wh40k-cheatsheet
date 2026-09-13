@@ -208,7 +208,7 @@ document:
         - "Gesichertes Missionsziel: bleibt kontrolliert, auch ohne Modelle in Reichweite, bis die Kontrolle des Gegners deine am Ende einer Phase übersteigt."
 
     # ================= SEITE 2 =================
-    - type: phase
+    - type: subphase
       title: "AKTIONEN"
     - type: paragraph
       html: "<b>Eine Einheit kann keine Aktion beginnen, wenn sie: (16.01)</b>"
@@ -226,7 +226,7 @@ document:
     - type: paragraph
       html: "<b>Scheitert, wenn:</b> die Einheit sich bewegt (außer Nachrücken/Konsolidierung) oder das Schlachtfeld verlässt."
 
-    - type: phase
+    - type: subphase
       title: "GELÄNDE"
     - type: subsection
       title: "Bewegung nach Kategorie (13.06)"
@@ -373,7 +373,10 @@ document:
             term: "DECKUNG IGNORIEREN (24.18)",
             text: "Ziel kann gegen diese Attacke keinen Deckungsvorteil haben.",
           }
-        - { term: "INDIREKTES FEUER (24.19)", text: "Ermöglicht indirektes Schießen." }
+        - {
+            term: "INDIREKTES FEUER (24.19)",
+            text: "Ermöglicht indirektes Schießen.",
+          }
         - {
             term: "INFILTRATOREN (24.20)",
             html: 'Aufstellung &gt; 8" von der Aufstellungszone des Gegners und allen Gegnern entfernt.',
@@ -419,7 +422,7 @@ document:
             text: "+X Attackenwürfel, wenn das Ziel bei der Auswahl innerhalb halber Reichweite ist.",
           }
         - {
-            term: 'KUNDSCHAFTER X (24.31)',
+            term: "KUNDSCHAFTER X (24.31)",
             html: 'Vor der Schlacht: Späherbewegung bis zu X" (muss &gt;8" von Gegnern enden) ODER aus der Reserve in die Aufstellungszone verlegen.',
           }
         - {
@@ -439,7 +442,10 @@ document:
             text: "Kritischer Treffer = X zusätzliche Treffer.",
           }
         - { term: "SCHWALL (24.37)", text: "Trifft automatisch." }
-        - { term: "SYNCHRONISIERT (24.38)", text: "Verwundungswurf wiederholen." }
+        - {
+            term: "SYNCHRONISIERT (24.38)",
+            text: "Verwundungswurf wiederholen.",
+          }
 
     # ================= SEITE 3 - GEFECHTSOPTIONEN =================
     - type: page_break

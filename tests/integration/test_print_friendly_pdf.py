@@ -104,11 +104,22 @@ def _find_box_by_class(rendered, class_name: str):
     raise AssertionError(f"no box found with class '{class_name}'")
 
 
-# A synthetic document covering every color-bearing block/variant in the template: both
-# phase levels, both callout variants, a multi-row table (zebra striping), and all three
-# stratagem timing variants.
+def _find_box_by_exact_classes(rendered, *class_names: str):
+    wanted = set(class_names)
+    for box in _all_pages_boxes(rendered):
+        element = getattr(box, "element", None)
+        classes = (element.get("class") if element is not None else None) or ""
+        if set(classes.split()) == wanted:
+            return box
+    raise AssertionError(f"no box found with exact classes {wanted}")
+
+
+# A synthetic document covering every color-bearing block/variant in the template: all three
+# phase levels (phase, subphase, subsection), both callout variants, a multi-row table (zebra
+# striping), and all three stratagem timing variants.
 _ALL_VARIANTS_BLOCKS = [
     {"type": "phase", "title": "1. COMMAND PHASE"},
+    {"type": "subphase", "title": "1a. Battle-shock Step"},
     {"type": "subsection", "title": "Battle-Shock"},
     {"type": "callout", "text": "warn callout", "variant": "warn"},
     {"type": "callout", "text": "info callout", "variant": "info"},
@@ -164,6 +175,13 @@ def test_print_friendly_stratagem_timing_variants_remain_distinguishable():
     assert your_bg != opponent_bg
     assert your_bg != either_bg
     assert opponent_bg != either_bg
+
+
+def test_print_friendly_subphase_remains_distinguishable_from_phase():
+    rendered = _render_doc(_ALL_VARIANTS_BLOCKS, print_friendly=True)
+    phase_bg = _find_box_by_exact_classes(rendered, "phase").style["background_color"].coordinates
+    subphase_bg = _find_box_by_class(rendered, "phase--sub").style["background_color"].coordinates
+    assert phase_bg != subphase_bg
 
 
 def test_print_friendly_callout_variants_remain_distinguishable():

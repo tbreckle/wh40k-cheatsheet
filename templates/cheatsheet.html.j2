@@ -49,10 +49,15 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
   # room remains) at column_reset markers
 
   <block> types (see full reference at bottom of this comment):
-    phase | spanning_headline | subsection | paragraph | list | callout | table |
+    phase | subphase | spanning_headline | subsection | paragraph | list | callout | table |
     keyvals | glossary | stratagem | page_break | column_reset
 
     { type: "phase", title: "1. COMMAND PHASE" }
+    { type: "subphase", title: "1a. Battle-shock Step" } # like phase, but with a slightly
+    # brighter background — for a heading nested
+    # one level below a `phase`; visually
+    # distinguished from `phase` purely by that
+    # brighter color (same width/typography)
     { type: "spanning_headline", title: "NEW MAJOR SECTION" } # like phase, but its
     # text and background span the full width of
     # BOTH columns, providing a clear-cut visual
@@ -116,6 +121,9 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
 
     {%- if t == 'phase' -%}
     <h2 class="phase">{{ block.title }}</h2>
+
+    {%- elif t == 'subphase' -%}
+    <h2 class="phase phase--sub">{{ block.title }}</h2>
 
     {%- elif t == 'spanning_headline' -%}
     <h2 class="phase phase--spanning">{{ block.title }}</h2>
@@ -238,6 +246,8 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
      already do most of that work; see data-model.md §2/§5). #}
         :root {
           --green-dark: {{ '#262626' if print_friendly else '#1e4d34' }};
+          --green-subphase: {{ '#3d3d3d' if print_friendly else '#256b46' }};
+          /* subphase header bars — slightly brighter than phase */
           --green-very-light: {{ '#f2f2f2' if print_friendly else '#66cdaa' }};
           /* phase header bars */
           --green-sub: {{ '#595959' if print_friendly else '#5f8a6e' }};
@@ -357,6 +367,10 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         h2.phase--spanning {
           column-span: all;
           margin-top: 1em;
+        }
+
+        h2.phase--sub {
+          background: var(--green-subphase);
         }
 
         h3.subsection {
