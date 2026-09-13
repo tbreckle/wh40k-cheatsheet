@@ -79,7 +79,18 @@ Temporarily reverse the `terms` list of a glossary block in
 **Expected**: identical output — authored order has no effect (contract G7). Revert the content file
 afterwards; this feature never requires a content change.
 
-## 6. Confirm layout and the spanning flag are untouched
+## 6. Confirm leading-bracket weapon-ability terms interleave correctly (2026-09-13 amendment)
+
+```bash
+uv run wh40k-cheatsheet generate --edition 10e
+```
+
+**Expected**: the `10e` German glossary's bracketed weapon-ability terms (`[ANTI-X Y+] (24.03)`,
+`[PISTOL] (24.27)`, `[PSIONISCH] (24.29)`, …) sort under their first real letter — `[ANTI-X Y+]`
+near the start with other `A` terms, `[PISTOL]`/`[PSIONISCH]` among the `P` terms — rather than all
+clustering together ahead of every unbracketed term (contract G12; FR-011; SC-007).
+
+## 7. Confirm layout and the spanning flag are untouched
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 11e --language en --print-friendly

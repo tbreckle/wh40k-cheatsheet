@@ -102,3 +102,23 @@ def test_appending_a_new_term_lands_in_alphabetical_position_not_last():
     appended = [*already_sorted, _term("MELTA X")]
     result = [t["term"] for t in sort_glossary_terms(appended)]
     assert result == ["ASSAULT", "MELTA X", "TORRENT"]
+
+
+def test_leading_bracket_is_ignored_and_term_sorts_under_its_first_letter():
+    terms = [_term("TORRENT"), _term("[ANTI-X Y+] (24.03)"), _term("ASSAULT"), _term("BLAST X")]
+    result = [t["term"] for t in sort_glossary_terms(terms)]
+    assert result == ["[ANTI-X Y+] (24.03)", "ASSAULT", "BLAST X", "TORRENT"]
+
+
+def test_leading_bracket_terms_interleave_with_unbracketed_terms():
+    terms = [_term("[PISTOL]"), _term("PRECISION"), _term("[LANCE]"), _term("LETHAL HITS")]
+    result = [t["term"] for t in sort_glossary_terms(terms)]
+    assert result == ["[LANCE]", "LETHAL HITS", "[PISTOL]", "PRECISION"]
+
+
+def test_only_a_leading_bracket_is_stripped_not_an_interior_one():
+    # "[ZEBRA]" strips its leading "[" and sorts under "z"; "ANTI [BRACKET]" has no leading
+    # "[" (its bracket is interior, untouched) and sorts under "a" — so it comes first.
+    terms = [_term("[ZEBRA]"), _term("ANTI [BRACKET]")]
+    result = [t["term"] for t in sort_glossary_terms(terms)]
+    assert result == ["ANTI [BRACKET]", "[ZEBRA]"]

@@ -98,6 +98,27 @@ and confirm the output is unchanged.
 
 ---
 
+## Phase 6: Amendment (2026-09-13) — Leading-Bracket Weapon-Ability Terms
+
+**Purpose**: Real weapon-ability terms (`10e` German glossary: `[ANTI-X Y+] (24.03)`, `[PISTOL]
+(24.27)`, …) are authored with a leading `[`, which folded before every lowercase letter under the
+original `_sort_key`, clustering every such term ahead of the entire rest of the glossary regardless
+of its actual first letter. See spec.md's 2026-09-13 amendment (FR-011/SC-007) and
+`contracts/glossary-term-ordering.md` G12.
+
+**Goal**: A term whose first character is `[` sorts under its first real letter, interleaved
+correctly with unbracketed terms; a `[` anywhere else in a term is unaffected; every other
+guarantee (G1–G11) continues to hold unchanged.
+
+- [X] T017 In `_sort_key` in `src/wh40k_cheatsheet/render/glossary.py`, strip a single leading `[` from `term` (if present) before the existing `casefold()`/NFD fold — `term = term.removeprefix("[")` — and update its docstring (data-model.md §2 step 0; contracts G12)
+- [X] T018 [P] Unit tests in `tests/unit/test_glossary_order.py`: a term with a leading `[` sorts under its first real letter among unbracketed terms; leading-bracket terms interleave correctly with unbracketed ones (not clustered together); a `[` appearing anywhere other than the first character is left untouched (FR-011; contracts G12)
+- [X] T019 [P] Update `contracts/glossary-term-ordering.md` (new guarantee G12, amendment note, mechanism text), `data-model.md` (§2 step 0, new worked example), `research.md` (new §5), `quickstart.md` (new validation scenario), and `docs/CONTENT_AUTHORING.md`'s glossary-ordering passage for the leading-bracket rule
+
+**Checkpoint**: `poe check` green; a term like `[ANTI-X Y+] (24.03)` sorts under `A`, not ahead of
+every other term.
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

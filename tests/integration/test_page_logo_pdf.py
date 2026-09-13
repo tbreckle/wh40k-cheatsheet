@@ -120,7 +120,9 @@ def test_regenerating_real_content_keeps_same_page_count():
     )
     # Baseline after this amendment: the @page top margin reverted from 15mm (needed only
     # by the old corner logo) back to 7mm, giving both languages more usable space per page.
-    assert en_pages == 3
+    # English grew from 3 to 4 pages once the "Datasheet Characteristics" glossary section
+    # was added after Core Abilities (both languages now carry this section).
+    assert en_pages == 4
     assert de_pages == 4
 
 

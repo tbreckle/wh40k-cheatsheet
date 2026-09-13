@@ -8,6 +8,21 @@
 
 **Input**: User description: "Sorting of core abilities glossary shall be alphabetically by term."
 
+## Amendment 2026-09-13 (leading-bracket terms)
+
+**Input**: User description: "In case an term element in glossary type contains a leading [ ignore
+this [ during alphabetical sorting."
+
+Real weapon-ability terms (e.g. `[ANTI-X Y+] (24.03)`, `[PISTOL] (24.27)`, seen in the `10e` German
+glossary) are authored with a leading `[`, per WH40K's own weapon-ability notation. Under the
+original fold (`casefold()` → NFD → drop combining marks), `[` (U+005B) compares before every
+lowercase letter, so every such term clustered at the front of the glossary regardless of its actual
+first letter — the Assumptions section below originally stated terms are "compared as written…no
+stripping…is performed beyond case and diacritic folding," which is amended by this section: a single
+**leading** `[` is now stripped before folding, so these terms sort under their first real letter and
+interleave correctly with unbracketed terms. This adds FR-011/SC-007 and the edge case below; every
+other guarantee (FR-001–FR-010, SC-001–SC-006) is unchanged.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Look up a core ability during a game (Priority: P1)
@@ -80,6 +95,10 @@ and confirm the term lands in its alphabetical position in the output.
   as it does today without error.
 - **Term text vs. term name**: only the term name determines position; the definition body
   (plain text or markup) never influences ordering.
+- **Leading-bracket weapon-ability terms** (2026-09-13 amendment): a term written with a leading `[`
+  (e.g. `[ANTI-X Y+] (24.03)`) sorts as if that `[` were absent — under its first letter — rather
+  than clustering before every other term. Only a leading `[` is stripped; a `[` appearing anywhere
+  else in the term is left untouched and compared as written.
 
 ## Requirements *(mandatory)*
 
@@ -106,6 +125,10 @@ and confirm the term lands in its alphabetical position in the output.
   behaviour, including the full-width (`spanning`) presentation, unchanged.
 - **FR-010**: The authoring documentation MUST state that glossary order is produced by generation
   and that authors need not maintain alphabetical order by hand.
+- **FR-011** (2026-09-13 amendment): A term whose first character is `[` MUST sort as if that
+  leading `[` were absent — under its first letter — rather than being ordered ahead of every term
+  lacking a leading `[`. A `[` occurring anywhere other than the first character MUST NOT be
+  affected.
 
 ### Key Entities
 
@@ -133,6 +156,9 @@ and confirm the term lands in its alphabetical position in the output.
   already authored alphabetically.
 - **SC-006**: Adding a new glossary entry requires no manual re-ordering of the content file for
   the generated sheet to be correctly ordered.
+- **SC-007** (2026-09-13 amendment): A term with a leading `[` (e.g. `[ANTI-X Y+] (24.03)`) sorts
+  into its correct alphabetical position among unbracketed terms, in 100% of generations, rather
+  than clustering ahead of them.
 
 ## Assumptions
 
@@ -148,7 +174,9 @@ and confirm the term lands in its alphabetical position in the output.
   languages in scope today are English and German.
 - Terms are compared as written, including any bracketed English gloss used in translations; no
   stripping or normalisation of parenthetical content is performed beyond case and diacritic
-  folding.
+  folding — **except** a single leading `[` (2026-09-13 amendment, FR-011), which is stripped before
+  folding so weapon-ability terms like `[ANTI-X Y+]` sort under their first letter. A `[` anywhere
+  else in a term (including a trailing bracketed gloss) is unaffected.
 - No new content authoring field is introduced — authors do not opt in or out of sorting, and no
   existing content file needs to change for this feature to take effect.
 - Existing glossary presentation features (the `spanning` full-width flag, column and page break

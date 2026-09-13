@@ -9,7 +9,7 @@ document:
   blocks:
     # ================= PAGE 1 =================
     - type: phase
-      title: "1. COMMAND PHASE"
+      title: "1. COMMAND PHASE (08)"
 
     - type: subsection
       title: "Start of Phase Abilities (08.01)"
@@ -22,7 +22,7 @@ document:
       text: "Both players gain 1 Command Point (CP) if they have 10 or fewer CP. CP cannot be gained beyond 10."
 
     - type: subsection
-      title: "Battle-Shock Test (08.03)"
+      title: "Battle-Shock Test (08.03 / 01.07)"
     - type: paragraph
       html: "<b>Make one roll for each unit that is:</b>"
     - type: list
@@ -30,7 +30,7 @@ document:
         - "Currently battle-shocked, OR"
         - "At or below half-strength (models or wounds remaining)"
     - type: paragraph
-      text: "Roll 2D6 ≥ Ld to pass. If failed, unit is battle-shocked:"
+      html: "<b>Roll 2D6 ≥ Ld</b> to pass. If failed, unit is battle-shocked:"
     - type: list
       items:
         - "OC characteristic becomes '-'"
@@ -49,18 +49,18 @@ document:
       text: "Rules triggered at end of the Command phase are resolved now."
 
     - type: phase
-      title: "2. MOVEMENT PHASE"
+      title: "2. MOVEMENT PHASE (09)"
 
     - type: subsection
       title: "Move Types (09.02)"
     - type: list
       items:
-        - html: '<b>Normal Move (M"):</b> Unit must be unengaged. (09.05)'
-        - html: '<b>Advance (M+D6"):</b> Unit must be unengaged. Cannot declare charge or start action this turn. (09.06)'
-        - html: '<b>Fall-back (M"):</b> Unit must be engaged. Cannot shoot, charge, or start action this turn. (09.07)'
+        - html: "<b>Normal Move (M):</b> Unit must be unengaged. (09.05)"
+        - html: "<b>Advance (M+D6):</b> Unit must be unengaged. Cannot declare charge or start action this turn. Cannot be within Engagement Range of enemy units after advancing. (09.06)"
+        - html: "<b>Fall-back (M):</b> Unit must be engaged. Cannot shoot, charge, or start action this turn. Cannot end the move engaged. (09.07)"
           sub:
             - "Ordered Retreat: only available if unit is not battle-shocked"
-            - "Desperate Escape: mandatory if battle-shocked, Hazard roll per model, move through enemy models"
+            - "Desperate Escape: mandatory if battle-shocked, Hazard roll per model (06.03), move through enemy models"
         - html: "<b>Remain Stationary:</b> Any unit. (09.04)"
     - type: callout
       variant: "warn"
@@ -81,7 +81,7 @@ document:
     - type: list
       items:
         - "After normal, advance, or fall-back move."
-        - 'All models must end within 3" of the transport; unit not set up this turn; sufficient capacity.'
+        - 'All models must be within 3" of the transport; unit not set up this turn; sufficient capacity.'
 
     - type: subsection
       title: "Disembarking (18.03)"
@@ -99,7 +99,7 @@ document:
     - type: list
       items:
         - "Max 50% of points. Arrive from battle round 2 onwards. (20.03)"
-        - 'Set up wholly within 6" of a battlefield edge, more than 8" from all enemies.'
+        - 'Set up wholly within 6" of a battlefield edge, more than 8" horizontally from all enemies.'
         - "Before round 3: cannot set up in opponent's deployment zone."
     - type: callout
       variant: "warn"
@@ -109,7 +109,7 @@ document:
         - "Not arrived by end of battle round 3 = destroyed (except units in arrived transports and repositioned units)."
 
     - type: phase
-      title: "3. SHOOTING PHASE"
+      title: "3. SHOOTING PHASE (10)"
 
     - type: subsection
       title: "Shooting Types (10.02)"
@@ -118,20 +118,20 @@ document:
     - type: paragraph
       html: "<b>Assault:</b> Unengaged, advanced, has [ASSAULT] weapons. Only [ASSAULT] weapons may be used. (10.05)"
     - type: paragraph
-      html: "<b>Close-Quarters:</b> Engaged, did not advance, has [CLOSE-QUARTERS] weapons or is MONSTER / VEHICLE. (10.06)"
+      html: "<b>Close-Quarters:</b> Engaged, did not advance, has at least one [CLOSE-QUARTERS] weapon or is MONSTER / VEHICLE. (10.06)"
     - type: list
       items:
         - "Non-MONSTER / VEHICLE: [CLOSE-QUARTERS] weapons only; must target an engaged enemy unit."
         - "MONSTER / VEHICLE: -1 to hit unless using [CLOSE-QUARTERS] weapon vs engaged target. [BLAST] weapons cannot target engaged units."
     - type: paragraph
-      html: "<b>Indirect:</b> Unengaged, did not advance, has [INDIRECT FIRE]. (10.07)"
+      html: "<b>Indirect:</b> Unengaged, did not advance, has at least one [INDIRECT FIRE] weapon. (10.07)"
 
     - type: subsection
       title: "Targeting Rules"
     - type: list
       items:
-        - "Normal/Assault: target visible, within range, unengaged."
-        - "Indirect: target need not be visible; target has BoC; cannot re-roll hits; unmodified 1-5 fails (1-3 if unit remained stationary and target visible to a friendly unit)."
+        - html: "<b>Normal/Assault</b>: target visible, within range, unengaged."
+        - html: "<b>Indirect</b>: target need not be visible; target has BoC; cannot re-roll hits; unmodified 1-5 fails (1-3 if unit remained stationary and target visible to a friendly unit)."
         - "Engaged MONSTER / VEHICLE units can be target; -1 to hit."
         - "Different weapons on the same model may target different units; one weapon cannot be split across targets."
 
@@ -143,9 +143,11 @@ document:
           text: "D6 ≥ BS/WS. Unmodified 1 always fails, unmodified 6 is a Critical Hit."
         - label: "2. Wound Roll (05.02)"
           text: "D6 vs belows table. Unmodified 1 always fails, unmodified 6 is a Critical Wound."
-        - label: "3. Save Roll (05.03)"
-          text: "D6 - AP vs Sv or D6 vs InSv. Unmodified 1 always fails."
-        - label: "4. Damage (05.04)"
+        - label: "3. Wound Allocation (see below)"
+          text: ""
+        - label: "4. Save Roll (05.04)"
+          text: "D6 - AP vs Sv or D6 vs InSv. Unmodified 1 always inflicts damage."
+        - label: "5. Damage (05.04)"
           text: "Model loses wounds = D. Excess damage lost."
     - type: table
       header: "Wound Roll Table"
@@ -158,7 +160,7 @@ document:
         - ["S ≤ ½T", "6+"]
 
     - type: subsection
-      title: "Wound Allocation (05.04)"
+      title: "Wound Allocation (05.03)"
     - type: paragraph
       html: "<b>Groups:</b> One per CHARACTER; one per matching W/Sv/InSv set of non-CHARACTERs."
     - type: paragraph
@@ -166,12 +168,12 @@ document:
     - type: callout
       variant: "warn"
       text: "No CHARACTER group may be allocated before any non-CHARACTER group. Once all non-CHARACTERs are gone, wounds reach CHARACTERs normally (no blanket immunity)."
-    - type: list
-      items:
-        - "Work through saves lowest to highest. Select model with lost wounds first within a group."
+    - type: callout
+      variant: "warn"
+      text: "Work through saves lowest to highest. Select model with lost wounds first within a group."
 
     - type: subsection
-      title: "Benefit of Cover (BoC) (06.01)"
+      title: "Benefit of Cover (BoC) (13.08)"
     - type: list
       items:
         - html: "Worsen attacker's BS by 1 if <b>every</b> model in the target unit is INFANTRY / BEASTS / SWARM within a terrain area OR not fully visible due to intervening terrain/obscuring area."
@@ -180,7 +182,7 @@ document:
       title: "Mortal Wounds (06.02)"
     - type: list
       items:
-        - '1 MW = 1 wound lost, no saves. Inflicted after all normal damage from the same attack. "Feel no Pain" rolls can still be made.'
+        - '1 MW = 1 wound lost, no saves. Inflicted after all normal damage from the same attack (see Wound Allocation). "Feel no Pain" rolls can still be made.'
 
     - type: subsection
       title: "Hazard Rolls (06.03)"
@@ -244,10 +246,9 @@ document:
       html: '<b>Plunging Fire:</b> +1 BS if attacker is on terrain ≥ 3" high, or has TOWERING and target is within 12". (22.05)'
 
     - type: phase
-      title: "4. CHARGE PHASE"
-    - type: list
-      items:
-        - 'Targets must be within 12" (need not be visible). (11.02)'
+      title: "4. CHARGE PHASE (11)"
+    - type: paragraph
+      html: 'Targets must be within 12" (need not be visible) and not engaged. (11.02)'
     - type: paragraph
       html: "<b>Charge Roll:</b> 2D6 = max distance of charge move. (11.02)"
     - type: paragraph
@@ -256,27 +257,29 @@ document:
       items:
         - "Select charge targets before moving."
         - 'Each model must move closer to a charge target; within 1" if possible; engaged if possible.'
-        - "Must end engaged with all charge targets; cannot end engaged with non-targets."
-        - "Each model in charging unit gains Fights First."
+        - html: "Must end engaged with <b>all</b> charge targets; cannot end engaged with non-targets."
+        - "Each model in charging unit gains FIGHTS FIRST."
 
     - type: phase
-      title: "5. FIGHT PHASE"
+      title: "5. FIGHT PHASE (12)"
     - type: subsection
-      title: "Pile In - both players; active player first (12.02)"
+      title: "Pile In - <u>both</u> players; active player first (12.03)"
     - type: list
       items:
-        - 'Up to 3" if engaged OR made charge move OR was selected for overrun fight.'
-        - 'Select targets first: every engaged enemy unit (if engaged); or ≥1 within 5" (if not).'
+        - 'Up to 3" if engaged OR made charge move OR was selected for overrun fight. (12.06)'
+        - 'Select targets first: every engaged enemy unit (if engaged); or ≥1 enemy unit within 5" (if not).'
         - "Models in base contact cannot move. Each model moved must end closer to closest target, engaged if possible."
         - "Must end engaged. Each model that started engaged must remain engaged."
     - type: subsection
-      title: "Fight (12.04)"
+      title: "Fight - <u>both</u> players; active player first (12.04)"
     - type: paragraph
       html: "<b>Eligible:</b> Engaged at start of Fight step or made charge move"
     - type: paragraph
       html: "<b>1. Fights First:</b> Alternate selections, active player starts."
     - type: paragraph
       html: "<b>2. Remaining Combats:</b> Start with the player who moved this sequence onto this step, alternate selections"
+    - type: paragraph
+      html: "<b>Fight Types:</b>"
     - type: list
       items:
         - html: "<b>Normal Fight:</b> Unit is engaged. (12.05)"
@@ -284,19 +287,20 @@ document:
     - type: paragraph
       text: 'If a new Fights First becomes eligible while resolving Remaining Combats, return to Fights First step. When all eligible units are more than 5" from all enemy units, player may pass.'
     - type: subsection
-      title: "Consolidate - both players; active player first (12.07)"
+      title: "Consolidate - <u>both</u> players; active player first (12.08)"
     - type: list
       items:
         - 'Up to 3" if the unit was eligible to fight this phase.'
     - type: paragraph
-      html: "<b>Select mode (first applicable): (12.08)</b>"
-    - type: paragraph
-      html: "<b>Ongoing:</b> Unit engaged. Stay engaged; move closer to enemies."
-    - type: paragraph
-      html: '<b>Engaging:</b> Within 3" of enemies. Must end engaged; newly engaged enemy units that have not fought must fight next.'
-    - type: paragraph
-      html: '<b>Objective:</b> Within 3" of objective. Must end within range of it.'
+      html: "<b>Select mode (first applicable):</b>"
+    - type: list
+      items:
+        - html: "<b>Ongoing:</b> Unit engaged, remains engaged; move closer to enemies, do <u>not</u> move if in base contact."
+        - html: '<b>Engaging:</b> Within 3" of enemies. Must end engaged if possible; newly engaged enemy units that have not fought must fight next.'
+        - html: '<b>Objective:</b> Within 3" of objective. Must end within range of it if possible.'
 
+    # ================= PAGE 3 - DATASHEET CHARACTERISTICS =================
+    - type: page_break
     # ---- Core Abilities glossary (full-width) ----
     - type: column_reset
     - type: glossary
@@ -304,20 +308,20 @@ document:
       spanning: yes
       terms:
         - {
-            term: "ANTI-X Y+ (24.03)",
+            term: "[ANTI-X Y+] (24.03)",
             text: "Unmodified wound roll of Y+ = Critical Wound vs keyword X.",
           }
-        - { term: "ASSAULT (24.04)", text: "Enables Assault Shooting." }
+        - { term: "[ASSAULT] (24.04)", text: "Enables Assault Shooting." }
         - {
-            term: "BLAST X (24.05)",
+            term: "[BLAST X] (24.05)",
+            text: "+X attack dice per 5 models in target unit (round down). X=1 if no X value is given.",
+          }
+        - {
+            term: "[CLEAVE X] (24.06)",
             text: "+X attack dice per 5 models in target unit (round down).",
           }
         - {
-            term: "CLEAVE X (24.06)",
-            text: "+X attack dice per 5 models in target unit (round down).",
-          }
-        - {
-            term: "CLOSE-QUARTERS (24.07)",
+            term: "[CLOSE-QUARTERS] (24.07)",
             text: "Enables Close-Quarters Shooting (old: [PISTOL]).",
           }
         - {
@@ -329,11 +333,11 @@ document:
             html: 'Ingress move can be anywhere &gt; 8" from enemies, including opponent''s deployment zone.',
           }
         - {
-            term: "DEVASTATING WOUNDS (24.10)",
+            term: "[DEVASTATING WOUNDS] (24.10)",
             html: "Critical Wound → attack ends; target suffers MW = D characteristic. Max 1 model per Critical Wound; excess MW lost.",
           }
         - {
-            term: "EXTRA ATTACKS (24.11)",
+            term: "[EXTRA ATTACKS] (24.11)",
             text: "When fighting: must use all [EXTRA ATTACKS] weapons plus one other melee weapon.",
           }
         - {
@@ -349,7 +353,7 @@ document:
             text: "Select up to X embarked models; TRANSPORT gains their ranged weapons this phase. Those units cannot shoot.",
           }
         - {
-            term: "HAZARDOUS (24.15)",
+            term: "[HAZARDOUS] (24.15)",
             text: "One hazard roll per [HAZARDOUS] weapon used.",
           }
         - {
@@ -361,16 +365,19 @@ document:
             text: 'Taking to skies: do not subtract 2" from max distance.',
           }
         - {
-            term: "IGNORES COVER (24.18)",
+            term: "[IGNORES COVER] (24.18)",
             text: "Target cannot have BoC against this attack.",
           }
-        - { term: "INDIRECT FIRE (24.19)", text: "Enables Indirect Shooting." }
+        - {
+            term: "[INDIRECT FIRE] (24.19)",
+            text: "Enables Indirect Shooting.",
+          }
         - {
             term: "INFILTRATORS (24.20)",
             html: 'Deploy &gt; 8" from opponent''s deployment zone and all enemies.',
           }
         - {
-            term: "LANCE (24.21)",
+            term: "[LANCE] (24.21)",
             text: "+1 to wound if unit made a charge move this turn.",
           }
         - {
@@ -378,7 +385,7 @@ document:
             html: "Leader and Support each attach to one bodyguard unit (one Leader + one Support max per bodyguard). Bodyguard's T used for wound rolls. See Wound Allocation for CHARACTER protection rules.",
           }
         - {
-            term: "LETHAL HITS (24.23)",
+            term: "[LETHAL HITS] (24.23)",
             html: "Critical Hit → may auto-wound (no wound roll; cannot result in Critical Wound).",
           }
         - {
@@ -386,32 +393,32 @@ document:
             text: 'Not visible beyond 12". Cannot be targeted by [INDIRECT FIRE] beyond 12".',
           }
         - {
-            term: "MELTA X (24.25)",
+            term: "[MELTA X] (24.25)",
             text: "If target within half range at Select Targets, add X to D.",
           }
         - {
-            term: "ONE SHOT (24.26)",
+            term: "[ONE SHOT] (24.26)",
             text: "Once per battle. Revived models cannot re-use it.",
           }
         - {
-            term: "PISTOL (24.27)",
+            term: "[PISTOL] (24.27)",
             text: "Same as [CLOSE-QUARTERS], see [CLOSE-QUARTERS].",
           }
         - {
-            term: "PRECISION (24.28)",
+            term: "[PRECISION] (24.28)",
             text: "May select a visible CHARACTER allocation group as current allocation group.",
           }
         - {
-            term: "PSYCHIC (24.29)",
-            text: "May ignore modifiers to BS/WS. Counts as psychic attack.",
+            term: "[PSYCHIC] (24.29)",
+            text: "May ignore modifiers to BS/WS and to the Hit Roll. Counts as psychic attack.",
           }
         - {
-            term: "RAPID FIRE X (24.30)",
+            term: "[RAPID FIRE X] (24.30)",
             text: "+X attack dice if target within half range when selected.",
           }
         - {
             term: 'SCOUTS X" (24.31)',
-            html: 'Pre-battle: scout move up to X" (must end &gt;8" from enemies) OR redeploy from reserves into deployment zone.',
+            html: 'Pre-battle: Scout move (24.32) up to X" (must end &gt;8" from enemies) OR redeploy from reserves into deployment zone.',
           }
         - {
             term: "STEALTH (24.33)",
@@ -422,13 +429,52 @@ document:
             text: 'Move through models (not TITANIC); horizontal through terrain ≤ 4" high. May grant MOBILE for the move (on 1 after move ends: battle-shocked).',
           }
         - {
-            term: "SUSTAINED HITS X (24.36)",
+            term: "[SUSTAINED HITS X] (24.36)",
             text: "Critical Hit = X additional hits.",
           }
-        - { term: "TORRENT (24.37)", text: "Automatically hits." }
-        - { term: "TWIN-LINKED (24.38)", text: "Re-roll wound roll." }
+        - { term: "[TORRENT] (24.37)", text: "Automatically hits." }
+        - { term: "[TWIN-LINKED] (24.38)", text: "Re-roll wound roll." }
 
-    # ================= PAGE 3 - STRATAGEMS =================
+    - type: glossary
+      title: "DATASHEET CHARACTERISTICS"
+      spanning: yes
+      terms:
+        - {
+            term: "M",
+            text: "Movement - distance the unit can move (Normal Move/Advance).",
+          }
+        - { term: "T", text: "Toughness - used in the Wound Roll (S vs T)." }
+        - {
+            term: "Sv / InSv",
+            text: "Save - armour save characteristic, used in the Save Roll. An invulnerable save (InSv) works the same way but ignores AP.",
+          }
+        - { term: "W", text: "Wounds - how many wounds the model has." }
+        - { term: "Ld", text: "Leadership - target for the Battle-Shock Test." }
+        - {
+            term: "OC",
+            text: "Objective Control - contribution to controlling an objective.",
+          }
+        - { term: "R", text: "Range - maximum distance a weapon can target." }
+        - { term: "A", text: "Attacks - number of attacks a weapon makes." }
+        - {
+            term: "BS",
+            text: "Ballistic Skill - Hit Roll characteristic for ranged attacks.",
+          }
+        - {
+            term: "WS",
+            text: "Weapon Skill - Hit Roll characteristic for melee attacks.",
+          }
+        - { term: "S", text: "Strength - used in the Wound Roll (S vs T)." }
+        - {
+            term: "AP",
+            text: "Armour Penetration - worsens the target's Save Roll.",
+          }
+        - {
+            term: "D",
+            text: "Damage - wounds lost by the target in the Damage step.",
+          }
+
+    # ================= PAGE 4 - STRATAGEMS =================
     - type: page_break
     - type: spanning_headline
       title: "STRATAGEMS"
@@ -444,7 +490,7 @@ document:
     - type: stratagem
       title: "Epic Challenge (15.03)"
       cost: "1CP"
-      timing: "your"
+      timing: "either"
       when: "Fight phase, just after a friendly CHARACTER unit is selected to fight."
       target: "That CHARACTER unit."
       effect: "Select one CHARACTER model in your unit. Until end of phase, that model's melee weapons have [PRECISION]."
@@ -459,7 +505,7 @@ document:
       restrictions: "Once per battle."
 
     - type: stratagem
-      title: "★ Explosives (15.05)"
+      title: "Explosives (15.05)"
       cost: "1CP"
       timing: "your"
       when: "Your Shooting phase."
@@ -467,7 +513,7 @@ document:
       effect: 'Select one EXPLOSIVES/GRENADES model and one unengaged enemy unit within 8" and visible to it. Roll six D6: for each 4+, that enemy unit suffers 1 mortal wound.'
 
     - type: stratagem
-      title: "★ Crushing Impact (15.06)"
+      title: "Crushing Impact (15.06)"
       cost: "1CP"
       timing: "your"
       when: "Your Charge phase, just after a friendly MONSTER/VEHICLE unit ends a charge move."
@@ -488,7 +534,7 @@ document:
       cost: "1CP"
       timing: "opponent"
       when: "End of your opponent's Movement phase."
-      target: "One friendly unit (excluding TITANIC)."
+      target: "One friendly unengaged unit (excluding TITANIC)."
       effect: 'Your unit uses snap shooting - target one visible enemy unit within 24"; hits only on unmodified 6; cannot re-roll hit rolls. Unit cannot start an action until end of phase.'
 
     - type: stratagem

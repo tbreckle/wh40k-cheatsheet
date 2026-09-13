@@ -7,6 +7,9 @@ Added 2026-09-02. Extends the existing `glossary` block (`002-pdf-generation`) w
 guarantee about the **order** of its `terms`. No authoring surface changes — this contract adds no
 field, removes none, and changes no field's meaning.
 
+**Amendment 2026-09-13**: a term whose `term` value starts with `[` (real weapon-ability terms like
+`[ANTI-X Y+] (24.03)`) now sorts as if that leading `[` were absent, per G12 below.
+
 ---
 
 ## Authoring contract
@@ -47,6 +50,7 @@ document:
 | G9 | Glossary appearance, layout, and the `spanning` full-width behaviour are unchanged; `page_break`/`column_reset` interaction is unchanged (FR-009) | Only the loop's iteration order changes; no markup, class, or CSS is touched. Feature 007's G1–G5 continue to hold verbatim |
 | G10 | An empty or single-entry `terms` list renders exactly as before, without error | Identity cases of the transform — data-model.md §3 |
 | G11 | An entry whose `term` is missing or not a string sorts first rather than raising; the template's existing `StrictUndefined` behaviour on `g.term` is unchanged | Defensive key derivation — data-model.md §1 |
+| G12 | A term whose first character is `[` sorts under its first letter, as if that `[` were absent; a `[` anywhere else in the term is unaffected (FR-011, 2026-09-13) | The leading `[` is stripped before folding in `_sort_key` — data-model.md §2 |
 
 ---
 
@@ -63,8 +67,11 @@ The glossary branch's loop gains one call:
 implemented in `src/wh40k_cheatsheet/render/glossary.py` as a pure function over the derived key:
 
 ```text
-casefold()  →  NFD normalize  →  drop combining marks  →  compare
+strip a single leading "["  →  casefold()  →  NFD normalize  →  drop combining marks  →  compare
 ```
+
+(The leading-`[` strip, added 2026-09-13, runs first — before `casefold()` — since `[` is unaffected
+by case folding either way; order relative to the other steps is otherwise immaterial.)
 
 (`| default([])` guards against `StrictUndefined` when `terms` is absent, as it already did before
 this contract.)

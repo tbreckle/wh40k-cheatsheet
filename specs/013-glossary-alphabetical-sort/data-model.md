@@ -31,9 +31,14 @@ For each entry, `_sort_key` derives a comparison string from `term`:
 
 | Step | Operation | Purpose | Example (`TÖDLICHE`) |
 |---|---|---|---|
+| 0 | strip a single leading `[`, if present (2026-09-13 amendment, FR-011) | Weapon-ability terms like `[ANTI-X Y+]` sort under their first letter instead of clustering before every term (`[` is U+005B, which folds before all lowercase letters) | n/a — `TÖDLICHE` has no leading `[` |
 | 1 | `str.casefold()` | Case-insensitive ordering (FR-004); also expands `ß` → `ss`, matching German DIN 5007-1 | `tödliche` |
 | 2 | `unicodedata.normalize("NFD", …)` | Split precomposed accented characters into base + combining mark | `to` + `◌̈` + `dliche` |
 | 3 | drop chars where `unicodedata.combining(c)` is truthy | Leaves the base letter, so accented characters sort under it (FR-003) | `todliche` |
+
+Step 0 only ever removes the term's first character, and only when it is literally `[` — a `[`
+anywhere else in the term (including a trailing bracketed gloss like `STURM (Assault)`'s parens, or
+an interior `[`) is left untouched and reaches step 1 unchanged.
 
 Ties (two entries whose derived keys are equal, including genuinely duplicate terms) keep their
 authored relative order, because Python's `sorted()` is stable — this is what makes FR-005's
@@ -50,6 +55,7 @@ determinism guarantee hold without an explicit index tie-breaker.
 | `STURM (Assault)` | `sturm (assault)` | German term drives placement; the bracketed English gloss can only ever tie-break |
 | `SCOUTS X"` | `scouts x"` | Sorts under `S`; the trailing quote is never reached in comparison |
 | `ANTI-X Y+` | `anti-x y+` | Punctuation retained (research.md §2); sorts under `A` |
+| `[ANTI-X Y+] (24.03)` | `anti-x y+] (24.03)` | Leading `[` stripped (step 0, 2026-09-13); sorts under `A`, interleaved with unbracketed terms rather than clustered before them |
 
 The key is computed during rendering and discarded — it is never serialized into HTML, PDF, or any
 content file.

@@ -18,6 +18,7 @@ GLOSSARY_EDITIONS_LANGUAGES = [("11e", "en"), ("11e", "de"), ("10e", "de")]
 
 
 def _fold(term: str) -> str:
+    term = term.removeprefix("[")
     folded = unicodedata.normalize("NFD", term.casefold())
     return "".join(c for c in folded if not unicodedata.combining(c))
 

@@ -114,7 +114,40 @@ Ran the proposed sort key over the three real glossary blocks before committing 
 No term was lost, duplicated, or altered in any of the three, and no term's diacritic placement
 required a special case beyond the fold.
 
-## 5. Test strategy
+## 5. Leading `[` on weapon-ability terms (2026-09-13 amendment)
+
+**Decision**: Strip a single leading `[` from the term before folding, if present — nothing else.
+
+**Rationale**: Real content (`10e` German glossary: `[ANTI-X Y+] (24.03)`, `[PISTOL] (24.27)`, …)
+authors weapon-ability terms with a leading `[`, per WH40K's own printed notation for these
+abilities. `[` is U+005B, which folds (via `casefold()`) to itself and compares *before* every
+lowercase letter — so under the original fold, every such term sorted ahead of the entire rest of
+the glossary regardless of its actual first letter, which is exactly the "unexpected position"
+failure mode §2 above already flags for punctuation in general. Unlike §2's decision to leave
+interior/trailing punctuation alone (because no real term is affected by it), this bracket *is*
+observably wrong against real shipped content, so it warrants a targeted fix rather than being left
+as a known boundary.
+
+The fix is deliberately narrow: only a **leading** `[` (i.e. `term[0] == "["`, checked before any
+folding) is removed, and only one character. An interior `[`, a trailing bracketed gloss
+(`STURM (Assault)` uses parens, not brackets, but the principle is the same), or a term with `]` but
+no leading `[` are all left untouched — the fix targets exactly the observed real-content pattern,
+nothing broader.
+
+**Alternatives considered**:
+
+- *Strip all `[`/`]` characters anywhere in the term*: rejected — would also touch a hypothetical
+  term with an interior bracketed gloss, changing where it sorts in a way not observed in any real
+  content and not asked for; the leading-only rule is the minimal fix for the actual problem.
+- *Strip any leading punctuation character generally (not just `[`)*: rejected — over-broad relative
+  to the concrete, observed case; no other leading-punctuation term exists in shipped content, so
+  generalizing now would be speculative complexity with nothing to validate it against.
+- *Treat `[...]` as a unit and move it to the end of the term for sorting*: rejected — more complex
+  (requires finding the matching `]`, and deciding what happens if none exists) for no additional
+  benefit over simply dropping the leading character; the trailing `]` and everything after it
+  already sort correctly once the leading `[` no longer dominates the comparison.
+
+## 6. Test strategy
 
 **Decision**: Unit tests against the pure function for behaviour and boundaries; cross-language
 integration tests against the real rendered output for the end-to-end guarantee.

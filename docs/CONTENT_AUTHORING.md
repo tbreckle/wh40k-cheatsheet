@@ -170,8 +170,10 @@ addition. Full contract:
 A `{type: glossary}` block's `terms` always render in alphabetical order by `term`, regardless of
 the order they're written in `content.yaml` — you don't need to keep entries sorted by hand when
 authoring or translating. Accented characters sort under their base letter (German `Ä`/`Ö`/`Ü` sort
-with `A`/`O`/`U`, `ß` with `ss`), matching that language's dictionary order. Ordering never affects
-an entry's `text`/`html` content, only its position. Full contract:
+with `A`/`O`/`U`, `ß` with `ss`), matching that language's dictionary order. A term written with a
+leading `[` (e.g. `[ANTI-X Y+] (24.03)`, used for weapon-ability keywords) sorts as if that `[` were
+absent — under its first letter, not clustered before every other term. Ordering never affects an
+entry's `text`/`html` content, only its position. Full contract:
 `specs/013-glossary-alphabetical-sort/contracts/glossary-term-ordering.md`.
 
 A `{type: list}` block can opt into the same full-width treatment, by adding `single_column: true`:

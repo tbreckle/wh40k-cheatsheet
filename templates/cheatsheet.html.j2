@@ -129,7 +129,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
     <h2 class="phase phase--spanning">{{ block.title }}</h2>
 
     {%- elif t == 'subsection' -%}
-    <h3 class="subsection">{{ block.title }}</h3>
+    <h3 class="subsection">{{ block.title | safe }}</h3>
 
     {%- elif t == 'paragraph' -%}
     <p class="body">{{ (block.html | safe) if block.html is defined else block.text }}</p>

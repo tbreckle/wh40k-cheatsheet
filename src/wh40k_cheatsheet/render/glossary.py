@@ -10,7 +10,9 @@ def _sort_key(term: Any) -> str:
     Case-folds the term, then decomposes it (NFD) and drops Unicode combining marks, so
     accented characters sort under their base letter (`Ö` with `O`, `Ä` with `A`, `Ü` with
     `U`) and `ß` sorts as `ss` (already produced by `str.casefold()`). A missing or
-    non-string term sorts first rather than raising.
+    non-string term sorts first rather than raising. A single leading `[` (e.g. weapon-ability
+    terms like `[ANTI-X Y+]`) is dropped first, so such terms sort under their first letter
+    rather than clustering before every other term.
 
     Args:
         term: The glossary entry's `term` value, expected to be a `str`.
@@ -20,6 +22,7 @@ def _sort_key(term: Any) -> str:
     """
     if not isinstance(term, str):
         return ""
+    term = term.removeprefix("[")
     folded = unicodedata.normalize("NFD", term.casefold())
     return "".join(c for c in folded if not unicodedata.combining(c))
 
