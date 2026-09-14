@@ -56,31 +56,36 @@ downloadable as a workflow artifact; only a merge into `main` ever publishes a G
 |---|---|---|---|---|---|
 | `feature/**` | ✅ | — | ✅ | **Yes** | Never |
 | `develop` | ✅ | — | ✅ | **Yes** | Never |
-| `release/**` | ✅ | ✅ gates `build` | ✅ (only if version valid) | **Yes** | Never |
-| `hotfix/**` | ✅ | ✅ gates `build` | ✅ (only if version valid) | **Yes** | Never |
+| `release/**` (push) | ✅ | ✅ auto-bumps + commits, gates `build` | ✅ (only if version valid) | **Yes** | Never |
+| `hotfix/**` (push) | ✅ | ✅ auto-bumps + commits, gates `build` | ✅ (only if version valid) | **Yes** | Never |
+| `release/**`/`hotfix/**` (PR into develop/main) | ✅ | ✅ verify-only, gates `build` | ✅ (only if version valid) | **Yes** | Never |
 | `main` | ✅ | — | ✅ | **Yes** | ✅ (`needs: [check, build]`) |
 
-A `release/*`/`hotfix/*` branch's name encodes its target SemVer version (e.g. `release/1.2.0`),
-which is validated against `pyproject.toml`'s version before anything is built on that branch. Full
-contract: `specs/012-gitflow-release-pipeline/contracts/ci-workflow.md`.
+A `release/*`/`hotfix/*` branch's name encodes its target SemVer version (e.g. `release/1.2.0`).
+Full contract: `specs/012-gitflow-release-pipeline/contracts/ci-workflow.md`.
 
 ## Versioning & releases
 
 The project's version lives in `pyproject.toml`'s `[project].version` and follows
-[SemVer 2.0.0](https://semver.org/). To cut a release, bump that version, then push a branch named
-`release/X.Y.Z` (or `hotfix/X.Y.Z`) with the identical version — CI validates the two agree before
-building anything. Two CLI commands back this:
+[SemVer 2.0.0](https://semver.org/). To cut a release, push a branch named `release/X.Y.Z` (or
+`hotfix/X.Y.Z`) — that's the only manual step. On every push to that branch, CI itself rewrites
+`pyproject.toml`'s version to `X.Y.Z`, re-runs `uv lock` so `uv.lock` stays in sync, and commits +
+pushes both back to the branch (2026-09-14 amendment) — you never hand-edit either file. A pull
+request from that branch into `develop`/`main` only re-verifies the two already agree, as a safety
+net. Two CLI commands back this:
 
 ```bash
-uv run wh40k-cheatsheet package                          # build every edition/language into dist/
-uv run wh40k-cheatsheet validate-version release/1.2.0    # validate a release/hotfix branch's version
+uv run wh40k-cheatsheet package                                # build every edition/language into dist/
+uv run wh40k-cheatsheet validate-version release/1.2.0          # verify a release/hotfix branch's version
+uv run wh40k-cheatsheet validate-version release/1.2.0 --fix    # ...or rewrite pyproject.toml to match it
 ```
 
 `package` stages every declared edition/language as `dist/<edition_id>-<language>.pdf`, flat —
 what CI attaches to a GitHub Release. `validate-version` is a no-op on any branch that isn't
-`release/*`/`hotfix/*`. Merging a `release/*`/`hotfix/*` branch into `main` publishes (or updates)
-a GitHub Release tagged `v<version>`, marked as a pre-release if the version has a pre-release
-component (e.g. `1.3.0-rc.1`). Full contracts:
+`release/*`/`hotfix/*`; with `--fix`, a version mismatch is corrected instead of failing the
+command (a malformed branch version still fails either way). Merging a `release/*`/`hotfix/*`
+branch into `main` publishes (or updates) a GitHub Release tagged `v<version>`, marked as a
+pre-release if the version has a pre-release component (e.g. `1.3.0-rc.1`). Full contracts:
 `specs/012-gitflow-release-pipeline/contracts/cli-package-command.md` and
 `specs/012-gitflow-release-pipeline/contracts/cli-validate-version-command.md`.
 

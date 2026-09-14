@@ -37,6 +37,40 @@ to Github Releases."
   promoted: un-marked as pre-release unless the version string still carries its own pre-release
   component (FR-010 still governs the final state).
 
+### Session 2026-09-14
+
+- Q: FR-004 currently makes CI *fail* a release/hotfix branch's pipeline if `pyproject.toml`'s
+  version disagrees with the branch name, requiring whoever cuts the release to hand-edit
+  `pyproject.toml` (and `uv.lock`, which embeds the same version for this project's own,
+  editable-installed package) to match *before* pushing. Should CI instead write the correct
+  version itself? → A: Yes, but only on a direct push to the branch, and only using the version
+  already encoded in that branch's own name (no GitVersion-style history/commit-message
+  inference) — the branch name remains the single, human-chosen source of truth for the target
+  version; CI's job is purely mechanical: copy that value into `pyproject.toml`, run `uv lock` so
+  `uv.lock` stays consistent, and commit + push both back to the branch. A pull request from that
+  branch into `develop`/`main` keeps the original strict, read-only validation (FR-004 unchanged
+  for that event) as a safety net — it should never find a mismatch, since the push above already
+  fixed it, and a mismatch there would mean something bypassed that automation. `main`'s own
+  version is unaffected by this amendment: it is still whatever version the merged release/hotfix
+  branch carried (already fixed by this mechanism before the merge), never separately bumped.
+
+### Bug fix 2026-09-14 (reported against a real `main`-branch CI run)
+
+`publish-release` never actually ran on `main`, in any run, since this feature originally shipped:
+its `if: success() && github.ref == 'refs/heads/main'` used the bare `success()` status-check
+function, which evaluates across a job's *entire transitive* `needs:` chain — and `build` (one of
+`publish-release`'s two direct `needs:`) itself depends on `validate-version`, which is *always*
+skipped on `main` by design (FR-003/FR-004 only ever apply to `release/*`/`hotfix/*`). `success()`
+saw that upstream skip and returned `false` unconditionally, so `publish-release` was skipped on
+every single push to `main`, regardless of whether `check`/`build` passed — silently defeating User
+Story 1, this feature's entire core deliverable, despite every individual job reporting green.
+Fixed by checking `needs.check.result == 'success' && needs.build.result == 'success'` directly
+instead of bare `success()`, in both `publish-release` and `publish-prerelease` (the latter wasn't
+actually broken today, since `validate-version` genuinely runs — not skips — on the release/hotfix
+branches `publish-prerelease` fires for, but is fixed the same way for consistency and to not
+reintroduce this exact failure mode the next time a conditionally-skipped job is added to the
+graph). See `contracts/ci-workflow.md`'s P9 and "Known boundaries" section.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Publish a finished release automatically (Priority: P1)
@@ -136,8 +170,16 @@ edition/language PDF.
   `release/foo`, `release/1.2`)? CI fails that branch's pipeline immediately with a clear error,
   before attempting any build.
 - What happens if `pyproject.toml`'s version doesn't match the version encoded in the release or
-  hotfix branch's name? CI fails immediately with a clear error naming both values; nothing is
-  built or published.
+  hotfix branch's name? On a pull request, CI fails immediately with a clear error naming both
+  values; nothing is built or published. On a direct push to the branch (2026-09-14 amendment,
+  FR-013), CI corrects `pyproject.toml`/`uv.lock` to the branch-name version and commits the fix
+  instead of failing — a malformed branch-name version still fails either way, since there is no
+  value to write.
+- What happens if two people push to the same release/hotfix branch at nearly the same time,
+  racing FR-013's auto-commit against another push? The auto-commit push can be rejected as a
+  non-fast-forward update, same as any other simultaneous push to the same branch; CI's push step
+  is not force-pushed or retried automatically, so this surfaces as an ordinary failed CI run to
+  re-run, not silent data loss.
 - What happens with two release branches open at once (e.g. `release/1.2.0` and a later
   `release/1.3.0` started before the first ships)? Each is validated and built independently on its
   own pushes; only whichever one(s) are actually merged into `main` ever publish a release — no
@@ -171,10 +213,19 @@ edition/language PDF.
 - **FR-003**: A `release/*` or `hotfix/*` branch's name MUST encode its target version as
   `release/X.Y.Z` or `hotfix/X.Y.Z`, where `X.Y.Z` is a valid SemVer 2.0.0 version (optionally with
   a pre-release and/or build-metadata suffix, e.g. `1.3.0-rc.1`).
-- **FR-004**: On every push to a `release/*` or `hotfix/*` branch, CI MUST validate that the
-  version encoded in the branch name is well-formed SemVer and exactly matches the project's
-  package version (`pyproject.toml`'s `[project].version`); CI MUST fail that branch's pipeline
-  (build no PDFs, publish nothing) if they disagree or the branch-name version is malformed.
+- **FR-004**: On every pull request from a `release/*` or `hotfix/*` branch (into `develop` or
+  `main`), CI MUST validate that the version encoded in the branch name is well-formed SemVer and
+  exactly matches the project's package version (`pyproject.toml`'s `[project].version`); CI MUST
+  fail that pipeline (build no PDFs, publish nothing) if they disagree or the branch-name version
+  is malformed. On a direct push to the branch, FR-013 applies instead.
+- **FR-013** (2026-09-14 amendment): On every push directly to a `release/*` or `hotfix/*` branch,
+  if the branch-name version is well-formed SemVer but disagrees with `pyproject.toml`'s
+  `[project].version`, CI MUST rewrite `pyproject.toml` to the branch-name version, re-run the
+  project's dependency lock (`uv.lock`) so it stays consistent with that version, and commit +
+  push both files back to the branch — rather than failing, as FR-004 still does for a pull
+  request or a malformed branch-name version. `main`'s own version is never bumped by this
+  mechanism; it only ever receives whatever version a release/hotfix branch already carries at
+  merge time.
 - **FR-005**: On every successful push to a `release/*` or `hotfix/*` branch, CI MUST attach the
   built PDFs (every edition/language) to that CI run as a downloadable build artifact.
 - **FR-006**: On every successful push directly to a `release/*` or `hotfix/*` branch (not a pull
@@ -230,7 +281,9 @@ edition/language PDF.
   GitHub Release containing one correctly-named PDF per declared edition/language, with zero manual
   build or upload steps.
 - **SC-003**: 100% of version mismatches between a release/hotfix branch name and the project's
-  package version are caught by CI before anything is built or published.
+  package version are caught by CI before anything is built or published on a pull request; on a
+  direct push to the branch, 100% are instead corrected automatically (FR-013) with no manual
+  `pyproject.toml`/`uv.lock` edit required to cut a release.
 - **SC-004**: A maintainer can download and inspect the exact PDFs a release/hotfix branch
   currently produces at any point during stabilization, without running any local build command,
   via either the CI run's downloadable artifact or the branch's pre-release entry on the public
@@ -251,8 +304,15 @@ edition/language PDF.
   behavior the pipeline needs to enforce beyond reacting correctly to those branch names once they
   exist.
 - `pyproject.toml`'s `[project].version` is the single authoritative source of the package's
-  current SemVer version; keeping it updated as part of preparing a release/hotfix branch (before
-  pushing it) is a manual step owned by whoever cuts the release, not automated by this feature.
+  current SemVer version. As of the 2026-09-14 amendment (FR-013), keeping it (and `uv.lock`)
+  updated to match a release/hotfix branch's name is automated by CI on every push to that
+  branch — the only manual step left to whoever cuts the release is choosing and naming the
+  branch itself; `main`'s version is never separately bumped, only ever inherited from a merged
+  release/hotfix branch.
+- The branch name remains the sole source of the target version number — this feature
+  deliberately does not infer a version bump from commit history or message content (no
+  GitVersion-style conventional-commit analysis), keeping the mechanism a simple, predictable
+  text substitution rather than a second versioning policy to maintain.
 - Release assets are the standard PDFs only (one per edition/language); the optional
   print-friendly variant (feature 011) is not included in release assets by default.
 - Enforcing that each new release's version is strictly greater than the previously published one

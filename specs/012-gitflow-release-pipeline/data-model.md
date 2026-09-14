@@ -13,6 +13,7 @@ entity/relationship model.
 | `is_valid_semver(version: str) -> bool` | function | `True` iff `version` fully matches `SEMVER_PATTERN`. |
 | `is_prerelease(version: str) -> bool` | function | `True` iff `version` matches `SEMVER_PATTERN` **and** its pre-release capture group is non-empty (e.g. `1.3.0-rc.1` → `True`; `1.3.0` and `1.3.0+build5` → `False`). |
 | `VersionError(RuntimeError)` | exception | Raised by the `validate-version` CLI command; joins `KNOWN_ERRORS` in `cli.py` so it's reported and exits `1` the same way every other pipeline error already is. |
+| `write_project_version(project_root: Path, version: str) -> bool` (2026-09-14) | function | Rewrites `pyproject.toml`'s `[project].version` line in place to `version`, scoped to lines inside the `[project]` table (never touches a same-named key elsewhere); returns `True` if it actually changed the file, `False` if `version` already matched (no write). Raises `VersionError` if the file or its `[project].version` is missing. Used by `validate-version --fix` (§3). |
 
 ## 2. `package` CLI command / `package_all` pipeline function
 
@@ -27,15 +28,15 @@ edition and every language declared," not a selectable subset.
 
 ## 3. `validate-version` CLI command
 
-CLI surface: `wh40k-cheatsheet validate-version <branch> [--project-root .]`.
+CLI surface: `wh40k-cheatsheet validate-version <branch> [--project-root .] [--fix]`.
 
 | Step | Behavior |
 |---|---|
-| 1. Parse | `parse_release_branch(branch)`. If `None` (not a release/hotfix branch), the command exits `0` immediately printing `"<branch>: not a release/hotfix branch, nothing to validate"` — a no-op success, not an error, so it's safe to run unconditionally on any branch name without special-casing the caller. |
-| 2. Validate format | `is_valid_semver(version)`. If `False`, raise `VersionError` naming the branch and the malformed version. |
+| 1. Parse | `parse_release_branch(branch)`. If `None` (not a release/hotfix branch), the command exits `0` immediately printing `"<branch>: not a release/hotfix branch, nothing to validate"` — a no-op success, not an error, so it's safe to run unconditionally on any branch name without special-casing the caller. `--fix` has no effect on this step. |
+| 2. Validate format | `is_valid_semver(version)`. If `False`, raise `VersionError` naming the branch and the malformed version — always, `--fix` included, since there is no valid value to write. |
 | 3. Read project version | `pyproject.toml`'s `[project].version`, read via `tomllib.load` relative to `--project-root`. |
-| 4. Compare | If the branch's version ≠ the project's version, raise `VersionError` naming both values (spec's edge case: "a clear error naming both values"). |
-| 5. Success | Print the validated version to stdout; exit `0`. |
+| 4. Compare | If the branch's version ≠ the project's version: without `--fix`, raise `VersionError` naming both values (spec's edge case: "a clear error naming both values"); with `--fix` (2026-09-14), call `write_project_version` instead, print `"<old> -> <new>"`, and exit `0`. |
+| 5. Success (already matching) | Print the validated version to stdout; exit `0`. Identical whether or not `--fix` was passed — there is nothing to fix. |
 
 ## 4. GitFlow Branch → CI job behavior matrix
 
@@ -43,8 +44,9 @@ CLI surface: `wh40k-cheatsheet validate-version <branch> [--project-root .]`.
 |---|---|---|---|---|---|
 | `feature/**` | ✅ | — (parses to `None`, no-op) | ✅ | No | Never (not `main`) |
 | `develop` | ✅ | — | ✅ | No | Never |
-| `release/**` | ✅ | ✅ gates `build` | ✅ (only if version valid) | **Yes** | Never (not `main`) |
-| `hotfix/**` | ✅ | ✅ gates `build` | ✅ (only if version valid) | **Yes** | Never (not `main`) |
+| `release/**` (push) | ✅ | ✅ auto-fixes + commits (2026-09-14), gates `build` | ✅ (only if fix succeeded) | **Yes** | Never (not `main`) |
+| `hotfix/**` (push) | ✅ | ✅ auto-fixes + commits (2026-09-14), gates `build` | ✅ (only if fix succeeded) | **Yes** | Never (not `main`) |
+| `release/**`/`hotfix/**` (pull request) | ✅ | ✅ verify-only, gates `build` | ✅ (only if version valid) | **Yes** | Never (not `main`) |
 | `main` | ✅ | — (parses to `None`, no-op) | ✅ | **Yes** | ✅ (`needs: [check, build]`) |
 
 ## 5. GitHub Release

@@ -64,6 +64,51 @@ def test_validate_version_rejects_mismatched_version(tmp_path, capsys):
     assert "1.2.0" in captured.err
 
 
+def test_validate_version_fix_rewrites_pyproject_toml_on_mismatch(tmp_path, capsys):
+    root = _project_root_with_version(tmp_path, "1.2.0")
+
+    exit_code = main(["--project-root", str(root), "validate-version", "release/1.3.0", "--fix"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out.strip() == "1.2.0 -> 1.3.0"
+    assert (root / "pyproject.toml").read_text(encoding="utf-8").splitlines()[-1] == 'version = "1.3.0"'
+
+
+def test_validate_version_fix_is_a_noop_when_already_matching(tmp_path, capsys):
+    root = _project_root_with_version(tmp_path, "1.2.0")
+    pyproject_path = root / "pyproject.toml"
+    text_before = pyproject_path.read_text(encoding="utf-8")
+
+    exit_code = main(["--project-root", str(root), "validate-version", "release/1.2.0", "--fix"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out.strip() == "1.2.0"
+    assert pyproject_path.read_text(encoding="utf-8") == text_before
+
+
+def test_validate_version_fix_still_rejects_malformed_version(tmp_path, capsys):
+    root = _project_root_with_version(tmp_path, "1.2.0")
+
+    exit_code = main(["--project-root", str(root), "validate-version", "release/not-semver", "--fix"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "not-semver" in captured.err
+    assert (root / "pyproject.toml").read_text(encoding="utf-8").splitlines()[-1] == 'version = "1.2.0"'
+
+
+def test_validate_version_fix_is_noop_on_non_release_branch(tmp_path, capsys):
+    root = _project_root_with_version(tmp_path, "1.2.0")
+
+    exit_code = main(["--project-root", str(root), "validate-version", "feature/some-thing", "--fix"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "not a release/hotfix branch" in captured.out
+
+
 def test_validate_version_against_real_repo_pyproject_toml_rejects_mismatch(capsys):
     # The real repo's pyproject.toml version won't equal this arbitrarily-chosen branch version,
     # so this exercises the CLI against the actual project.yaml-adjacent file layout, not a copy.

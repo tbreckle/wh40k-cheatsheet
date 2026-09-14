@@ -199,3 +199,50 @@ Task: "Integration tests for the validate-version command in tests/integration/t
   phase verifies it" shape used in prior features (e.g. `010`), just spread across three stories
   instead of one.
 - Commit after each task or logical group; stop at any checkpoint to validate independently.
+
+---
+
+## Phase 7: Amendment (2026-09-14) — Auto-Bump `pyproject.toml`/`uv.lock` on Release/Hotfix Push
+
+**Purpose**: Removes the last manual step in cutting a release — hand-editing `pyproject.toml`
+(and re-running `uv lock`) to match a `release/*`/`hotfix/*` branch's name before pushing it. See
+spec.md's 2026-09-14 amendment (FR-013), contracts/cli-validate-version-command.md's `--fix` flag,
+and contracts/ci-workflow.md's updated J2/J5/P7/P8.
+
+**Goal**: A push to a release/hotfix branch whose `pyproject.toml` doesn't yet match the branch's
+version gets corrected automatically (`pyproject.toml` rewritten, `uv.lock` re-locked, both
+committed and pushed) instead of failing; a pull request from that branch still only verifies.
+
+- [X] T023 Add `write_project_version(project_root: Path, version: str) -> bool` to `src/wh40k_cheatsheet/versioning.py` — a scoped, `[project]`-table-only text substitution of the `version = "..."` line, returning whether it actually changed anything (data-model.md §1; research.md §6)
+- [X] T024 Add a `--fix` flag to the `validate-version` subparser and update `_cmd_validate_version` in `src/wh40k_cheatsheet/cli.py`: on a mismatch, call `write_project_version` and print `"<old> -> <new>"` instead of raising, only when `--fix` is set (contracts/cli-validate-version-command.md G5; depends on T023)
+- [X] T025 [P] Unit tests for `write_project_version` in `tests/unit/test_versioning.py`: rewrites the version line; preserves every other byte of the file (comments, other tables, a same-named `version` key elsewhere); is a byte-for-byte no-op when already matching; raises `VersionError` for a missing file or missing `[project].version` (depends on T023)
+- [X] T026 [P] Integration tests for `validate-version --fix` in `tests/integration/test_validate_version_command.py`: rewrites on mismatch and prints the old/new pair; no-ops when already matching; still raises on a malformed branch version; still a no-op on a non-release branch (depends on T024)
+- [X] T027 Update `.github/workflows/quality.yml`'s `validate-version` job: add `permissions: contents: write`; branch its steps on `github.event_name` — `pull_request` keeps the original verify-only call, `push` calls `--fix`, conditionally re-locks (`uv lock` only if `pyproject.toml` changed), and commits + pushes both files with a `[skip ci]` message when either changed (contracts/ci-workflow.md J2/P7/P8; depends on T024)
+- [X] T028 [P] Add `ref: ${{ github.ref_name }}` to `publish-prerelease`'s checkout step in `.github/workflows/quality.yml`, so it observes T027's auto-fix commit instead of the stale pre-push SHA (contracts/ci-workflow.md J5)
+- [X] T029 [P] Update `docs/DEVELOPMENT.md`'s "Continuous Integration" table and "Versioning & releases" section for the new auto-fix behavior and the `--fix` flag
+- [X] T030 Run `uv run poe check` and confirm every gate passes, including the new tests
+
+**Checkpoint**: Pushing a `release/X.Y.Z` branch with a stale `pyproject.toml` self-corrects; a
+subsequent pull request into `main`/`develop` finds nothing left to fix.
+
+---
+
+## Phase 8: Bug Fix (2026-09-14) — `publish-release` Never Ran on `main`
+
+**Purpose**: Reported directly against a real `main`-branch CI run: `check` and `build` both
+succeeded, but `publish-release` stayed skipped anyway, meaning no GitHub Release was ever
+published from any merge to `main` since this feature shipped. Root cause: bare `success()` in
+`publish-release`'s `if:` evaluates across its *entire transitive* `needs:` chain, and `build`
+(one of its two direct `needs:`) itself depends on `validate-version`, which is *always* skipped
+on `main` by design. See spec.md's 2026-09-14 bug-fix note and `contracts/ci-workflow.md`'s P9 /
+"Known boundaries".
+
+- [X] T031 Change `publish-release`'s `if:` in `.github/workflows/quality.yml` from `success() && github.ref == 'refs/heads/main'` to `needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'`
+- [X] T032 [P] Apply the same fix to `publish-prerelease`'s `if:` for consistency (not actually broken today — `validate-version` genuinely runs, not skips, for the release/hotfix branches it fires on — but this prevents the same failure mode if a future conditionally-skipped job is added to the graph)
+- [X] T033 [P] Document the bug and fix in `contracts/ci-workflow.md` (new P9 guarantee, updated J6, new "Known boundaries" section) and `spec.md` (new "Bug fix 2026-09-14" note)
+
+**Checkpoint**: A `main`-branch push where `check`/`build` both succeed now actually reaches
+`publish-release` and publishes/updates the GitHub Release — verify on the next real merge to
+`main`, since this specific `success()`-transitivity interaction isn't practically reproducible in
+a local/unit test (it's an artifact of GitHub Actions' own job-scheduling semantics, not this
+project's code).

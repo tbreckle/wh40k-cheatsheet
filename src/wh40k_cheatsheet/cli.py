@@ -18,6 +18,7 @@ from wh40k_cheatsheet.versioning import (
     is_valid_semver,
     parse_release_branch,
     read_project_version,
+    write_project_version,
 )
 
 logger = logging.getLogger(__name__)
@@ -101,17 +102,17 @@ def _cmd_package(args: argparse.Namespace) -> int:
 
 
 def _cmd_validate_version(args: argparse.Namespace) -> int:
-    """Handle the `validate-version` subcommand: validate a release/hotfix branch's version.
+    """Handle the `validate-version` subcommand: validate (or fix) a release/hotfix branch's version.
 
     Args:
-        args: Parsed CLI arguments (`project_root`, `branch`).
+        args: Parsed CLI arguments (`project_root`, `branch`, `fix`).
 
     Returns:
         The process exit code (always `0`; failures raise instead).
 
     Raises:
-        VersionError: The branch's version is malformed SemVer, or disagrees with the
-            project's `pyproject.toml` version.
+        VersionError: The branch's version is malformed SemVer, or (without `--fix`) disagrees
+            with the project's `pyproject.toml` version.
     """
     version = parse_release_branch(args.branch)
     if version is None:
@@ -124,9 +125,13 @@ def _cmd_validate_version(args: argparse.Namespace) -> int:
     project_root = Path(args.project_root)
     project_version = read_project_version(project_root)
     if version != project_version:
-        raise VersionError(
-            f"branch '{args.branch}' declares version '{version}', but pyproject.toml declares '{project_version}'"
-        )
+        if not args.fix:
+            raise VersionError(
+                f"branch '{args.branch}' declares version '{version}', but pyproject.toml declares '{project_version}'"
+            )
+        write_project_version(project_root, version)
+        print(f"{project_version} -> {version}")
+        return 0
 
     print(version)
     return 0
@@ -226,6 +231,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     _add_verbose_flag(validate_version_parser, suppress_default=True)
     validate_version_parser.add_argument("branch", help="Branch name, e.g. release/1.2.0 or hotfix/1.2.1")
+    validate_version_parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Rewrite pyproject.toml's version to match the branch instead of failing on a mismatch",
+    )
     validate_version_parser.set_defaults(func=_cmd_validate_version)
 
     return parser

@@ -62,6 +62,24 @@ uv run wh40k-cheatsheet validate-version release/9.9.9; echo "exit: $?"   # does
 
 **Expected**: both fail with exit `1` and a clear message (contract G2/G3).
 
+### 5b. `validate-version --fix` corrects a mismatch instead of failing (2026-09-14 amendment)
+
+```bash
+uv run wh40k-cheatsheet validate-version release/9.9.9 --fix; echo "exit: $?"
+git diff pyproject.toml
+git checkout pyproject.toml   # revert the local experiment
+```
+
+**Expected**: prints `"<old> -> 9.9.9"`, exit `0`, and `pyproject.toml`'s `[project].version` line
+is now `9.9.9` with every other line byte-identical (contract G5). Malformed versions still fail
+even with `--fix`:
+
+```bash
+uv run wh40k-cheatsheet validate-version release/not-semver --fix; echo "exit: $?"
+```
+
+**Expected**: fails with exit `1`, identical to step 5 (contract G2 — `--fix` never suppresses this).
+
 ### 6. Run the automated suite
 
 ```bash
@@ -77,13 +95,16 @@ This part can only be exercised once the repository is pushed to GitHub with Git
 1. Push a `feature/x` branch with a trivial change. **Expected**: the `check` and `build` jobs run;
    no `validate-version` job runs; no artifact is uploaded; nothing is published (contracts T1, J1,
    J3, J5/P5).
-2. Set `pyproject.toml`'s version to a new value, e.g. `0.2.0`, and push a `release/0.2.0` branch.
-   **Expected**: `check`, `validate-version`, and `build` all run and pass; `dist/*.pdf` is
+2. Push a `release/0.2.0` branch **without** touching `pyproject.toml` first (2026-09-14
+   amendment — no manual bump needed). **Expected**: `validate-version` rewrites `pyproject.toml`
+   to `0.2.0`, runs `uv lock`, and pushes a `chore: bump version to 0.2.0 [skip ci]` commit onto
+   the branch; `check` and `build` then run and pass against that commit; `dist/*.pdf` is
    available as a downloadable "cheatsheet-pdfs" artifact on that workflow run; the repository's
-   Releases page is unchanged (contracts J2, J3, J4).
-3. Push a commit to the same `release/0.2.0` branch with a version that no longer matches
-   `pyproject.toml` (e.g. edit only the branch's local commit, not the file). **Expected**:
-   `validate-version` fails, `build` is skipped (not run), no artifact for that push.
+   Releases page is unchanged (contracts J2, J3, J4). Because of `[skip ci]`, this push does not
+   itself trigger a second workflow run.
+3. Open a pull request from `release/0.2.0` into `main`. **Expected**: `validate-version` runs in
+   verify-only mode and passes (the push in step 2 already fixed the branch) — it would only fail
+   here if something bypassed that automation (contract J2's pull-request branch).
 4. Merge `release/0.2.0` into `main`. **Expected**: `check` and `build` run on the merge commit;
    `publish-release` runs after both succeed and publishes a GitHub Release tagged `v0.2.0`,
    containing every edition/language PDF, marked as a full release (no `-` in `0.2.0`) (contracts
