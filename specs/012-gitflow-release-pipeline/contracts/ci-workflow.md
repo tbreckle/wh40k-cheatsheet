@@ -26,7 +26,7 @@ J2's and J5's updated rows and the mechanism snippet below.
 | J3 | `build`: runs on every triggering event; runs `uv run wh40k-cheatsheet package`; `needs: validate-version` **only** when the ref is `release/**`/`hotfix/**` (so a version failure — or, on `push`, a failed auto-fix — prevents any build on those branches, per FR-004's "build no PDFs") | FR-002; FR-004; FR-013 |
 | J4 | `build` uploads `dist/*.pdf` as a workflow artifact named `cheatsheet-pdfs` **only** when the ref is `release/**`, `hotfix/**`, or `main` (feature/develop pushes don't need it) | FR-005; contracts/cli-package-command.md |
 | J5 | `publish-prerelease`: runs **only** for a `push` event (never a `pull_request`) whose `github.ref_name` starts with `release/` or `hotfix/`; `needs: [check, build]`; checks out `ref: ${{ github.ref_name }}` rather than the default triggering SHA (2026-09-14 amendment), so `read_project_version` below sees J2's auto-fix commit rather than a stale pre-fix version | FR-006; FR-009; FR-012; FR-013 |
-| J6 | `publish-release`: runs **only** when `github.ref == 'refs/heads/main'` AND `needs.check.result`/`needs.build.result` are both `'success'` (2026-09-14 bug fix — see P9 and "Known boundaries" below for why this must be checked explicitly rather than via bare `success()`); `needs: [check, build]` | FR-007; FR-009; FR-010; FR-012 |
+| J6 | `publish-release`: runs **only** when `always()` (2026-09-14 bug fix) AND `needs.check.result`/`needs.build.result` are both `'success'` AND `github.ref == 'refs/heads/main'` — see P9 and "Known boundaries" below for why both the `always()` prefix and the explicit `needs.*.result` checks (never bare `success()`) are required; `needs: [check, build]` | FR-007; FR-009; FR-010; FR-012 |
 | J7 | Both `publish-prerelease` and `publish-release` download the `cheatsheet-pdfs` artifact produced by `build` in the *same run* — neither ever rebuilds | research.md §4 |
 
 ## Publish contract
@@ -41,7 +41,7 @@ J2's and J5's updated rows and the mechanism snippet below.
 | P6 | `publish-prerelease` never runs for a `pull_request` event or for `main` — structurally, via the job's `if:`, not a runtime check that could be bypassed; `publish-release` never runs for a ref other than `refs/heads/main` | FR-012 |
 | P7 | The job's `permissions:` are scoped to `contents: write` only on `publish-prerelease`, `publish-release`, and (2026-09-14 amendment) `validate-version` — the minimum needed for each to push a commit/tag; `check` and `build` keep the default read-only token | Least-privilege; constitution's security posture |
 | P8 (2026-09-14) | `validate-version`'s auto-fix commit (J2) always includes `[skip ci]` in its message, so the push it makes does not itself trigger a second, redundant workflow run — the branch's version is corrected exactly once per genuine push | Avoids doubling CI cost per release-branch push; no FR directly requires this, it is a cost/consistency choice |
-| P9 (2026-09-14 bug fix) | `publish-prerelease` and `publish-release` gate on `needs.check.result == 'success' && needs.build.result == 'success'`, never bare `success()` | FR-009; see "Known boundaries" below |
+| P9 (2026-09-14 bug fix, corrected same day) | `publish-prerelease` and `publish-release` gate on `always() && needs.check.result == 'success' && needs.build.result == 'success' && ...` — never bare `success()`, and never omitting the `always()` prefix, either of which independently causes the job to stay skipped on `main` (see "Known boundaries" below) | FR-009 |
 
 ## Mechanism (implementation detail, documented for traceability)
 
@@ -96,7 +96,7 @@ jobs:
           path: dist/*.pdf
 
   publish-prerelease:
-    if: needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
+    if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
     needs: [check, build]
     runs-on: ubuntu-latest
     permissions:
@@ -121,7 +121,7 @@ jobs:
           fi
 
   publish-release:
-    if: needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
+    if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
     needs: [check, build]
     runs-on: ubuntu-latest
     permissions:
@@ -156,24 +156,43 @@ literal expression syntax.
 
 ## Known boundaries
 
-- **Bare `success()` is unsafe whenever a job's dependency chain contains an *intentionally*
-  skipped job further upstream, even one not in that job's own `needs:` list** (2026-09-14 bug
-  fix, reported against a real `main`-branch run: `check` and `build` both succeeded, but
-  `publish-release` stayed skipped anyway). `success()` in a job's `if:` evaluates across that
-  job's *entire transitive* dependency chain, not just its direct `needs:`. `publish-release`'s
+Two *independent* GitHub Actions defaults compound here, and both had to be found and fixed
+against real `main`-branch runs (2026-09-14) before `publish-release` actually ran — fixing only
+one still left it skipped:
+
+- **Bug 1 — bare `success()` treats a skipped ancestor as a failure, across the *entire
+  transitive* dependency chain, not just the job's direct `needs:`.** `publish-release`'s
   `needs: [check, build]` doesn't list `validate-version` at all — but `build` itself needs
   `validate-version`, which is *always* skipped on `main` by design (T1/J2 — `main` never matches
   the `release/`/`hotfix/` prefix check). `success()` sees that non-`success` conclusion somewhere
-  in the ancestry and returns `false`, unconditionally, on every push to `main`. The fix (P9): gate
-  on `needs.check.result == 'success' && needs.build.result == 'success'` instead — this only
-  inspects the two jobs actually named in `needs:`, so `validate-version`'s skip (three hops away
-  from `publish-release`, two from `publish-prerelease`) never enters into it. Before this fix,
-  `publish-release` could never run at all, since a push to `main` always skips
-  `validate-version` — this made User Story 1 (the feature's core deliverable) entirely
-  non-functional despite every individual job passing.
+  in the ancestry and returns `false`, unconditionally, on every push to `main`. This exact
+  behavior is an [officially acknowledged GitHub Actions bug, on their backlog with no fix
+  timeline](https://github.com/orgs/community/discussions/45058) as of 2026-09-14. Fix: check
+  `needs.check.result == 'success' && needs.build.result == 'success'` directly instead of
+  `success()` — this only inspects the two jobs actually named in `needs:`.
+- **Bug 2 (found immediately after "fixing" bug 1, against another real run that *still* stayed
+  skipped) — that explicit `needs.*.result` check alone is not sufficient**, because GitHub
+  Actions applies a *separate*, implicit default: a job is skipped whenever *any* job anywhere in
+  its dependency chain — direct or transitive, regardless of what that job's own `if:` expression
+  says — didn't report `'success'`, and this implicit default also treats `'skipped'` the same as
+  `'failed'`. Only an explicit `always()` at the front of the `if:` overrides this default; nothing
+  else in the expression can. `build`'s own `if: always() && (needs.validate-version.result ==
+  'success' || needs.validate-version.result == 'skipped')` already proved this pattern correct
+  within this same workflow — it's the *only* reason `build` runs despite depending on the
+  sometimes-skipped `validate-version`; `publish-release`/`publish-prerelease` simply never
+  applied that same `always()` prefix to themselves. Fix: prepend `always() &&` to both jobs'
+  `if:`, ANDed with (not replacing) the explicit `needs.*.result` checks from bug 1's fix — the
+  `always()` alone would let the job run even on a genuine `check`/`build` failure, so both parts
+  are required together (P9).
+- Before both fixes, `publish-release` could never run at all on any push to `main`, since `main`
+  always skips `validate-version` — this made User Story 1 (the feature's core deliverable)
+  entirely non-functional despite every individual job passing, for the entire time this pipeline
+  had been live.
 - General takeaway for any *future* job added to this graph with its own `needs:` and a
-  hand-written `if:`: prefer explicit `needs.<job>.result == 'success'` checks for each name
-  actually listed in that job's own `needs:` over bare `success()`/`failure()`, whenever any job
-  reachable through that `needs:` chain (directly or transitively) is ever conditionally skipped
-  by design — which, in this workflow, `validate-version` is, on every branch that isn't
-  `release/*`/`hotfix/*`.
+  hand-written `if:`, whenever any job reachable through that `needs:` chain (directly or
+  transitively) is ever conditionally skipped by design (in this workflow, `validate-version` is,
+  on every branch that isn't `release/*`/`hotfix/*`): write the condition as
+  `always() && needs.<job>.result == 'success' && needs.<job2>.result == 'success' && ...` for
+  every name actually listed in that job's own `needs:` — never bare `success()`/`failure()`, and
+  never omit the `always()` prefix even after switching away from `success()`. `build`'s own `if:`
+  is the reference pattern to copy.

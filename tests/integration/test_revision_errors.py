@@ -24,7 +24,7 @@ def test_nonexistent_revision_fails_listing_available(tmp_path, capsys):
     captured = capsys.readouterr()
     assert exit_code == 1
     assert "2020-01-01-00" in captured.err
-    assert "2026-08-01-00" in captured.err
+    assert "2026-06-01-00" in captured.err
     assert not (root / "out").exists()
 
 

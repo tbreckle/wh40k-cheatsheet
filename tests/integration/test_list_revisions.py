@@ -24,9 +24,9 @@ def _project_root_with_extra_revisions(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
 
-    base = root / "editions" / "11e" / "2026-08-01-00"
-    shutil.copytree(base, root / "editions" / "11e" / "2026-07-01-00")
-    shutil.copytree(base, root / "editions" / "11e" / "2026-08-01-01")
+    base = root / "editions" / "11e" / "2026-06-01-00"
+    shutil.copytree(base, root / "editions" / "11e" / "2026-05-01-00")
+    shutil.copytree(base, root / "editions" / "11e" / "2026-06-01-01")
     return root
 
 
@@ -40,7 +40,7 @@ def test_list_shows_revisions_in_chronological_order_with_latest_marked(tmp_path
     lines = captured.out.splitlines()
     revision_lines = [line for line in lines if line.strip().startswith("-")]
     assert revision_lines == [
-        "    - 2026-07-01-00",
-        "    - 2026-08-01-00",
-        "    - 2026-08-01-01 (latest)",
+        "    - 2026-05-01-00",
+        "    - 2026-06-01-00",
+        "    - 2026-06-01-01 (latest)",
     ]

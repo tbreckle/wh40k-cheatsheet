@@ -15,8 +15,8 @@ def _project_root_with_extra_revisions(tmp_path: Path) -> Path:
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
     shutil.copytree(REPO_ROOT / "images", root / "images")
 
-    base_revision_dir = root / "editions" / "11e" / "2026-08-01-00"
-    later_same_day = root / "editions" / "11e" / "2026-08-01-01"
+    base_revision_dir = root / "editions" / "11e" / "2026-06-01-00"
+    later_same_day = root / "editions" / "11e" / "2026-06-01-01"
     shutil.copytree(base_revision_dir, later_same_day)
     return root
 
@@ -36,19 +36,19 @@ def test_default_selects_latest_revision(tmp_path):
 
     doc = generate(config, _paths(root), "11e", language="en")[0]
 
-    assert str(doc.revision) == "2026-08-01-01"
-    assert doc.html_path == root / "out" / "11e" / "2026-08-01-01" / "en.html"
-    assert doc.pdf_path == root / "out" / "11e" / "2026-08-01-01" / "en.pdf"
+    assert str(doc.revision) == "2026-06-01-01"
+    assert doc.html_path == root / "out" / "11e" / "2026-06-01-01" / "en.html"
+    assert doc.pdf_path == root / "out" / "11e" / "2026-06-01-01" / "en.pdf"
     assert doc.html_path.is_file()
     assert doc.pdf_path.is_file()
 
 
 def test_default_selects_highest_same_day_sequence(tmp_path):
     root = _project_root_with_extra_revisions(tmp_path)
-    even_later = root / "editions" / "11e" / "2026-08-01-02"
-    shutil.copytree(root / "editions" / "11e" / "2026-08-01-00", even_later)
+    even_later = root / "editions" / "11e" / "2026-06-01-02"
+    shutil.copytree(root / "editions" / "11e" / "2026-06-01-00", even_later)
     config = load_project_config(root / "project.yaml")
 
     doc = generate(config, _paths(root), "11e", language="en")[0]
 
-    assert str(doc.revision) == "2026-08-01-02"
+    assert str(doc.revision) == "2026-06-01-02"

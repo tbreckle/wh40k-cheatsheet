@@ -6,7 +6,7 @@
 uv run wh40k-cheatsheet list
 uv run wh40k-cheatsheet generate --edition 11e                      # all languages, latest revision
 uv run wh40k-cheatsheet generate --edition 11e --language en        # one language, latest revision
-uv run wh40k-cheatsheet generate --edition 11e --revision 2026-08-01-00 --language de
+uv run wh40k-cheatsheet generate --edition 11e --revision 2026-06-01-00 --language de
 uv run wh40k-cheatsheet generate --edition 11e --language en --print-friendly  # + grayscale PDF
 ```
 
@@ -76,7 +76,7 @@ the latest marked.
 
 `content.yaml` provides the render context consumed by `templates/*.html.j2` — see
 `templates/cheatsheet.html.j2` for the supported content-block vocabulary (phases, callouts, tables,
-stratagem cards, glossary, etc.) and `editions/11e/2026-08-01-00/{en,de}/content.yaml` for a
+stratagem cards, glossary, etc.) and `editions/11e/2026-06-01-00/{en,de}/content.yaml` for a
 complete worked example (English and German).
 
 For a heading nested one level below a `phase` — e.g. a named step within a phase — use
