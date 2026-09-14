@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wh40k-cheatsheet"
-version = "0.1.0"
+version = "0.3.0"
 description = "Generates templated, multi-language, multi-edition Warhammer 40,000 cheat sheet PDFs"
 requires-python = ">=3.12"
 license = "MIT"
