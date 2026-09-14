@@ -137,3 +137,39 @@ dependency MUST be justified" for CI tooling too.
   the exact same create-or-update behavior (FR-011) with tooling already on the runner.
 - *GitHub's REST API directly via `curl`*: rejected — `gh` already wraps this correctly (pagination,
   multipart asset upload, auth) with far less code to get right.
+
+## 6. How should CI auto-bump `pyproject.toml`/`uv.lock` on a release/hotfix push? (2026-09-14 amendment)
+
+**Decision**: Keep the release/hotfix branch name as the sole source of the target version — no
+GitVersion-style inference from commit history or message content. On a direct push (never a pull
+request), extend the existing `validate-version` command with a `--fix` flag: on a mismatch, it
+rewrites `pyproject.toml`'s `[project].version` via a new `write_project_version` function (plain
+text substitution, no new dependency — `pyproject.toml`'s version is always a single-line string
+assignment in this project), the workflow then runs `uv lock` (only if that changed something) and
+commits + pushes both files back to the branch with `git`, tools already present on the runner.
+
+**Rationale**: This is the minimal change that removes the one remaining manual step (hand-editing
+two files before every release push) without introducing a second versioning policy alongside the
+branch-name convention FR-003 already establishes. `uv.lock` needs its own re-lock because it
+embeds this project's own package version (`source = { editable = "." }` entries record it) —
+skipping that step would leave `uv sync --locked` failing on the very next CI step once
+`pyproject.toml` no longer matches the lock file.
+
+**Alternatives considered**:
+- *Infer the version bump from conventional-commit messages (real GitVersion/semantic-release
+  behavior)*: rejected as explicitly out of scope by the 2026-09-14 clarification — adds a second,
+  less predictable source of truth for "what version is this," and nothing in this project's commit
+  history follows a conventional-commit format today, so it would need to be adopted as a new
+  process convention first.
+- *A TOML-writing library (`tomlkit`) for a fully round-trip-safe edit*: rejected — a scoped,
+  line-anchored text substitution (research.md's existing minimalism precedent, §1/§5) already
+  preserves every other byte of the file for the one shape `pyproject.toml`'s version line
+  actually takes here; a new dependency buys nothing observable.
+- *Compute and use the bumped version only in-memory for that CI run, never committing it back*:
+  rejected per the 2026-09-14 clarification — leaves the checked-in `pyproject.toml`/`uv.lock`
+  permanently one version behind what actually shipped, which is exactly the drift `validate-version`
+  originally existed to catch.
+- *Also bump `main` to a new dev/prerelease version right after a release/hotfix merge*: rejected
+  per the 2026-09-14 clarification — `main` only ever reflects a shipped version; starting the next
+  cycle's version bump is deferred to whenever the next release/hotfix branch is cut, unchanged from
+  today.

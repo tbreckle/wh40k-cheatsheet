@@ -13,6 +13,10 @@ SEMVER_PATTERN = re.compile(
 
 _RELEASE_BRANCH_PATTERN = re.compile(r"^(?:release|hotfix)/(.+)$")
 
+# Matches a `version = "..."` assignment line, capturing the quoted value. Anchored per-line
+# (not per-file) so callers can scope it to lines already known to be inside `[project]`.
+_VERSION_LINE_PATTERN = re.compile(r'^version\s*=\s*"([^"]*)"\s*$')
+
 
 class VersionError(RuntimeError):
     """Raised when a release/hotfix branch's version is malformed or disagrees with `pyproject.toml`."""
@@ -83,3 +87,52 @@ def read_project_version(project_root: Path) -> str:
         return data["project"]["version"]
     except KeyError as exc:
         raise VersionError(f"{pyproject_path} has no [project].version") from exc
+
+
+def write_project_version(project_root: Path, version: str) -> bool:
+    """Rewrite `pyproject.toml`'s `[project].version` field in place, if it differs.
+
+    Edits the raw text of a single `version = "..."` line inside the `[project]` table, leaving
+    every other byte of the file — formatting, comments, key order, other tables' own `version`
+    keys — untouched. Deliberately avoids a TOML-writing dependency: `[project].version` is
+    always a simple one-line string assignment in this project's `pyproject.toml`, so a scoped
+    line replacement is sufficient and keeps the diff minimal.
+
+    Args:
+        project_root: Directory containing `pyproject.toml`.
+        version: The new version string to write (not validated as SemVer here — callers that
+            need that guarantee, e.g. the CLI, validate before calling this).
+
+    Returns:
+        `True` if the file was rewritten (the version actually changed); `False` if the
+        `[project].version` already equalled `version` (file left untouched).
+
+    Raises:
+        VersionError: `pyproject.toml` is missing, or has no `[project]` table with a
+            `version = "..."` line.
+    """
+    pyproject_path = project_root / "pyproject.toml"
+    if not pyproject_path.is_file():
+        raise VersionError(f"pyproject.toml not found: {pyproject_path}")
+
+    lines = pyproject_path.read_text(encoding="utf-8").splitlines(keepends=True)
+
+    in_project_table = False
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("[") and stripped.endswith("]"):
+            in_project_table = stripped == "[project]"
+            continue
+        if not in_project_table:
+            continue
+        match = _VERSION_LINE_PATTERN.match(stripped)
+        if match is None:
+            continue
+        current = match.group(1)
+        if current == version:
+            return False
+        lines[index] = line.replace(f'"{current}"', f'"{version}"', 1)
+        pyproject_path.write_text("".join(lines), encoding="utf-8")
+        return True
+
+    raise VersionError(f"{pyproject_path} has no [project].version")

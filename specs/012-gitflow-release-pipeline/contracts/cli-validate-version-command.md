@@ -2,16 +2,21 @@
 
 Feature: [spec.md](../spec.md) · Plan: [plan.md](../plan.md) · Data model: [data-model.md](../data-model.md)
 
+**Amendment 2026-09-14**: adds an optional `--fix` flag (FR-013) that corrects a version mismatch
+by rewriting `pyproject.toml` instead of failing. Every other guarantee below (G1–G4, F1) is
+unchanged and applies identically whether or not `--fix` is passed.
+
 ---
 
 ## CLI contract
 
 | # | Guarantee | Basis |
 |---|-----------|-------|
-| G1 | `wh40k-cheatsheet validate-version <branch>` is a no-op success (exit `0`) for any branch name that isn't `release/*` or `hotfix/*` | data-model.md §3 step 1 — safe to run unconditionally |
-| G2 | For a `release/X.Y.Z` or `hotfix/X.Y.Z` branch, the command validates `X.Y.Z` is well-formed SemVer 2.0.0 (research.md §3's regex), failing loudly (non-zero exit, `VersionError`, clear message) if not | FR-003; FR-004; Edge case: malformed version |
-| G3 | The command then validates `X.Y.Z` exactly equals `pyproject.toml`'s `[project].version` (relative to `--project-root`), failing loudly and naming *both* values if they disagree | FR-004; Edge case: "a clear error naming both values" |
-| G4 | On success, the validated version string is printed to stdout and the exit code is `0` | data-model.md §3 step 5 |
+| G1 | `wh40k-cheatsheet validate-version <branch>` is a no-op success (exit `0`) for any branch name that isn't `release/*` or `hotfix/*`, with or without `--fix` | data-model.md §3 step 1 — safe to run unconditionally |
+| G2 | For a `release/X.Y.Z` or `hotfix/X.Y.Z` branch, the command validates `X.Y.Z` is well-formed SemVer 2.0.0 (research.md §3's regex), failing loudly (non-zero exit, `VersionError`, clear message) if not — `--fix` does not suppress this failure, since there is no valid value it could write | FR-003; FR-004; Edge case: malformed version |
+| G3 | Without `--fix`, the command then validates `X.Y.Z` exactly equals `pyproject.toml`'s `[project].version` (relative to `--project-root`), failing loudly and naming *both* values if they disagree | FR-004; Edge case: "a clear error naming both values" |
+| G4 | On success, the command prints to stdout and exits `0`: the version string alone when it already matched, or `"<old> -> <new>"` when `--fix` corrected a mismatch | data-model.md §3 step 5 |
+| G5 (2026-09-14) | With `--fix`, a mismatch is corrected by calling `write_project_version` (rewriting only `pyproject.toml`'s `[project].version` line, per contracts/cli-validate-version-command.md's sibling `versioning.write_project_version` behavior) instead of raising `VersionError`; when the version already matches, `--fix` has no effect (no write, same output as without the flag) | FR-013 |
 
 ## Example
 
@@ -31,6 +36,11 @@ $ uv run wh40k-cheatsheet validate-version release/1.3.0   # pyproject.toml says
 Error: branch 'release/1.3.0' declares version '1.3.0', but pyproject.toml declares '1.2.0'
 $ echo $?
 1
+
+$ uv run wh40k-cheatsheet validate-version release/1.3.0 --fix   # pyproject.toml said 1.2.0
+1.2.0 -> 1.3.0
+$ echo $?
+0
 ```
 
 ## Failure-mode contract

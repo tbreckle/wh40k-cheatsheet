@@ -8,9 +8,17 @@ on:
 
 jobs:
   validate-version:
+    # On a `pull_request` (release/hotfix branch opened against develop/main), only verify —
+    # the push below already fixed the branch itself, so a mismatch here would mean something
+    # bypassed that automation. On a `push` directly to the branch, auto-fix instead of failing:
+    # rewrite pyproject.toml to the branch's own version, re-lock, and commit+push the result, so
+    # a maintainer never hand-edits either file when cutting a release. See spec.md's 2026-09-14
+    # amendment and contracts/ci-workflow.md.
     if: startsWith(github.head_ref || github.ref_name, 'release/') || startsWith(github.head_ref || github.ref_name, 'hotfix/')
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -22,8 +30,28 @@ jobs:
       - name: Sync environment
         run: uv sync --locked
 
-      - name: Validate branch version against pyproject.toml
-        run: uv run wh40k-cheatsheet validate-version "${{ github.head_ref || github.ref_name }}"
+      - name: Validate branch version against pyproject.toml (pull requests)
+        if: github.event_name == 'pull_request'
+        run: uv run wh40k-cheatsheet validate-version "${{ github.head_ref }}"
+
+      - name: Bump pyproject.toml to the branch's version (pushes)
+        if: github.event_name == 'push'
+        run: uv run wh40k-cheatsheet validate-version "${{ github.ref_name }}" --fix
+
+      - name: Re-lock dependencies if the version changed
+        if: github.event_name == 'push'
+        run: git diff --quiet -- pyproject.toml || uv lock
+
+      - name: Commit and push the version bump, if any
+        if: github.event_name == 'push'
+        run: |
+          if ! git diff --quiet -- pyproject.toml uv.lock; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add pyproject.toml uv.lock
+            git commit -m "chore: bump version to ${GITHUB_REF_NAME#*/} [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
   check:
     runs-on: ubuntu-latest
@@ -100,8 +128,9 @@ jobs:
     # Every push directly to a release/*/hotfix/* branch (not a PR, not main) publishes/updates a
     # GitHub Release for that branch's version, always marked pre-release — so a maintainer can
     # inspect exactly what will ship, on the public Releases page, before merging into main.
-    # `success()` must be explicit — see the comment on publish-release below for why.
-    if: success() && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
+    # Checking needs.check.result/needs.build.result explicitly (not bare `success()`) — see the
+    # comment on publish-release below for why bare `success()` is unsafe here.
+    if: needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
     needs: [check, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -109,6 +138,12 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Not github.sha: validate-version (a prerequisite of build, a prerequisite of this
+          # job) may have just pushed a version-bump commit onto this same branch; checking out
+          # the branch's current tip (rather than the pre-bump triggering commit) is what makes
+          # `read_project_version` below see that bump instead of a stale version.
+          ref: ${{ github.ref_name }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.0.1
@@ -148,10 +183,18 @@ jobs:
           fi
 
   publish-release:
-    # `success()` must be explicit here: providing a job's own `if:` replaces GitHub Actions'
-    # implicit "all `needs:` succeeded" check entirely, rather than being ANDed with it — so
-    # without this, publish-release would run even if `check` or `build` failed, violating FR-009.
-    if: success() && github.ref == 'refs/heads/main'
+    # An explicit success condition is required here: providing a job's own `if:` replaces
+    # GitHub Actions' implicit "all `needs:` succeeded" check entirely, rather than being ANDed
+    # with it — without one, publish-release would run even if `check` or `build` failed,
+    # violating FR-009. But bare `success()` is the WRONG explicit condition (2026-09-14 bug fix,
+    # reported against a real main-branch run that stayed skipped despite check/build both
+    # passing): `success()` evaluates across this job's ENTIRE transitive dependency chain, not
+    # just its own `needs: [check, build]` — and `build` itself depends on `validate-version`,
+    # which is *always* skipped on `main` by design (main is never a release/hotfix branch).
+    # `success()` treats that skip as non-success and skips this job too, every single time,
+    # regardless of whether check/build passed. Checking needs.check.result/needs.build.result
+    # directly sidesteps validate-version entirely, since it isn't in this job's own `needs:`.
+    if: needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
     needs: [check, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10

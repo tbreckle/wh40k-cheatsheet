@@ -8,6 +8,7 @@ from wh40k_cheatsheet.versioning import (
     is_valid_semver,
     parse_release_branch,
     read_project_version,
+    write_project_version,
 )
 
 
@@ -103,3 +104,71 @@ def test_read_project_version_matches_real_pyproject_toml():
     repo_root = Path(__file__).resolve().parents[2]
     version = read_project_version(repo_root)
     assert is_valid_semver(version)
+
+
+def test_write_project_version_rewrites_the_version_line(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[project]\nname = "x"\nversion = "1.2.0"\n', encoding="utf-8")
+
+    changed = write_project_version(tmp_path, "1.3.0")
+
+    assert changed is True
+    assert read_project_version(tmp_path) == "1.3.0"
+
+
+def test_write_project_version_preserves_everything_else_in_the_file(tmp_path):
+    original = (
+        "# a leading comment\n"
+        "[build-system]\n"
+        'requires = ["hatchling"]\n\n'
+        "[project]\n"
+        'name = "x"  # trailing comment\n'
+        'version = "1.2.0"\n'
+        'description = "d"\n\n'
+        "[tool.other]\n"
+        'setting = "kept"\n'
+    )
+    (tmp_path / "pyproject.toml").write_text(original, encoding="utf-8")
+
+    write_project_version(tmp_path, "1.3.0")
+
+    assert (tmp_path / "pyproject.toml").read_text(encoding="utf-8") == original.replace(
+        'version = "1.2.0"', 'version = "1.3.0"'
+    )
+
+
+def test_write_project_version_is_a_noop_when_already_matching(tmp_path):
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[project]\nname = "x"\nversion = "1.2.0"\n', encoding="utf-8")
+    mtime_before = path.stat().st_mtime_ns
+
+    changed = write_project_version(tmp_path, "1.2.0")
+
+    assert changed is False
+    assert path.stat().st_mtime_ns == mtime_before
+    assert read_project_version(tmp_path) == "1.2.0"
+
+
+def test_write_project_version_ignores_a_version_key_in_another_table(tmp_path):
+    # A `version = "..."` line outside `[project]` (e.g. a differently-shaped [tool.*] table)
+    # must never be mistaken for the package version.
+    (tmp_path / "pyproject.toml").write_text(
+        '[tool.other]\nversion = "9.9.9"\n\n[project]\nname = "x"\nversion = "1.2.0"\n',
+        encoding="utf-8",
+    )
+
+    write_project_version(tmp_path, "1.3.0")
+
+    text = (tmp_path / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'version = "9.9.9"' in text
+    assert read_project_version(tmp_path) == "1.3.0"
+
+
+def test_write_project_version_missing_file(tmp_path):
+    with pytest.raises(VersionError, match=r"pyproject\.toml not found"):
+        write_project_version(tmp_path, "1.3.0")
+
+
+def test_write_project_version_missing_project_table(tmp_path):
+    (tmp_path / "pyproject.toml").write_text('[tool.other]\nversion = "9.9.9"\n', encoding="utf-8")
+    with pytest.raises(VersionError, match=r"\[project\]\.version"):
+        write_project_version(tmp_path, "1.3.0")
