@@ -128,9 +128,9 @@ jobs:
     # Every push directly to a release/*/hotfix/* branch (not a PR, not main) publishes/updates a
     # GitHub Release for that branch's version, always marked pre-release — so a maintainer can
     # inspect exactly what will ship, on the public Releases page, before merging into main.
-    # Checking needs.check.result/needs.build.result explicitly (not bare `success()`) — see the
-    # comment on publish-release below for why bare `success()` is unsafe here.
-    if: needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
+    # `always() &&` + explicit needs.check.result/needs.build.result checks (not bare
+    # `success()`) — see the comment on publish-release below for why both parts are required.
+    if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
     needs: [check, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -183,18 +183,25 @@ jobs:
           fi
 
   publish-release:
-    # An explicit success condition is required here: providing a job's own `if:` replaces
-    # GitHub Actions' implicit "all `needs:` succeeded" check entirely, rather than being ANDed
-    # with it — without one, publish-release would run even if `check` or `build` failed,
-    # violating FR-009. But bare `success()` is the WRONG explicit condition (2026-09-14 bug fix,
-    # reported against a real main-branch run that stayed skipped despite check/build both
-    # passing): `success()` evaluates across this job's ENTIRE transitive dependency chain, not
-    # just its own `needs: [check, build]` — and `build` itself depends on `validate-version`,
-    # which is *always* skipped on `main` by design (main is never a release/hotfix branch).
-    # `success()` treats that skip as non-success and skips this job too, every single time,
-    # regardless of whether check/build passed. Checking needs.check.result/needs.build.result
-    # directly sidesteps validate-version entirely, since it isn't in this job's own `needs:`.
-    if: needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
+    # Two independent things are needed here, both learned the hard way against real main-branch
+    # runs that stayed skipped despite check/build both passing (2026-09-14 bug fix, corrected
+    # 2026-09-14):
+    #  1. Bare `success()` is WRONG: it evaluates across this job's ENTIRE transitive dependency
+    #     chain, not just its own `needs: [check, build]` — and `build` itself depends on
+    #     `validate-version`, which is *always* skipped on `main` by design (main is never a
+    #     release/hotfix branch). `success()` treats that skip as non-success and fails, every
+    #     time. Fixed by checking needs.check.result/needs.build.result directly instead — that
+    #     only inspects the two jobs actually named in this job's own `needs:`.
+    #  2. That alone is STILL not enough: GitHub Actions has a SEPARATE implicit default —
+    #     independent of whatever your own `if:` expression says — that skips a job whenever any
+    #     job anywhere in its dependency chain (direct or transitive) didn't succeed, and this
+    #     default treats "skipped" the same as "failed." Only `always()` in the `if:` overrides
+    #     it. `build`, above, already proves this: it only runs despite needing the
+    #     sometimes-skipped `validate-version` because its own `if:` starts with `always() &&`.
+    #     Without that same prefix here, checking needs.*.result correctly is not enough — the
+    #     implicit default still wins and skips the job before your condition even gets to
+    #     matter.
+    if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
     needs: [check, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10

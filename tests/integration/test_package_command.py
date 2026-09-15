@@ -89,7 +89,7 @@ def test_package_all_picks_up_a_new_edition_automatically(tmp_path):
 
 def test_package_all_fails_loudly_on_broken_content(tmp_path):
     root = _project_root(tmp_path)
-    (root / "editions" / "11e" / "2026-08-01-00" / "de" / "content.yaml").write_text(
+    (root / "editions" / "11e" / "2026-06-01-00" / "de" / "content.yaml").write_text(
         "not: valid: yaml: [[[", encoding="utf-8"
     )
     config = load_project_config(root / "project.yaml")

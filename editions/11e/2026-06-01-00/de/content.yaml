@@ -138,8 +138,8 @@ document:
       title: "Zielregeln"
     - type: list
       items:
-        - "<b>Normal/Sturm</b>: Ziel sichtbar, in Reichweite, nicht im Nahkampf."
-        - "<b>Indirekt</b>: Ziel muss nicht sichtbar sein; Ziel hat Deckungsvorteil; Treffer können nicht wiederholt werden; unmodifizierte 1-5 verfehlen (1-3, wenn die Einheit stehen geblieben und das Ziel für eine verbündete Einheit sichtbar ist)."
+        - html: "<b>Normal/Sturm</b>: Ziel sichtbar, in Reichweite, nicht im Nahkampf."
+        - html: "<b>Indirekt</b>: Ziel muss nicht sichtbar sein; Ziel hat Deckungsvorteil; Treffer können nicht wiederholt werden; unmodifizierte 1-5 verfehlen (1-3, wenn die Einheit stehen geblieben und das Ziel für eine verbündete Einheit sichtbar ist)."
         - "Im Nahkampf befindliche MONSTER- / FAHRZEUG-Einheiten können anvisiert werden; -1 auf Treffer."
         - "Verschiedene Waffen desselben Modells dürfen unterschiedliche Einheiten anvisieren; eine Waffe kann nicht auf mehrere Ziele aufgeteilt werden."
 
@@ -207,8 +207,8 @@ document:
         - "Geländemissionsziel: Missionsziel = das Geländestück selbst; in Reichweite = vollständig innerhalb dieser Fläche."
         - 'Missionszielmarker: in Reichweite = innerhalb 3" horizontal und 5" vertikal.'
         - "Kontrollstufe: addierter MK-Wert aller eigenen Modelle in Reichweite."
-        - "Höhere Kontrolle gewinnt; gleiche Kontrolle = umkämpft. Wird am Ende jeder Phase und jedes Zuges bestimmt."
-        - "<b>Gesichertes Missionsziel:</b> bleibt kontrolliert, auch ohne Modelle in Reichweite, bis die Kontrolle des Gegners deine am Ende einer Phase übersteigt."
+        - "Höhere Kontrollstufe gewinnt; gleiche Kontrollstufe = umkämpft. Wird am Ende jeder Phase und jedes Zuges bestimmt."
+        - "<b>Gesichertes Missionsziel:</b> bleibt kontrolliert, auch ohne Modelle in Reichweite, bis die Kontrollstufe des Gegners deine am Ende einer Phase übersteigt."
 
     - type: subphase
       title: "AKTIONEN"

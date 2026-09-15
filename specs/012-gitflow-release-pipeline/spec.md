@@ -54,22 +54,37 @@ to Github Releases."
   version is unaffected by this amendment: it is still whatever version the merged release/hotfix
   branch carried (already fixed by this mechanism before the merge), never separately bumped.
 
-### Bug fix 2026-09-14 (reported against a real `main`-branch CI run)
+### Bug fix 2026-09-14 (reported against two real `main`-branch CI runs, in two rounds)
 
-`publish-release` never actually ran on `main`, in any run, since this feature originally shipped:
-its `if: success() && github.ref == 'refs/heads/main'` used the bare `success()` status-check
-function, which evaluates across a job's *entire transitive* `needs:` chain — and `build` (one of
-`publish-release`'s two direct `needs:`) itself depends on `validate-version`, which is *always*
-skipped on `main` by design (FR-003/FR-004 only ever apply to `release/*`/`hotfix/*`). `success()`
-saw that upstream skip and returned `false` unconditionally, so `publish-release` was skipped on
-every single push to `main`, regardless of whether `check`/`build` passed — silently defeating User
-Story 1, this feature's entire core deliverable, despite every individual job reporting green.
-Fixed by checking `needs.check.result == 'success' && needs.build.result == 'success'` directly
-instead of bare `success()`, in both `publish-release` and `publish-prerelease` (the latter wasn't
-actually broken today, since `validate-version` genuinely runs — not skips — on the release/hotfix
-branches `publish-prerelease` fires for, but is fixed the same way for consistency and to not
-reintroduce this exact failure mode the next time a conditionally-skipped job is added to the
-graph). See `contracts/ci-workflow.md`'s P9 and "Known boundaries" section.
+`publish-release` never actually ran on `main`, in any run, since this feature originally shipped
+— silently defeating User Story 1, this feature's entire core deliverable, despite every
+individual job reporting green. Two *independent* GitHub Actions defaults compounded to cause
+this; fixing only the first still left it skipped, caught against a second real run:
+
+1. Its `if: success() && github.ref == 'refs/heads/main'` used the bare `success()` status-check
+   function, which evaluates across a job's *entire transitive* `needs:` chain — and `build` (one
+   of `publish-release`'s two direct `needs:`) itself depends on `validate-version`, which is
+   *always* skipped on `main` by design (FR-003/FR-004 only ever apply to
+   `release/*`/`hotfix/*`). `success()` saw that upstream skip and returned `false`
+   unconditionally. This exact behavior is an [officially acknowledged GitHub Actions bug, on
+   their backlog](https://github.com/orgs/community/discussions/45058) as of 2026-09-14. First
+   fix: check `needs.check.result == 'success' && needs.build.result == 'success'` directly
+   instead of bare `success()`.
+2. That alone was **not enough** — confirmed still skipped on the very next real merge to `main`
+   after deploying fix 1. GitHub Actions applies a *separate* implicit default: a job is skipped
+   whenever any job anywhere in its dependency chain (direct or transitive) didn't report
+   `'success'` — treating `'skipped'` the same as `'failed'` — regardless of what that job's own
+   `if:` expression says, unless that expression starts with `always()`. This project's own
+   `build` job already proved the fix pattern: it only runs (despite depending on the
+   sometimes-skipped `validate-version`) because its `if:` begins `always() && (...)`.
+   `publish-release`/`publish-prerelease` never had that prefix. Second fix: prepend `always() &&`
+   to both jobs' `if:`, ANDed with (not replacing) fix 1's explicit `needs.*.result` checks.
+
+Applied the same fix to both `publish-release` and `publish-prerelease` (the latter wasn't actually
+broken by either bug, since `validate-version` genuinely runs — not skips — on the release/hotfix
+branches it fires for, but is fixed the same way for consistency and to not reintroduce either
+failure mode the next time a conditionally-skipped job is added to the graph). See
+`contracts/ci-workflow.md`'s P9 and "Known boundaries" section for the full mechanism.
 
 ## User Scenarios & Testing *(mandatory)*
 

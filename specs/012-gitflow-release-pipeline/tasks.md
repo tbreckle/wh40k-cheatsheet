@@ -227,22 +227,24 @@ subsequent pull request into `main`/`develop` finds nothing left to fix.
 
 ---
 
-## Phase 8: Bug Fix (2026-09-14) — `publish-release` Never Ran on `main`
+## Phase 8: Bug Fix (2026-09-14, two rounds) — `publish-release` Never Ran on `main`
 
-**Purpose**: Reported directly against a real `main`-branch CI run: `check` and `build` both
-succeeded, but `publish-release` stayed skipped anyway, meaning no GitHub Release was ever
-published from any merge to `main` since this feature shipped. Root cause: bare `success()` in
-`publish-release`'s `if:` evaluates across its *entire transitive* `needs:` chain, and `build`
-(one of its two direct `needs:`) itself depends on `validate-version`, which is *always* skipped
-on `main` by design. See spec.md's 2026-09-14 bug-fix note and `contracts/ci-workflow.md`'s P9 /
-"Known boundaries".
+**Purpose**: Reported directly against two real `main`-branch CI runs, in succession: `check` and
+`build` both succeeded, but `publish-release` stayed skipped anyway, meaning no GitHub Release was
+ever published from any merge to `main` since this feature shipped. Two independent GitHub Actions
+defaults compounded (bare `success()`'s transitivity, and a separate implicit skip-propagation
+default that only `always()` overrides) — fixing the first alone still left it skipped on the very
+next real run. See spec.md's 2026-09-14 bug-fix note and `contracts/ci-workflow.md`'s P9 /
+"Known boundaries" for the full mechanism.
 
-- [X] T031 Change `publish-release`'s `if:` in `.github/workflows/quality.yml` from `success() && github.ref == 'refs/heads/main'` to `needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'`
-- [X] T032 [P] Apply the same fix to `publish-prerelease`'s `if:` for consistency (not actually broken today — `validate-version` genuinely runs, not skips, for the release/hotfix branches it fires on — but this prevents the same failure mode if a future conditionally-skipped job is added to the graph)
-- [X] T033 [P] Document the bug and fix in `contracts/ci-workflow.md` (new P9 guarantee, updated J6, new "Known boundaries" section) and `spec.md` (new "Bug fix 2026-09-14" note)
+- [X] T031 (round 1) Change `publish-release`'s `if:` in `.github/workflows/quality.yml` from `success() && github.ref == 'refs/heads/main'` to `needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'`
+- [X] T032 [P] (round 1) Apply the same fix to `publish-prerelease`'s `if:` for consistency (not actually broken by this bug — `validate-version` genuinely runs, not skips, for the release/hotfix branches it fires on — but this prevents the same failure mode if a future conditionally-skipped job is added to the graph)
+- [X] T033 [P] (round 1) Document the bug and fix in `contracts/ci-workflow.md` (new P9 guarantee, updated J6, new "Known boundaries" section) and `spec.md` (new "Bug fix 2026-09-14" note)
+- [X] T034 (round 2 — round 1 confirmed insufficient against a second real main-branch run) Prepend `always() &&` to both `publish-release`'s and `publish-prerelease`'s `if:` in `.github/workflows/quality.yml`, ANDed with (not replacing) round 1's explicit `needs.*.result` checks — mirroring `build`'s own already-correct `if: always() && (needs.validate-version.result == 'success' || ...)` pattern in the same file
+- [X] T035 [P] Update `contracts/ci-workflow.md` (J6, P9, "Known boundaries") and `spec.md`'s bug-fix note for round 2's corrected, complete fix
 
 **Checkpoint**: A `main`-branch push where `check`/`build` both succeed now actually reaches
 `publish-release` and publishes/updates the GitHub Release — verify on the next real merge to
-`main`, since this specific `success()`-transitivity interaction isn't practically reproducible in
-a local/unit test (it's an artifact of GitHub Actions' own job-scheduling semantics, not this
+`main`, since neither of these GitHub Actions job-scheduling interactions is practically
+reproducible in a local/unit test (they're artifacts of GitHub's own scheduler, not this
 project's code).
