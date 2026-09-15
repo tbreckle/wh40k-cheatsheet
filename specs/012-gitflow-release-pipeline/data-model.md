@@ -56,6 +56,7 @@ CLI surface: `wh40k-cheatsheet validate-version <branch> [--project-root .] [--f
 | Tag | `v<pyproject.toml version>`, e.g. `v1.2.0` |
 | Target commit | The `main`-branch commit that triggered `publish-release` (`$GITHUB_SHA`) |
 | Title | Same as the tag, e.g. `v1.2.0` |
+| Notes (2026-09-15) | Always rewritten by whichever publish job runs last for the tag: `publish-prerelease` → "Pre-release build from `<branch>` (`<sha>`). Not yet merged into main."; `publish-release` → "Release built from `main` (`<sha>`)." (or a pre-release variant if `is_prerelease(version)`). See contracts/ci-workflow.md P10 |
 | Assets | Every file in the downloaded `cheatsheet-pdfs` artifact — one `<edition_id>-<language>.pdf` per declared edition/language |
 | Pre-release flag | `True` iff `is_prerelease(version)` |
 | Create-vs-update | `gh release view "$TAG"` exit code decides: nonzero (doesn't exist) → `gh release create`; zero (exists) → `gh release upload --clobber` (replaces assets in place, per FR-011) |

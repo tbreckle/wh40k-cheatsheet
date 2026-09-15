@@ -174,12 +174,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: v${{ steps.version.outputs.version }}
         run: |
+          NOTES="Pre-release build from \`${GITHUB_REF_NAME}\` (${GITHUB_SHA}). Not yet merged into main."
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/*.pdf --clobber
-            gh release edit "$TAG" --target "$GITHUB_SHA" --prerelease
+            gh release edit "$TAG" --target "$GITHUB_SHA" --prerelease --notes "$NOTES"
           else
             gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" --prerelease \
-              --notes "Pre-release build from \`${{ github.ref_name }}\`. Not yet merged into main."
+              --notes "$NOTES"
           fi
 
   publish-release:
@@ -244,11 +245,18 @@ jobs:
           # A release for this tag may already exist and be marked pre-release, published by
           # publish-prerelease from a push to the release/hotfix branch that's now being merged —
           # `gh release edit` here promotes it (or re-affirms pre-release status, per FR-010).
+          # --notes must be passed on edit too: `gh release edit` leaves unspecified fields as they
+          # were, so without it the pre-release's "Not yet merged into main" text survives promotion.
           PRERELEASE_FLAG="--prerelease=false"
-          [ "$PRERELEASE" = "true" ] && PRERELEASE_FLAG="--prerelease"
+          NOTES="Release built from \`main\` (${GITHUB_SHA})."
+          if [ "$PRERELEASE" = "true" ]; then
+            PRERELEASE_FLAG="--prerelease"
+            NOTES="Pre-release built from \`main\` (${GITHUB_SHA}); the version carries a SemVer pre-release component."
+          fi
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/*.pdf --clobber
-            gh release edit "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG
+            gh release edit "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG --notes "$NOTES"
           else
-            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG
+            gh release create "$TAG" dist/*.pdf --title "$TAG" --target "$GITHUB_SHA" $PRERELEASE_FLAG \
+              --notes "$NOTES"
           fi
