@@ -34,7 +34,7 @@ HarfBuzz - install them via your OS package manager first.
 
 ```bash
 sudo apt-get update
-sudo apt-get install libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libharfbuzz0b libcairo2
+sudo apt-get install libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 libharfbuzz0b libcairo2
 ```
 
 </details>
