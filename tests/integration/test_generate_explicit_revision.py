@@ -14,7 +14,6 @@ def _project_root_with_older_and_newer_revision(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
 
     original = root / "editions" / "11e" / "2026-06-01-00"
     older = root / "editions" / "11e" / "2026-05-01-00"
@@ -27,7 +26,6 @@ def _paths(root: Path) -> Paths:
         editions_root=root / "editions",
         templates_root=root / "templates",
         out_root=root / "out",
-        images_root=root / "images",
     )
 
 

@@ -8,6 +8,7 @@ from typing import Any, Literal
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError, select_autoescape
 
+from wh40k_cheatsheet.content.sections import SECTION_MARKER_TYPE
 from wh40k_cheatsheet.render.glossary import sort_glossary_terms
 
 logger = logging.getLogger(__name__)
@@ -36,7 +37,9 @@ def group_by_breaks(blocks: list[dict[str, Any]]) -> list[Segment]:
     """Split a document's blocks into segments at `page_break`/`column_reset` markers.
 
     Consecutive or leading/trailing markers never produce an empty segment. When a `page_break`
-    and a `column_reset` are adjacent with nothing between them, `page_break` always wins.
+    and a `column_reset` are adjacent with nothing between them, `page_break` always wins. A
+    `section` marker (see `content/sections.py`) is dropped without splitting or affecting a
+    pending break - it is purely a content-authoring aid, invisible to layout.
 
     Args:
         blocks: The document's content blocks, in order, including any marker blocks.
@@ -63,6 +66,8 @@ def group_by_breaks(blocks: list[dict[str, Any]]) -> list[Segment]:
                 pending = None
             if pending != "page":
                 pending = "soft"
+        elif block_type == SECTION_MARKER_TYPE:
+            continue
         else:
             current.append(block)
     if current:

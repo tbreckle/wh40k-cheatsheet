@@ -34,12 +34,12 @@ correct for `.phase--spanning` (which overrides `column-span`/`margin-top` inste
 ## 2. Distinguishing `subphase` from the existing `subsection` heading
 
 **Decision**: `subphase` is a new, third heading level, visually related to `phase` (same width,
-typography, and color family — just brighter), and deliberately distinct from the existing
+typography, and color family - just brighter), and deliberately distinct from the existing
 `subsection` heading (`h3`, its own `--green-sub` custom property, smaller font-size, different
 padding).
 
 **Rationale**: `subsection` already exists as a lighter-green heading one level below `phase`, but
-it's a different HTML element (`h3` vs `h2`) with its own distinct typography — it was not designed to
+it's a different HTML element (`h3` vs `h2`) with its own distinct typography - it was not designed to
 be "phase, but brighter," it's a separate heading style entirely. The user's ask is specifically for a
 `phase`-shaped heading with only its color changed. Reusing `subsection`'s existing
 `--green-sub` (`#5f8a6e`) value for the new block would conflate two conceptually different things
@@ -48,7 +48,7 @@ color; a new, distinct custom property (`--green-subphase`) keeps the two indepe
 change to either doesn't silently affect the other.
 
 **Alternatives considered**:
-- *Reuse `--green-sub` (`subsection`'s existing color) for `subphase` too*: rejected — couples two
+- *Reuse `--green-sub` (`subsection`'s existing color) for `subphase` too*: rejected - couples two
   independently-motivated heading styles through a shared color variable, and `#5f8a6e` was tuned for
   `subsection`'s smaller, `h3`-based presentation, not validated against `phase`'s `h2` bar.
 
@@ -64,13 +64,13 @@ else 'color' }}`), with the grayscale value distinct from `--green-dark`'s grays
 as `011` already keeps callout and stratagem-timing variants distinguishable via distinct grey shades
 rather than relying on color alone.
 
-**Rationale**: This is a direct, mechanical application of an already-shipped, tested pattern — no
+**Rationale**: This is a direct, mechanical application of an already-shipped, tested pattern - no
 new research needed. `011`'s own test suite (`test_print_friendly_pdf.py`) already asserts every
 rendered color resolves to grayscale when the flag is set, and that same suite is extended (not
 replaced) to cover the new `--green-subphase` property and its distinguishability from
 `--green-dark`.
 
-**Alternatives considered**: None — this is the established, only pattern used for every existing
+**Alternatives considered**: None - this is the established, only pattern used for every existing
 custom property in this stylesheet.
 
 ---
@@ -79,9 +79,9 @@ custom property in this stylesheet.
 
 | Unknown | Resolution |
 |---------|------------|
-| Can `subphase` reuse `phase`'s markup/CSS shape? | Yes — modifier class overriding only `background-color`, same technique as `.phase--spanning` |
-| Does this conflict with the existing `subsection` heading? | No — `subphase` is a distinct heading level with its own custom property; `subsection` is untouched |
+| Can `subphase` reuse `phase`'s markup/CSS shape? | Yes - modifier class overriding only `background-color`, same technique as `.phase--spanning` |
+| Does this conflict with the existing `subsection` heading? | No - `subphase` is a distinct heading level with its own custom property; `subsection` is untouched |
 | Print-friendly grayscale handling | Direct application of the existing `011-print-friendly-pdf` pattern; no new mechanism |
-| Python code changes needed | None — template/CSS only |
+| Python code changes needed | None - template/CSS only |
 
 No open NEEDS CLARIFICATION items remain.

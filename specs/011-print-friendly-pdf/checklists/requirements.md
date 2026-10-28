@@ -32,6 +32,6 @@
 ## Notes
 
 - Items marked incomplete require spec updates before `/speckit-clarify` or `/speckit-plan`
-- All items passed on first validation pass. No clarification markers were needed — the three
+- All items passed on first validation pass. No clarification markers were needed - the three
   candidate ambiguities (flag name, additive vs. replacing output, grey-shade distinction between
   callout types) each had a clear, low-risk reasonable default and are recorded under Assumptions.

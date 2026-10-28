@@ -15,7 +15,7 @@ scaffold, and the CI workflow.
 ## Setup
 
 ```bash
-# From the repository root — creates the locked environment with all quality tools
+# From the repository root - creates the locked environment with all quality tools
 uv sync
 ```
 
@@ -23,7 +23,7 @@ This installs ruff, pylint, bandit, ty, pytest, and poethepoet exactly as pinned
 
 ## Validation scenarios
 
-### Scenario 1 — Clean codebase passes (Acceptance US1-1)
+### Scenario 1 - Clean codebase passes (Acceptance US1-1)
 
 ```bash
 uv run poe check
@@ -32,7 +32,7 @@ uv run poe check
 **Expected**: every gate (format, lint, security, types, tests) reports success; the command exits
 `0`.
 
-### Scenario 2 — All four defect categories are caught in one run (SC-003, US1-2)
+### Scenario 2 - All four defect categories are caught in one run (SC-003, US1-2)
 
 Run the gate self-test, which points the gates at `tests/fixtures/bad_example.py`:
 
@@ -40,11 +40,11 @@ Run the gate self-test, which points the gates at `tests/fixtures/bad_example.py
 uv run poe test -k gate_selftest      # or: uv run pytest -k gate_selftest
 ```
 
-**Expected**: the test passes because the suite reports at least one finding in each category —
-style/format, likely-bug, hard-coded secret, and type error — each attributed to its gate with file
+**Expected**: the test passes because the suite reports at least one finding in each category -
+style/format, likely-bug, hard-coded secret, and type error - each attributed to its gate with file
 and line.
 
-### Scenario 3 — Any single failure fails the aggregate (FR-002, US1)
+### Scenario 3 - Any single failure fails the aggregate (FR-002, US1)
 
 Temporarily introduce one violation into a real file under `src/` (e.g. an unused import), then:
 
@@ -55,14 +55,14 @@ uv run poe check
 **Expected**: the offending gate reports the finding with file+line, other gates still run, and the
 overall command exits non-zero. Revert the change afterward.
 
-### Scenario 4 — Auto-fix the mechanical subset
+### Scenario 4 - Auto-fix the mechanical subset
 
 ```bash
 uv run poe fix        # applies ruff format + ruff --fix
 uv run poe check      # now green for the auto-fixable issues
 ```
 
-### Scenario 5 — Individual gates run independently (FR-004)
+### Scenario 5 - Individual gates run independently (FR-004)
 
 ```bash
 uv run poe lint
@@ -73,7 +73,7 @@ uv run poe test
 
 **Expected**: each runs on its own and returns its own verdict.
 
-### Scenario 6 — Reasoned suppression silences one finding only (FR-009/SC-007)
+### Scenario 6 - Reasoned suppression silences one finding only (FR-009/SC-007)
 
 Add an inline suppression with a justification comment (e.g. `# noqa: <rule>  # reason: …`) to a
 single line that has a known false positive.
@@ -81,7 +81,7 @@ single line that has a known false positive.
 **Expected**: only that one finding is silenced; the same rule still fires elsewhere; ruff `RUF100`
 flags the suppression if it later becomes unused.
 
-### Scenario 7 — CI parity (FR-006/SC-005)
+### Scenario 7 - CI parity (FR-006/SC-005)
 
 Open a pull request against `main`.
 

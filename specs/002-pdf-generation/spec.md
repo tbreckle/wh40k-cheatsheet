@@ -16,25 +16,25 @@
 
 - Q: How are per-language string catalogs and HTML content fragments located for an edition? → A: By a fixed, documented **directory convention** keyed by edition id and language code (e.g. `editions/<edition-id>/<lang-code>/`); the project configuration file stays structure-only and does not declare content paths.
 
-- Q: What file format should the project configuration file use? → A: **YAML** — nested, human-readable, comment-friendly, and diff-friendly, matching the constitution's human-reviewable-config requirement.
+- Q: What file format should the project configuration file use? → A: **YAML** - nested, human-readable, comment-friendly, and diff-friendly, matching the constitution's human-reviewable-config requirement.
 
 The declared configuration schema (YAML):
 
 ```yaml
 editions:
   <edition-id>:
-    template: <template-file-name>        # mandatory — default template for this edition
-    languages:                            # mandatory — object of supported languages
-      <lang-code>:                        # e.g. en, de, it — simple language codes
-        template: <template-file-name>    # optional — overrides the edition template for this language
+    template: <template-file-name>        # mandatory - default template for this edition
+    languages:                            # mandatory - object of supported languages
+      <lang-code>:                        # e.g. en, de, it - simple language codes
+        template: <template-file-name>    # optional - overrides the edition template for this language
 ```
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Generate a cheatsheet PDF from source files (Priority: P1)
 
-A cheatsheet maintainer has a set of source files — configuration describing what the document
-contains, text strings, and HTML content fragments — plus a template that defines layout. They run
+A cheatsheet maintainer has a set of source files - configuration describing what the document
+contains, text strings, and HTML content fragments - plus a template that defines layout. They run
 the generator and receive a finished PDF that composes those sources through the template.
 
 **Why this priority**: This is the core value of the product. Without single-document generation,
@@ -87,8 +87,8 @@ same layout and only the language-specific text differing.
 
 ### User Story 3 - Manage multiple editions (revisions) of the content (Priority: P3)
 
-The maintainer keeps multiple editions — revisions of the content over time (e.g., as the underlying
-game changes) — and needs to generate the PDF for a specific edition while keeping older editions
+The maintainer keeps multiple editions - revisions of the content over time (e.g., as the underlying
+game changes) - and needs to generate the PDF for a specific edition while keeping older editions
 reproducible.
 
 **Why this priority**: Editions add durability and traceability but are only meaningful once content
@@ -149,12 +149,12 @@ still produces that edition's content unchanged.
 - **FR-008**: The system MUST validate its inputs before rendering and, on missing or malformed
   input, stop with a clear message identifying the file and the problem, emitting no partial or
   corrupt PDF.
-- **FR-009**: The system MUST report unresolved content references — e.g., a referenced string key
-  with no value in the selected language — identifying the missing item and the context (language,
+- **FR-009**: The system MUST report unresolved content references - e.g., a referenced string key
+  with no value in the selected language - identifying the missing item and the context (language,
   edition), rather than silently emitting blank or incorrect content.
 - **FR-010**: The system MUST produce reproducible output: identical sources, template, language, and
   edition yield equivalent PDF content across runs.
-- **FR-011**: Past editions MUST remain reproducible — regenerating an earlier edition yields that
+- **FR-011**: Past editions MUST remain reproducible - regenerating an earlier edition yields that
   edition's content unchanged.
 - **FR-012**: Each generated PDF MUST be identifiable by the language and edition it was produced
   for.
@@ -186,7 +186,7 @@ still produces that edition's content unchanged.
   mandatory `editions` structure; each edition holds a mandatory `template` (default template file
   name) and a mandatory `languages` object keyed by simple language code, where each language entry
   optionally overrides the template. Determines which language-and-edition combinations exist.
-- **Source Configuration**: Per-edition content structure — which sections, content, and string keys
+- **Source Configuration**: Per-edition content structure - which sections, content, and string keys
   make up the document. The blueprint the template and content are assembled around. (Distinct from
   the Project Configuration File, which declares editions/languages/templates rather than content.)
 - **String Catalog**: The collection of translatable text strings for a given language, keyed by
@@ -237,7 +237,7 @@ still produces that edition's content unchanged.
 - Generation is invoked as a build/authoring step (a command run by the maintainer), not an
   interactive end-user web action; the exact invocation mechanism is deferred to planning.
 - "Config" describes document structure and inclusion; "strings" are the translatable text; "HTML"
-  is richer pre-authored content — these three input kinds are distinct and combined by the template.
+  is richer pre-authored content - these three input kinds are distinct and combined by the template.
 - The **project configuration file** is authored in **YAML** and is structure-only (editions,
   languages, templates); per-language strings and HTML are located by directory convention keyed by
   edition id and language code, not by paths in the config (see Clarifications 2026-08-13).

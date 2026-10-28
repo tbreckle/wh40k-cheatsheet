@@ -28,7 +28,7 @@ document:
 - Adding, moving, or deleting a `spanning_headline` entry never requires touching any other block or
   any code (FR-009).
 - May be placed adjacent to (or far from) `page_break`/`column_reset` markers with no special
-  authoring rules — the two feature families don't interact (research.md §2).
+  authoring rules - the two feature families don't interact (research.md §2).
 
 ---
 
@@ -54,5 +54,5 @@ document:
 ```
 
 Applied alongside the existing `.phase` class (`<h2 class="phase phase--spanning">`), reusing its
-color/typography/padding — the only new behavior is that the element spans both columns of whichever
+color/typography/padding - the only new behavior is that the element spans both columns of whichever
 `.sheet` (or `.sheet--soft`) container it renders inside.

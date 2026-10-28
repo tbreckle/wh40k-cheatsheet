@@ -13,7 +13,7 @@
 ### User Story 1 - Force a new page at a specific point in the content (Priority: P1)
 
 A cheat sheet maintainer authoring content wants a specific section to always start at the top of a
-new page in the generated PDF — regardless of how much content happens to precede it — so related
+new page in the generated PDF - regardless of how much content happens to precede it - so related
 material isn't split awkwardly across a page boundary or crowded against unrelated content.
 
 **Why this priority**: This is the entire value of the feature. Without the ability to force a page
@@ -105,7 +105,7 @@ PDFs.
   where a new page begins in the generated output.
 - **FR-002**: Content that follows a page-break point MUST begin on a new page in the generated PDF.
 - **FR-003**: Content that precedes a page-break point MUST render exactly as it would without that
-  marker present — the marker MUST NOT retroactively affect earlier content's layout.
+  marker present - the marker MUST NOT retroactively affect earlier content's layout.
 - **FR-004**: A page-break point at the very start of the document MUST NOT produce a blank leading
   page.
 - **FR-005**: A page-break point at the very end of the document MUST NOT produce a blank trailing
@@ -146,7 +146,7 @@ PDFs.
 ## Assumptions
 
 - This feature extends the content-authoring model established in `002-pdf-generation` (ordered
-  content blocks rendered through a template) — a page-break point is one more kind of entry in that
+  content blocks rendered through a template) - a page-break point is one more kind of entry in that
   same ordered structure, authored the same way as other content.
 - "Page break" refers to a full-page boundary in the generated PDF (content resumes at the top of a
   new page), not a narrower notion such as a column break within a page; this is the conventional,

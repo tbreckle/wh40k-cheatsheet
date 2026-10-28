@@ -3,7 +3,7 @@
 document:
   title: "Warhammer 40.000 - Cheatsheet 11. Edition"
   edition: "11e"
-  revision: "2026-08-01-00"
+  revision: "2026-06-01-00"
   language: "de"
   i18n:
     page: "Seite"
@@ -15,6 +15,8 @@ document:
     label_effect: "EFFEKT"
     label_restrictions: "EINSCHRÄNKUNGEN"
   blocks:
+    - type: section
+      id: core-rules
     # ================= SEITE 1 =================
     - type: phase
       title: "1. BEFEHLSPHASE (08)"
@@ -308,6 +310,8 @@ document:
         - html: '<b>Missionsziel:</b> Innerhalb 3" eines Missionsziels. Muss falls möglich in dessen Reichweite enden.'
 
     # ---- Kernfähigkeiten (Glossar, volle Breite) ----
+    - type: section
+      id: core-abilities
     - type: page_break
     - type: column_reset
     - type: glossary
@@ -449,6 +453,8 @@ document:
             text: "Verwundungswurf wiederholen.",
           }
 
+    - type: section
+      id: datasheet-characteristics
     - type: glossary
       title: "DATENBLATT-KENNWERTE"
       spanning: yes
@@ -507,6 +513,8 @@ document:
           }
 
     # ================= SEITE 3 - GEFECHTSOPTIONEN =================
+    - type: section
+      id: core-stratagems
     - type: page_break
     - type: spanning_headline
       title: "GEFECHTSOPTIONEN"

@@ -31,8 +31,8 @@
 
 ## Notes
 
-- The key judgment call — whether "reset the two-column layout" means a full new page (like
-  `005-page-breaks`) or a lighter same-page-if-possible realignment — was resolved as the latter
+- The key judgment call - whether "reset the two-column layout" means a full new page (like
+  `005-page-breaks`) or a lighter same-page-if-possible realignment - was resolved as the latter
   (Assumptions), since the user explicitly asked for a distinct "ability and type" rather than reuse
   of the existing page-break marker. This reading gives the feature a reason to exist separately from
   `005-page-breaks` rather than duplicating it.

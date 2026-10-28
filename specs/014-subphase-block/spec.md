@@ -13,8 +13,8 @@ color compared to phase."
 
 ### User Story 1 - Insert a heading one level below a phase (Priority: P1)
 
-A maintainer authoring content wants a heading for a step nested within a `phase` — e.g. a named
-sub-step of a turn phase — that reads as part of the same phase, but as a step below it, without
+A maintainer authoring content wants a heading for a step nested within a `phase` - e.g. a named
+sub-step of a turn phase - that reads as part of the same phase, but as a step below it, without
 resorting to the existing `subsection` heading (already used for a different kind of grouping) or a
 full-width `spanning_headline` (a much stronger visual break than a nested step needs).
 
@@ -81,12 +81,12 @@ the equivalent point in both generated outputs.
 - **FR-001**: The system MUST provide a heading type, `subphase`, distinct from both `phase` and
   `subsection`, that an author can use for a heading nested one level below a `phase`.
 - **FR-002**: A `subphase` heading MUST render using the same typography, padding, and width as a
-  standard `phase` heading — confined to a single column, not spanning both.
+  standard `phase` heading - confined to a single column, not spanning both.
 - **FR-003**: A `subphase` heading's background MUST be a visibly brighter shade than a `phase`
   heading's background, while remaining in the same green color family, so the two read as related
   but distinct heading levels.
 - **FR-004**: In print-friendly (grayscale) mode, `phase` and `subphase` MUST render as two distinct,
-  distinguishable grayscale shades — never resolving to the same shade.
+  distinguishable grayscale shades - never resolving to the same shade.
 - **FR-005**: A document MAY contain any number of `subphase` headings; each MUST independently
   render with the same brighter background at its position.
 - **FR-006**: A `subphase` heading at the very start or very end of the document MUST render
@@ -102,7 +102,7 @@ the equivalent point in both generated outputs.
 
 - **Subphase Heading**: A maintainer-authored heading, carrying its own title text like a `phase`
   heading, rendered with the same typography/padding/width as `phase` but a visibly brighter
-  background — signaling a heading nested one level below a `phase`. Distinct from `subsection`
+  background - signaling a heading nested one level below a `phase`. Distinct from `subsection`
   (an existing, differently-colored heading level already used for a different kind of grouping) and
   from `spanning_headline` (a full-width variant of `phase`, distinguished by width rather than
   color).
@@ -127,13 +127,13 @@ the equivalent point in both generated outputs.
 ## Assumptions
 
 - This feature extends the content-authoring model established in `002-pdf-generation` (ordered
-  content blocks rendered through a template) — `subphase` is one more kind of entry in that same
+  content blocks rendered through a template) - `subphase` is one more kind of entry in that same
   ordered structure, authored the same way as `phase` (carrying a `title`).
 - `subphase` is a **visible content block** (it has its own heading text), not a structural marker
-  like the page-break or column-reset markers — it occupies a position in the reading flow and
+  like the page-break or column-reset markers - it occupies a position in the reading flow and
   displays content.
 - Distinguishability from `phase` is achieved purely through a brighter background color (per the
-  user's explicit ask), not through width or shape — unlike `spanning_headline`, which is
+  user's explicit ask), not through width or shape - unlike `spanning_headline`, which is
   distinguished purely through width. This keeps each heading variant's distinguishing dimension
   orthogonal to the others' (`subsection` and `spanning_headline`).
 - The exact color value is a design decision deferred to planning; this spec requires only that it be

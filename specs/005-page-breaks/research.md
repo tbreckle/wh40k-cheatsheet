@@ -13,7 +13,7 @@ installed WeasyPrint (v69.0) rather than assumption, since it determines the ent
 
 **Finding** (empirical, `.venv/bin/python` + `weasyprint`): a `break-before: page` (or the legacy
 `page-break-before: always`) declared on an element that is a descendant of a `column-count`
-container is **silently ignored** — the document still renders as a single page. The same rule on
+container is **silently ignored** - the document still renders as a single page. The same rule on
 the same markup, *outside* any multicol container, works correctly (produces 2 pages for a
 before/after split).
 
@@ -24,7 +24,7 @@ multicol, break-before page on inner <p>:       1 page    ❌ ignored
 ```
 
 **Rationale for treating this as authoritative**: this is a known category of interaction in CSS
-Fragmentation implementations — multicol "balances" content across columns before fragmentation
+Fragmentation implementations - multicol "balances" content across columns before fragmentation
 decisions are finalized, and WeasyPrint's implementation does not currently propagate a forced
 in-flow break out through an active column-balancing context to the page level. Confirming this
 empirically (rather than guessing) avoided designing around a mechanism that would have silently
@@ -32,7 +32,7 @@ failed for every real generation.
 
 **Alternatives considered**:
 - *Trust the CSS Fragmentation spec's "always forces a page break regardless of context" wording*:
-  rejected after the experiment contradicted it for this renderer/version — spec compliance is not
+  rejected after the experiment contradicted it for this renderer/version - spec compliance is not
   guaranteed across all engines, and shipping on an unverified assumption would have produced a
   feature that silently does nothing.
 
@@ -43,7 +43,7 @@ failed for every real generation.
 **Decision**: Partition the document's ordered block list into segments at each `page_break` marker
 block. Render each segment as its **own top-level `<div class="sheet">`** (the same two-column
 container used today, just one per segment instead of one for the whole document). Add exactly one
-new CSS rule: `.sheet + .sheet { break-before: page; }` — an adjacent-sibling selector that forces a
+new CSS rule: `.sheet + .sheet { break-before: page; }` - an adjacent-sibling selector that forces a
 page break before every `.sheet` that follows another `.sheet`, i.e. before every segment after the
 first.
 
@@ -55,13 +55,13 @@ three sibling .sheet segments:          3 pages   ✅
 ```
 
 **Rationale**: Because the forced break now sits on a top-level sibling relationship *between* two
-separate multicol containers — not nested inside one — it is no longer subject to the limitation in
+separate multicol containers - not nested inside one - it is no longer subject to the limitation in
 §1. This is architecturally simple (one CSS rule, no per-element break properties needed) and reuses
 the exact column-flow styling the document already has, per segment.
 
 **Alternatives considered**:
 - *`break-after: page` on the last element of the preceding segment*: works in principle but is
-  fragile — the "last element" varies per document and per language, and still requires splitting
+  fragile - the "last element" varies per document and per language, and still requires splitting
   into separate top-level containers to have any effect (per §1), so it offers no advantage over the
   simpler adjacent-sibling rule.
 - *CSS `column-span: all` trick*: spans a full-width element across both columns but does not force
@@ -79,7 +79,7 @@ the very end produces a trailing empty segment → dropped → no blank trailing
 Consecutive markers with nothing between them produce an empty *middle* segment → dropped → only one
 real page transition remains between the surrounding content (FR-006).
 
-**Verification** (empirical): confirmed directly —
+**Verification** (empirical): confirmed directly -
 
 ```text
 break-at-start  (1 non-empty segment only): 1 page, no leading blank page   ✅
@@ -87,12 +87,12 @@ break-at-end    (1 non-empty segment only): 1 page, no trailing blank page  ✅
 consecutive-breaks collapsed to 1 boundary (2 non-empty segments):  2 pages ✅
 ```
 
-**Rationale**: This means the edge-case requirements need **no special-case code** — they are a
+**Rationale**: This means the edge-case requirements need **no special-case code** - they are a
 direct consequence of "don't render empty segments," which is also the simplest, most obviously
 correct behavior for a segmentation function. One function, one rule, three requirements satisfied.
 
 **Alternatives considered**:
-- *Explicitly detect start/end/consecutive markers and special-case them*: unnecessary — the
+- *Explicitly detect start/end/consecutive markers and special-case them*: unnecessary - the
   general "drop empty groups" rule already covers every case; adding special cases would be
   needless complexity contradicting the constitution's simplicity expectations.
 
@@ -103,7 +103,7 @@ correct behavior for a segmentation function. One function, one rule, three requ
 **Finding** (empirical): the existing `@page { @bottom-right { content: "Page " counter(page) " / "
 counter(pages) } }` footer (already in `templates/cheatsheet.html.j2` from feature 002) continues to
 report correct running/total page numbers (`Page 1 / 3`, `Page 2 / 3`, `Page 3 / 3`) across multiple
-sibling `.sheet` segments — confirmed by rendering a 3-segment document and extracting the footer
+sibling `.sheet` segments - confirmed by rendering a 3-segment document and extracting the footer
 text from the resulting PDF.
 
 **Rationale**: `@page` counters are a page-box-level CSS Paged Media feature, orthogonal to how many
@@ -146,11 +146,11 @@ dispatch logic.
 
 **Rationale**: A macro extraction is the minimal-diff way to introduce the segment loop without
 rewriting every existing block-type branch; behavior for all existing block types (phase, subsection,
-paragraph, list, callout, table, keyvals, glossary, stratagem) is unchanged — only the outer loop
+paragraph, list, callout, table, keyvals, glossary, stratagem) is unchanged - only the outer loop
 structure changes.
 
 **Alternatives considered**:
-- *Duplicate the dispatch logic per segment*: rejected — violates DRY and risks the two copies
+- *Duplicate the dispatch logic per segment*: rejected - violates DRY and risks the two copies
   drifting apart.
 
 ---
@@ -159,11 +159,11 @@ structure changes.
 
 | Unknown | Resolution |
 |---------|------------|
-| Does forced break work inside multicol? | No (verified) — must break *between* sibling multicol containers instead |
+| Does forced break work inside multicol? | No (verified) - must break *between* sibling multicol containers instead |
 | Segmentation mechanism | Split `document.blocks` on `page_break` markers, drop empty segments |
 | CSS mechanism | `.sheet + .sheet { break-before: page; }` (verified working) |
 | Start/end/consecutive edge cases | Free consequence of dropping empty segments (verified) |
-| Footer page counters | Unaffected — verified correct across 3 segments |
+| Footer page counters | Unaffected - verified correct across 3 segments |
 | Where segmentation logic lives | `group_by_page_breaks()` as a Jinja2 global in `html_renderer.py` |
 | Block-type name | `page_break`, dispatched via an extracted `render_block` macro |
 

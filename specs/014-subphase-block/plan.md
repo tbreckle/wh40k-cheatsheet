@@ -6,11 +6,11 @@
 
 ## Summary
 
-Add a new `subphase` content block — a visible heading block (carries its own `title`, like the
+Add a new `subphase` content block - a visible heading block (carries its own `title`, like the
 existing `phase` block) that reuses `phase`'s exact markup shape (`<h2 class="phase ...">`) plus one
 modifier class, `phase--sub`, which overrides only `background-color` to a slightly brighter shade of
 the same green used by `phase`. This is architecturally identical to `007-spanning-headline`'s
-`spanning_headline` (a new heading block that reuses `.phase` styling and adds one modifier class) —
+`spanning_headline` (a new heading block that reuses `.phase` styling and adds one modifier class) -
 the only difference is which CSS property the modifier changes (`background-color` here, vs.
 `column-span` there). No changes are needed to `group_by_breaks()`, the segmentation algorithm, or any
 prior feature's behavior: `subphase` is just one more branch in the existing `render_block` macro's
@@ -22,23 +22,23 @@ of a light-mode/grayscale pair per custom property.
 
 **Language/Version**: Python 3.12+ (shared with prior features)
 
-**Primary Dependencies**: None new — pure CSS/template addition on the existing Jinja2/WeasyPrint
+**Primary Dependencies**: None new - pure CSS/template addition on the existing Jinja2/WeasyPrint
 stack from `002-pdf-generation`.
 
-**Storage**: N/A — a `subphase` heading is an ordinary entry in existing `content.yaml` files, using
+**Storage**: N/A - a `subphase` heading is an ordinary entry in existing `content.yaml` files, using
 the same `document.blocks` convention as every other block type.
 
 **Testing**: pytest. Integration tests asserting the rendered background color of a `subphase`
 heading is brighter (higher luminance) than a `phase` heading's, at the same width/position; that it
 coexists correctly with `page_break`/`column_reset`; that it remains distinguishable from `phase` in
 print-friendly grayscale mode (extending `011-print-friendly-pdf`'s existing color-distinguishability
-test suite); and that it renders consistently across languages — following the box-inspection
+test suite); and that it renders consistently across languages - following the box-inspection
 methodology established in `006-column-reset`/`007-spanning-headline` and the color-inspection
 methodology established in `011-print-friendly-pdf`.
 
-**Target Platform**: Same as prior features — local dev + CI (Linux), WeasyPrint-rendered PDF.
+**Target Platform**: Same as prior features - local dev + CI (Linux), WeasyPrint-rendered PDF.
 
-**Project Type**: Single project — extends `templates/cheatsheet.html.j2` only. No changes to any
+**Project Type**: Single project - extends `templates/cheatsheet.html.j2` only. No changes to any
 Python module; this is a template-and-CSS-only feature.
 
 **Performance Goals**: A new CSS custom property and one modifier class are negligible; no measurable
@@ -47,7 +47,7 @@ impact on the existing <10s per-PDF generation budget.
 **Constraints**: Must not alter rendering for any existing block type or any document that doesn't
 use the new block (backward compatible with all prior content, including the real `11e` content).
 Must remain visually distinct from both `phase` (brighter background, same width) and `subsection`
-(a different, pre-existing lighter-green heading level used for a different kind of grouping — see
+(a different, pre-existing lighter-green heading level used for a different kind of grouping - see
 research.md §2) and from `spanning_headline` (distinguished by width, not color). Must resolve to a
 distinct grayscale shade from `phase` in print-friendly mode (FR-004).
 
@@ -85,7 +85,7 @@ specs/014-subphase-block/
 └── tasks.md                         # Phase 2 (/speckit-tasks)
 ```
 
-### Source Code (repository root) — changes to existing files
+### Source Code (repository root) - changes to existing files
 
 ```text
 templates/cheatsheet.html.j2
@@ -115,7 +115,7 @@ tests/
 ```
 
 **Structure Decision**: A single-file change to `templates/cheatsheet.html.j2`, plus documentation and
-test-only additions — no Python code is touched at all, exactly like `007-spanning-headline`. This is
+test-only additions - no Python code is touched at all, exactly like `007-spanning-headline`. This is
 the leanest possible design for this feature.
 
 ## Complexity Tracking

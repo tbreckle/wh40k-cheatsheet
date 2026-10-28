@@ -16,7 +16,6 @@ def _project_root_with_extra_revisions(tmp_path: Path) -> Path:
     (root / "editions").mkdir()
     shutil.copytree(REPO_ROOT / "editions" / "11e", root / "editions" / "11e")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
 
     template = load_project_config(REPO_ROOT / "project.yaml").editions["11e"].template
     (root / "project.yaml").write_text(

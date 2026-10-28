@@ -17,7 +17,7 @@ uv sync
 uv run wh40k-cheatsheet generate --edition 11e --language en --print-friendly
 ```
 
-**Expected**: two result lines for the `en` document — the existing standard-PDF line, plus a new
+**Expected**: two result lines for the `en` document - the existing standard-PDF line, plus a new
 line naming the print-friendly PDF's path (contract C4). Exit code `0`.
 
 ## 2. Confirm both output files exist and neither overwrote the other
@@ -32,7 +32,7 @@ ls out/11e/*/en.pdf out/11e/*/en-print.pdf out/11e/*/en.html out/11e/*/en-print.
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 11e --language en
-ls out/11e/*/en-print.pdf 2>&1   # should still exist from step 1 — not deleted
+ls out/11e/*/en-print.pdf 2>&1   # should still exist from step 1 - not deleted
 ```
 
 Re-running without `--print-friendly` must not touch `en-print.*`, and `en.pdf`/`en.html` bytes
@@ -42,7 +42,7 @@ must be identical to what a pre-feature `generate` (no flag) would have produced
 
 Open `out/11e/<latest-revision>/en-print.pdf` in a PDF viewer alongside `en.pdf`:
 
-- No color anywhere in `en-print.pdf` — headers, callouts, and stratagem cards render in
+- No color anywhere in `en-print.pdf` - headers, callouts, and stratagem cards render in
   black/white/grey only (guarantee G1).
 - No faint diagonal logo visible on any page of `en-print.pdf` (guarantee G2), present as usual in
   `en.pdf`.
@@ -54,7 +54,7 @@ Open `out/11e/<latest-revision>/en-print.pdf` in a PDF viewer alongside `en.pdf`
 
 ```bash
 uv run pytest tests/integration/test_print_friendly_pdf.py -v
-uv run pytest   # full suite — confirms no regression to existing output
+uv run pytest   # full suite - confirms no regression to existing output
 ```
 
 **Expected**: all tests pass, including the grayscale computed-style assertions, the

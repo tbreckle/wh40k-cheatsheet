@@ -67,7 +67,7 @@ The interface MUST behave predictably and identically across equivalent situatio
 
 - Shared UI patterns (navigation, search, tables, terminology) MUST be reused; the same action
   MUST look and behave the same everywhere it appears.
-- Terminology and data presentation MUST match the source game vocabulary exactly — no invented
+- Terminology and data presentation MUST match the source game vocabulary exactly - no invented
   abbreviations or reworded rules.
 - The application MUST be usable on mobile and desktop viewports, since cheatsheets are consulted
   at the table. Core content MUST remain reachable without horizontal scrolling.
@@ -106,8 +106,8 @@ it will not be used. Explicit budgets keep speed from silently eroding as conten
 ## Development Workflow & Quality Gates
 
 - All work MUST land through pull requests; direct pushes to the main branch are prohibited.
-- A pull request MUST pass every automated gate — lint, format, type check, tests, and performance
-  budgets — before it is eligible to merge.
+- A pull request MUST pass every automated gate - lint, format, type check, tests, and performance
+  budgets - before it is eligible to merge.
 - Reviewers MUST verify the change against these principles, not only that code "works". A reviewer
   MUST block a change that violates a principle unless an explicit, documented exception is granted.
 - Any deviation from a principle MUST be recorded in the pull request with its justification, so

@@ -1,7 +1,7 @@
 """Fully Google-style-compliant fixture, for the gate self-test.
 
-Mirrors the same shapes as `bad_docstring_example.py` — a plain function, a class with a
-method, and a function with accurate `Args:`/`Returns:` — to prove the gate passes clean
+Mirrors the same shapes as `bad_docstring_example.py` - a plain function, a class with a
+method, and a function with accurate `Args:`/`Returns:` - to prove the gate passes clean
 when the docstring contract is actually followed.
 """
 

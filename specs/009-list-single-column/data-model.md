@@ -3,7 +3,7 @@
 Feature: [spec.md](./spec.md) · Plan: [plan.md](./plan.md)
 
 This feature adds one optional field to an existing content-block kind. No changes to any derived
-structure — like `spanning_headline`, this flag never participates in segmentation
+structure - like `spanning_headline`, this flag never participates in segmentation
 (research.md §3).
 
 ---
@@ -23,7 +23,7 @@ Gains one optional field, following the same per-block-type flag convention alre
 - Truthy → the list's wrapper `<div class="block">` gains the `block--full-width` class; the
   `render_list` macro's own output (including any nested `sub` items) is otherwise unchanged
   (FR-003).
-- Has no interaction with `page_break`/`column_reset` markers at the data level — they may appear
+- Has no interaction with `page_break`/`column_reset` markers at the data level - they may appear
   adjacent to a flagged list with no special handling required (FR-004; research.md §3).
 
 Example:
@@ -50,12 +50,12 @@ document:
 content.yaml (per edition/revision/language)
    └── document.blocks: [block, block, list, block, ...]
 
-                    │ group_by_breaks() — UNCHANGED, list is not a marker
+                    │ group_by_breaks() - UNCHANGED, list is not a marker
                     ▼
 
         [Segment(blocks=[..., list_block, ...], break_type=...), ...]
 
-                    │ template render — render_block() dispatches the list branch
+                    │ template render - render_block() dispatches the list branch
                     │ like any other visible block, within whichever .sheet it's in
                     ▼
 
@@ -70,6 +70,6 @@ content.yaml (per edition/revision/language)
 
 ## State / flow
 
-Stateless, pure rendering — identical inputs always produce identical output. No new persistence, no
+Stateless, pure rendering - identical inputs always produce identical output. No new persistence, no
 new derived structure; this is purely an additional conditional class in the existing `render_block`
 dispatch.

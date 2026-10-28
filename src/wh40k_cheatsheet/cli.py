@@ -7,6 +7,7 @@ from pathlib import Path
 
 from wh40k_cheatsheet.config import ConfigError, load_project_config
 from wh40k_cheatsheet.content import ContentError
+from wh40k_cheatsheet.content.sections import SECTION_IDS
 from wh40k_cheatsheet.logging_setup import configure_logging
 from wh40k_cheatsheet.pdf import PdfError
 from wh40k_cheatsheet.pipeline import Paths, PipelineError, generate, list_inventory, package_all
@@ -38,20 +39,19 @@ KNOWN_ERRORS = (
 
 
 def _default_paths(project_root: Path) -> Paths:
-    """Build the standard `Paths` layout (editions/templates/out/images) rooted at a project directory.
+    """Build the standard `Paths` layout (editions/templates/out) rooted at a project directory.
 
     Args:
         project_root: The repository root containing `project.yaml`.
 
     Returns:
-        A `Paths` pointing at that root's conventional `editions/`, `templates/`, `out/`, and
-        `images/` subdirectories.
+        A `Paths` pointing at that root's conventional `editions/`, `templates/`, and `out/`
+        subdirectories.
     """
     return Paths(
         editions_root=project_root / "editions",
         templates_root=project_root / "templates",
         out_root=project_root / "out",
-        images_root=project_root / "images",
     )
 
 
@@ -60,7 +60,7 @@ def _cmd_generate(args: argparse.Namespace) -> int:
 
     Args:
         args: Parsed CLI arguments (`project_root`, `edition`, `revision`, `language`,
-            `print_friendly`).
+            `print_friendly`, and one `skip_<section_id>` boolean per `SECTION_IDS`).
 
     Returns:
         The process exit code (always `0`; failures raise instead).
@@ -70,8 +70,17 @@ def _cmd_generate(args: argparse.Namespace) -> int:
     paths = _default_paths(project_root)
 
     revision = RevisionId.parse(args.revision) if args.revision else None
+    skip_sections = frozenset(
+        section_id for section_id in SECTION_IDS if getattr(args, "skip_" + section_id.replace("-", "_"))
+    )
     documents = generate(
-        config, paths, args.edition, revision=revision, language=args.language, print_friendly=args.print_friendly
+        config,
+        paths,
+        args.edition,
+        revision=revision,
+        language=args.language,
+        print_friendly=args.print_friendly,
+        skip_sections=skip_sections,
     )
 
     for doc in documents:
@@ -207,8 +216,14 @@ def build_parser() -> argparse.ArgumentParser:
     generate_parser.add_argument(
         "--print-friendly",
         action="store_true",
-        help="Also generate a black/white/grey PDF with no background watermark",
+        help="Also generate a black/white/grey PDF",
     )
+    for section_id in SECTION_IDS:
+        generate_parser.add_argument(
+            f"--skip-{section_id}",
+            action="store_true",
+            help=f"Omit the '{section_id}' section from the generated sheet(s)",
+        )
     generate_parser.set_defaults(func=_cmd_generate)
 
     list_parser = subparsers.add_parser("list", help="List available editions, languages, and revisions")
@@ -244,15 +259,27 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     """Parse arguments, configure logging, and dispatch to the requested subcommand.
 
+    Uses `parse_known_args` (rather than `parse_args`) so an unrecognized `--skip-*` flag can be
+    reported with the valid section flag names listed - argparse's own "unrecognized arguments"
+    error is raised via the top-level parser, whose usage line doesn't show `generate`'s own
+    flags, so that listing has to be added here instead.
+
     Args:
         argv: Argument list to parse in place of `sys.argv[1:]`; primarily for tests.
 
     Returns:
         The process exit code: the subcommand's own return value, or `1` if a known error
-        (`KNOWN_ERRORS`) was raised.
+        (`KNOWN_ERRORS`) was raised. Exits (via `parser.error`) with code `2` for unrecognized
+        arguments, same as `argparse` itself.
     """
     parser = build_parser()
-    args = parser.parse_args(argv)
+    args, unknown = parser.parse_known_args(argv)
+    if unknown:
+        if any(arg.startswith("--skip-") for arg in unknown):
+            valid_flags = ", ".join(f"--skip-{section_id}" for section_id in SECTION_IDS)
+            parser.error(f"unrecognized arguments: {' '.join(unknown)} (valid section flags: {valid_flags})")
+        else:
+            parser.error(f"unrecognized arguments: {' '.join(unknown)}")
     configure_logging(args.verbose)
     try:
         return args.func(args)

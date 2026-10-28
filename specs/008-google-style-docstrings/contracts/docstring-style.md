@@ -18,8 +18,8 @@ Optional extended description.
 """
 ```
 
-Every module — including `__init__.py` re-export files and the top-level, currently-empty
-`wh40k_cheatsheet/__init__.py` — gets one, even if the rest of the file is a single import/`__all__`
+Every module - including `__init__.py` re-export files and the top-level, currently-empty
+`wh40k_cheatsheet/__init__.py` - gets one, even if the rest of the file is a single import/`__all__`
 line (FR-001).
 
 ### Class
@@ -57,14 +57,14 @@ def resolve_content(editions_root: Path, edition_id: str, revision_id: str, lang
     """
 ```
 
-- `Args:` documents every parameter except `self`/`cls` — no more, no fewer (FR-004).
+- `Args:` documents every parameter except `self`/`cls` - no more, no fewer (FR-004).
 - `Returns:` is required whenever the function has an explicit `return <value>` (omit only for
   functions that always return `None`).
 - `Raises:` documents every exception type the function's own `raise` statements produce.
-- No type repetition in prose — the signature's type annotations already satisfy that; `Args:`/
+- No type repetition in prose - the signature's type annotations already satisfy that; `Args:`/
   `Returns:` text describes *meaning*, not type.
 - Applies to **public and private** (`_`-prefixed) symbols alike, including explicit dunder methods
-  (e.g. `RevisionId.__str__`) — `tests/` is the only exemption (FR-006).
+  (e.g. `RevisionId.__str__`) - `tests/` is the only exemption (FR-006).
 
 ---
 
@@ -80,7 +80,7 @@ enforced (FR-005), verified empirically in research.md:
 | `[tool.ruff.lint.per-file-ignores]` | `"tests/**"` | gains `"D"` (exempts `tests/`) |
 | `[tool.pylint."messages control"]` | `disable` | no longer includes `missing-module-docstring` / `missing-class-docstring` / `missing-function-docstring` |
 | `[tool.pylint.main]` | `load-plugins` | includes `"pylint.extensions.docparams"` |
-| `[tool.pylint.basic]` | `no-docstring-rgx` | `"^$"` (covers private symbols — default `"^_"` would exempt them) |
+| `[tool.pylint.basic]` | `no-docstring-rgx` | `"^$"` (covers private symbols - default `"^_"` would exempt them) |
 | `[tool.pylint.parameter_documentation]` | `accept-no-param-doc` | `false` |
 | `[tool.pylint.parameter_documentation]` | `accept-no-return-doc` | `false` |
 | `[tool.pylint.parameter_documentation]` | `accept-no-raise-doc` | `false` |
@@ -105,7 +105,7 @@ enforced (FR-005), verified empirically in research.md:
 5. **Compliant code passes clean** (SC-004): a fully Google-style-documented change produces zero
    docstring-related findings from `poe check`.
 6. **Failure blocks merge exactly like existing gates** (FR-005): a docstring violation exits
-   non-zero from `poe check`/`poe lint`, the same as an existing lint/type/security finding — no
+   non-zero from `poe check`/`poe lint`, the same as an existing lint/type/security finding - no
    separate command, no separate CI step.
 
 ---

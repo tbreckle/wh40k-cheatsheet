@@ -12,7 +12,7 @@
 
 ### Session 2026-08-14
 
-- Q: When the spanning treatment is applied to a glossary block via an optional flag, should it affect only the glossary's title bar, or also the layout of its term list? → A: Title-bar only — the glossary's heading spans both columns like a standalone spanning headline; its term list keeps its existing nested two-column layout unchanged.
+- Q: When the spanning treatment is applied to a glossary block via an optional flag, should it affect only the glossary's title bar, or also the layout of its term list? → A: Title-bar only - the glossary's heading spans both columns like a standalone spanning headline; its term list keeps its existing nested two-column layout unchanged.
 
 ### Amendment 2026-08-15 (bug fix, reported directly against real content)
 
@@ -20,10 +20,10 @@ Title-bar-only spanning (above) turned out to be a latent bug, not just a design
 non-spanning `.glossary` div long enough to overflow one outer column (e.g. the real 36-term CORE
 ABILITIES content) fragments across the outer article's 2-column layout: each fragment
 independently applies the glossary's own `column-count: 2`, producing 4 visible narrow columns
-instead of 2. This was only caught once the actual `11e` content was visually inspected — the short
+instead of 2. This was only caught once the actual `11e` content was visually inspected - the short
 fixture content used during original test-writing (2 terms) never grew tall enough to fragment. Fix:
 `spanning: true` now applies full-width treatment (`column-span: all`) to **both** the title bar and
-the term-list div, so the whole glossary block renders as one full-width, 2-column unit — matching
+the term-list div, so the whole glossary block renders as one full-width, 2-column unit - matching
 what "spanning" already visually implied. This supersedes the 2026-08-14 title-bar-only decision;
 FR-011/SC-007 and the edge case below are updated accordingly.
 
@@ -32,7 +32,7 @@ FR-011/SC-007 and the edge case below are updated accordingly.
 ### User Story 1 - Insert a headline that visually spans both columns (Priority: P1)
 
 A maintainer authoring content wants a section heading to visually cut across the entire two-column
-layout — its text and background stretching the full width of the page — rather than being confined
+layout - its text and background stretching the full width of the page - rather than being confined
 to whichever single column it happens to land in, so that heading reads as a clear, deliberate
 break between what comes before it and what comes after it.
 
@@ -58,7 +58,7 @@ width at that position, distinct from the normal single-column headings used els
    its position, clearly cutting across both columns.
 4. **Given** the existing glossary content type with its spanning option enabled, **When** the PDF is
    generated, **Then** the glossary's own title bar and its term list both span both columns as a
-   single full-width, 2-column block — not confined to, or fragmented across, the surrounding
+   single full-width, 2-column block - not confined to, or fragmented across, the surrounding
    single-column flow.
 
 ---
@@ -66,7 +66,7 @@ width at that position, distinct from the normal single-column headings used els
 ### User Story 2 - Content on either side of the spanning headline stays correctly placed (Priority: P2)
 
 A maintainer expects that content immediately before and after a spanning headline continues to read
-normally — nothing is cut off, duplicated, or displaced — so the full-width headline provides a clean
+normally - nothing is cut off, duplicated, or displaced - so the full-width headline provides a clean
 break without corrupting the surrounding layout.
 
 **Why this priority**: A spanning headline is only useful if it doesn't break the reading experience
@@ -125,7 +125,7 @@ generated PDFs.
 - A spanning headline MUST coexist correctly with existing pagination features (forced page breaks
   and column realignment) without producing broken or blank layouts when used near them.
 - When the existing glossary content type's spanning option is enabled, both its title bar AND its
-  term-list div MUST span both columns as one full-width, 2-column block — a non-spanning term list
+  term-list div MUST span both columns as one full-width, 2-column block - a non-spanning term list
   can fragment across the outer 2-column layout on long content, doubling its own internal 2 columns
   into 4 visible ones (fixed 2026-08-15).
 
@@ -155,14 +155,14 @@ generated PDFs.
   features, without producing blank pages, blank columns, or broken layout when placed near them.
 - **FR-011**: The system MUST provide an optional flag on the existing glossary content type
   (`002-pdf-generation`) that, when enabled, applies the spanning treatment to both the glossary's
-  title bar and its term-list — both span both columns as one full-width, 2-column block, rather than
+  title bar and its term-list - both span both columns as one full-width, 2-column block, rather than
   the term list remaining confined to (and potentially fragmenting within) a single outer column.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Spanning Headline**: A maintainer-authored heading, carrying its own title text like a standard
   heading, but rendered so that both its text and background span the full width of the two-column
-  layout at its position — creating a clear visual break between the content before and after it.
+  layout at its position - creating a clear visual break between the content before and after it.
   Distinct from the standard (single-column) heading used elsewhere in the same document.
 - **Glossary (existing, `002-pdf-generation`)**: Gains an optional spanning flag. When enabled, both
   the glossary's title bar and its term-list div render using the same full-width treatment as a
@@ -191,11 +191,11 @@ generated PDFs.
 ## Assumptions
 
 - This feature extends the content-authoring model established in `002-pdf-generation` (ordered
-  content blocks rendered through a template) — a spanning headline is one more kind of entry in that
+  content blocks rendered through a template) - a spanning headline is one more kind of entry in that
   same ordered structure, authored the same way as other content (e.g., carrying a `title`, similar
   to the existing standard heading block).
 - The spanning headline is a **visible content block** (it has its own heading text), not a
-  structural marker like the page-break or column-reset markers from prior features — it occupies a
+  structural marker like the page-break or column-reset markers from prior features - it occupies a
   position in the reading flow and displays content, rather than only affecting layout invisibly.
 - Exact visual styling (colors, spacing, typography) is a design decision deferred to planning; this
   spec requires only that the spanning headline's text and background span the full two-column width

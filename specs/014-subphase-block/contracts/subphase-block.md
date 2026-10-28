@@ -25,10 +25,10 @@ document:
   per-language like every other block (FR-007).
 - Adding, moving, or deleting a `subphase` entry never requires touching any other block or any code
   (FR-008).
-- Does not require a preceding `phase` block — it renders correctly on its own, including at the very
+- Does not require a preceding `phase` block - it renders correctly on its own, including at the very
   start or end of a document (FR-006).
 - May be placed adjacent to (or far from) `page_break`/`column_reset` markers with no special
-  authoring rules — the two feature families don't interact.
+  authoring rules - the two feature families don't interact.
 
 ---
 
@@ -59,6 +59,6 @@ h2.phase--sub {
 ```
 
 Applied alongside the existing `.phase` class (`<h2 class="phase phase--sub">`), reusing its
-typography/padding/width — the only new behavior is a brighter `background-color`, overriding
+typography/padding/width - the only new behavior is a brighter `background-color`, overriding
 `.phase`'s `var(--green-dark)` for elements that also carry `.phase--sub` (equal specificity, later
 source order wins).

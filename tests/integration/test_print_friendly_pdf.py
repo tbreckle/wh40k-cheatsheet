@@ -29,7 +29,6 @@ def _paths() -> Paths:
         editions_root=REPO_ROOT / "editions",
         templates_root=REPO_ROOT / "templates",
         out_root=REPO_ROOT / "out",
-        images_root=REPO_ROOT / "images",
     )
 
 
@@ -39,7 +38,6 @@ def _project_root(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
     return root
 
 
@@ -189,20 +187,6 @@ def test_print_friendly_callout_variants_remain_distinguishable():
     warn_bg = _find_box_by_class(rendered, "callout--warn").style["background_color"].coordinates
     info_bg = _find_box_by_class(rendered, "callout--info").style["background_color"].coordinates
     assert warn_bg != info_bg
-
-
-def test_print_friendly_watermark_absent_on_every_page_real_content():
-    config = load_project_config(REPO_ROOT / "project.yaml")
-    paths = _paths()
-    doc = generate(config, paths, "11e", language="en", print_friendly=True)[0]
-    html = doc.print_html_path.read_text(encoding="utf-8")
-    rendered = weasyprint.HTML(string=html, base_url=str(paths.templates_root)).render()
-
-    assert len(rendered.pages) >= 1
-    for box in _all_pages_boxes(rendered):
-        element = getattr(box, "element", None)
-        assert getattr(element, "tag", None) != "img", "watermark <img> box found in print-friendly rendering"
-    assert "<img" not in html
 
 
 def _cheatsheet_article(html: str) -> str:

@@ -9,19 +9,19 @@ description: "Task list for Page Header Logo implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/page-logo.md, quickstart.md
 
-**Tests**: Test tasks ARE included — the spec defines validation scenarios and the constitution's
+**Tests**: Test tasks ARE included - the spec defines validation scenarios and the constitution's
 Testing Standards are non-negotiable.
 
 **Organization**: Grouped by user story so the story is an independently testable increment.
 
 > **Not template-only, unlike `007`/`009`**: Research found WeasyPrint does NOT fail loudly on a
-> missing referenced image (research.md §4) — it silently logs and continues. FR-005 therefore
+> missing referenced image (research.md §4) - it silently logs and continues. FR-005 therefore
 > requires a small, explicit pre-flight check in `pipeline.py`, in addition to the
 > `templates/cheatsheet.html.j2` CSS/markup change.
 >
 > **2026-08-14 amendment (Phases 5–8 below)**: the top-right corner logo built in Phases 1–4 was
 > replaced with a full-page, 45°-rotated, 30%-opacity background watermark, per a follow-up
-> `/speckit-clarify` request. Phases 1–4 remain below as an accurate historical record — T001/T002
+> `/speckit-clarify` request. Phases 1–4 remain below as an accurate historical record - T001/T002
 > (`Paths.images_root` + the pre-flight check) are still valid and unchanged; T003/T004/T006–T011
 > describe the superseded corner-logo mechanism, replaced by Phases 5–8.
 
@@ -44,14 +44,14 @@ pre-flight check (Phase 2).
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: The rendering mechanism (template/CSS) and the fail-loud guarantee (pre-flight check) —
+**Purpose**: The rendering mechanism (template/CSS) and the fail-loud guarantee (pre-flight check) -
 both required before the story can be verified.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [X] T003 In `templates/cheatsheet.html.j2`: enlarge the `@page` top margin from `7mm` to `15mm`; add the CSS rule `.page-logo { position: fixed; top: -14.7mm; right: 6mm; height: 50px; width: auto; }`; add one `<img class="page-logo" src="../images/logo_40k.png" alt="">` in the document body (contracts/page-logo.md CSS mechanism; research.md §2/§2b — negative offset required since `position: fixed`'s containing block is the content box, not the page edge)
+- [X] T003 In `templates/cheatsheet.html.j2`: enlarge the `@page` top margin from `7mm` to `15mm`; add the CSS rule `.page-logo { position: fixed; top: -14.7mm; right: 6mm; height: 50px; width: auto; }`; add one `<img class="page-logo" src="../images/logo_40k.png" alt="">` in the document body (contracts/page-logo.md CSS mechanism; research.md §2/§2b - negative offset required since `position: fixed`'s containing block is the content box, not the page edge)
 - [X] T004 [P] Update the header doc comment in `templates/cheatsheet.html.j2` to document the logo as a fixed, unconditional page element (not an authored content-block flag)
-- [X] T005 Add a pre-flight existence check in `_generate_one` (or `generate`) in `src/wh40k_cheatsheet/pipeline.py`: verify `(paths.images_root / "logo_40k.png").is_file()` before rendering; raise `PdfError` naming the expected path if it fails (depends on T001; research.md §4; contracts/page-logo.md F1; FR-005) — add a `Raises:` line to the function's docstring per the `008` docstring gate
+- [X] T005 Add a pre-flight existence check in `_generate_one` (or `generate`) in `src/wh40k_cheatsheet/pipeline.py`: verify `(paths.images_root / "logo_40k.png").is_file()` before rendering; raise `PdfError` naming the expected path if it fails (depends on T001; research.md §4; contracts/page-logo.md F1; FR-005) - add a `Raises:` line to the function's docstring per the `008` docstring gate
 
 **Checkpoint**: The logo renders correctly on a real page, and a missing asset now fails the pipeline
 instead of silently continuing.
@@ -75,10 +75,10 @@ logo in the top-right corner, same size, undistorted, not overlapping any other 
 
 ### Implementation for User Story 1
 
-- No story-specific implementation — Phase 1 + Phase 2 (T001–T005) already deliver this behavior;
+- No story-specific implementation - Phase 1 + Phase 2 (T001–T005) already deliver this behavior;
   T006–T009 verify it against the P1 acceptance criteria.
 
-**Checkpoint**: MVP — the logo reliably renders correctly on every page, and a missing asset reliably
+**Checkpoint**: MVP - the logo reliably renders correctly on every page, and a missing asset reliably
 fails generation instead of shipping a broken PDF.
 
 ---
@@ -88,7 +88,7 @@ fails generation instead of shipping a broken PDF.
 **Purpose**: End-to-end validation and documentation.
 
 - [X] T010 Run every scenario in `quickstart.md` end-to-end (logo on every page, no overlap, existing content unaffected, missing-asset failure) and confirm expected outcomes
-- [X] T011 [P] Document the logo behavior in `README.md` — that it is unconditional (not an authored flag), its fixed 50px size, and a link to `specs/010-page-header-logo/contracts/page-logo.md`
+- [X] T011 [P] Document the logo behavior in `README.md` - that it is unconditional (not an authored flag), its fixed 50px size, and a link to `specs/010-page-header-logo/contracts/page-logo.md`
 
 ---
 
@@ -96,19 +96,19 @@ fails generation instead of shipping a broken PDF.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately. T002 depends on T001 (same new field).
-- **Foundational (Phase 2)**: Depends on Setup (T005's check needs `images_root` from T001) — BLOCKS
+- **Setup (Phase 1)**: No dependencies - start immediately. T002 depends on T001 (same new field).
+- **Foundational (Phase 2)**: Depends on Setup (T005's check needs `images_root` from T001) - BLOCKS
   the user story.
-- **User Story 1 (Phase 3)**: Depends on Foundational. The only story — also the MVP.
+- **User Story 1 (Phase 3)**: Depends on Foundational. The only story - also the MVP.
 - **Polish (Phase 4)**: Depends on the story being complete.
 
 ### User Story Dependencies
 
-- **US1 (P1)**: Depends only on Phase 1 + Phase 2 — the only user story in this feature.
+- **US1 (P1)**: Depends only on Phase 1 + Phase 2 - the only user story in this feature.
 
 ### Within the User Story
 
-- Tests only — there is no implementation step to sequence tests before, since Setup + Foundational
+- Tests only - there is no implementation step to sequence tests before, since Setup + Foundational
   already deliver the mechanism. T009 depends on T005 (the check it's testing must exist).
 
 ### Parallel Opportunities
@@ -137,12 +137,12 @@ Task: "Page-count regression test in tests/integration/test_page_logo_pdf.py"
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup (T001–T002).
-2. Complete Phase 2: Foundational (T003–T005) — CRITICAL; this is the entire mechanism plus the
+2. Complete Phase 2: Foundational (T003–T005) - CRITICAL; this is the entire mechanism plus the
    fail-loud guarantee.
 3. Complete Phase 3: User Story 1 (T006–T009).
 4. **STOP and VALIDATE**: the real `11e` content renders with the logo on every page, no overlap, in
    both languages; removing the logo file fails generation clearly.
-5. Demonstrable MVP — consistent branding, verified not to break anything else.
+5. Demonstrable MVP - consistent branding, verified not to break anything else.
 
 ### Incremental Delivery
 
@@ -159,13 +159,13 @@ Task: "Page-count regression test in tests/integration/test_page_logo_pdf.py"
   independent.
 - [Story] label maps each task to its user story for traceability.
 - Because this feature's entire implementation lives in Setup + Foundational, the story's
-  "Implementation" subsection intentionally contains no new tasks — only its Tests subsection does.
+  "Implementation" subsection intentionally contains no new tasks - only its Tests subsection does.
 - Tests (T006–T009) must fail before Foundational (T003–T005) is complete, and pass once it is.
 - Commit after each task or logical group; stop at any checkpoint to validate independently.
 
 ---
 
-## Phase 5: Amendment Setup (2026-08-14) — Revert the corner-logo margin
+## Phase 5: Amendment Setup (2026-08-14) - Revert the corner-logo margin
 
 **Purpose**: Undo the margin enlargement the corner logo needed; the background watermark doesn't
 live in the margin band.
@@ -174,17 +174,17 @@ live in the margin band.
 
 ---
 
-## Phase 6: Amendment Foundational (2026-08-14) — The watermark rendering mechanism
+## Phase 6: Amendment Foundational (2026-08-14) - The watermark rendering mechanism
 
 **Purpose**: Replace the corner-logo CSS/markup with the background-watermark CSS/markup.
 
 **⚠️ CRITICAL**: No amendment user-story work can begin until this phase is complete.
 
-- [X] T013 Replace the `.page-logo` CSS rule with `.page-watermark` in `templates/cheatsheet.html.j2`: `position: fixed; left: -14.71mm; top: 106.72mm; width: 227.42mm; height: 69.56mm; transform: rotate(45deg); opacity: 0.3;` — deliberately no `z-index` (research.md §4 — a negative value was tested and found to hide the watermark entirely; DOM order alone puts it behind subsequent content) (contracts/page-logo.md CSS mechanism)
-- [X] T014 [P] Update the `<img>` tag's class from `page-logo` to `page-watermark` in `templates/cheatsheet.html.j2` (same position in the document — immediately after `<body>`, before `<article class="cheatsheet">` — so DOM order keeps it painting behind)
+- [X] T013 Replace the `.page-logo` CSS rule with `.page-watermark` in `templates/cheatsheet.html.j2`: `position: fixed; left: -14.71mm; top: 106.72mm; width: 227.42mm; height: 69.56mm; transform: rotate(45deg); opacity: 0.3;` - deliberately no `z-index` (research.md §4 - a negative value was tested and found to hide the watermark entirely; DOM order alone puts it behind subsequent content) (contracts/page-logo.md CSS mechanism)
+- [X] T014 [P] Update the `<img>` tag's class from `page-logo` to `page-watermark` in `templates/cheatsheet.html.j2` (same position in the document - immediately after `<body>`, before `<article class="cheatsheet">` - so DOM order keeps it painting behind)
 - [X] T015 [P] Update the header doc comment in `templates/cheatsheet.html.j2` to describe the watermark (full-page, 45°-rotated, 30% opacity, behind content) instead of the corner logo
 
-**Checkpoint**: The watermark renders correctly on a real page — faint, diagonal, behind content.
+**Checkpoint**: The watermark renders correctly on a real page - faint, diagonal, behind content.
 
 ---
 
@@ -201,17 +201,17 @@ everything else still fully readable.
 ### Tests for Amendment User Story 1 ⚠️
 
 - [X] T016 [US1] Rewrite the presence/size test in `tests/integration/test_page_logo_pdf.py`: assert the watermark's (pre-transform) box width/height match the computed 227.42mm×69.56mm (859.56×262.91px, within tolerance) on every page, its `transform` style includes a 45° (`π/4` rad) rotation, and its `opacity` style is ≈0.3 (FR-002/FR-003/FR-004; SC-002/SC-003)
-- [X] T017 [P] [US1] Keep/adapt the position-consistency test (`test_logo_same_position_on_every_page_both_languages`) in `tests/integration/test_page_logo_pdf.py` — same underlying logic, now asserting on the watermark's new position, across every page in both `en` and `de` (FR-006)
-- [X] T018 [P] [US1] Replace the old overlap-avoidance test with a stacking-order test in `tests/integration/test_page_logo_pdf.py`: assert the `<img class="page-watermark">` appears before `<article class="cheatsheet">` in the rendered HTML's DOM order (the structural proxy for "paints behind," since no `z-index` is set) — the old "zero geometric overlap" check no longer applies, since the watermark is now deliberately large and positioned behind content, not around it (FR-005; SC-004; research.md §4)
-- [X] T019 [P] [US1] Keep the page-count regression test (`test_regenerating_real_content_keeps_same_page_count`) in `tests/integration/test_page_logo_pdf.py` unchanged — still asserts 3 pages `en` / 4 pages `de` (SC-005)
-- [X] T020 [US1] Re-run the two existing missing-asset fail-loud tests (`test_missing_logo_asset_fails_generation_via_cli`, `test_missing_logo_asset_raises_pdf_error_directly`) in `tests/integration/test_page_logo_pdf.py` unmodified and confirm they still pass — the underlying pipeline check is untouched by this amendment (FR-007; contracts/page-logo.md F1)
+- [X] T017 [P] [US1] Keep/adapt the position-consistency test (`test_logo_same_position_on_every_page_both_languages`) in `tests/integration/test_page_logo_pdf.py` - same underlying logic, now asserting on the watermark's new position, across every page in both `en` and `de` (FR-006)
+- [X] T018 [P] [US1] Replace the old overlap-avoidance test with a stacking-order test in `tests/integration/test_page_logo_pdf.py`: assert the `<img class="page-watermark">` appears before `<article class="cheatsheet">` in the rendered HTML's DOM order (the structural proxy for "paints behind," since no `z-index` is set) - the old "zero geometric overlap" check no longer applies, since the watermark is now deliberately large and positioned behind content, not around it (FR-005; SC-004; research.md §4)
+- [X] T019 [P] [US1] Keep the page-count regression test (`test_regenerating_real_content_keeps_same_page_count`) in `tests/integration/test_page_logo_pdf.py` unchanged - still asserts 3 pages `en` / 4 pages `de` (SC-005)
+- [X] T020 [US1] Re-run the two existing missing-asset fail-loud tests (`test_missing_logo_asset_fails_generation_via_cli`, `test_missing_logo_asset_raises_pdf_error_directly`) in `tests/integration/test_page_logo_pdf.py` unmodified and confirm they still pass - the underlying pipeline check is untouched by this amendment (FR-007; contracts/page-logo.md F1)
 
 ### Implementation for Amendment User Story 1
 
-- No story-specific implementation — Phase 5 + Phase 6 (T012–T015) already deliver this behavior;
+- No story-specific implementation - Phase 5 + Phase 6 (T012–T015) already deliver this behavior;
   T016–T020 verify it against the P1 acceptance criteria.
 
-**Checkpoint**: MVP — the watermark reliably renders correctly on every page, stays behind all
+**Checkpoint**: MVP - the watermark reliably renders correctly on every page, stays behind all
 content, and the existing fail-loud guarantee for a missing asset still holds.
 
 ---
@@ -227,10 +227,10 @@ content, and the existing fail-loud guarantee for a missing asset still holds.
 
 ## Amendment Dependencies & Execution Order
 
-- **Phase 5**: No dependencies — start immediately.
-- **Phase 6**: Depends on Phase 5 — BLOCKS Phase 7. Contains the entire rendering mechanism
+- **Phase 5**: No dependencies - start immediately.
+- **Phase 6**: Depends on Phase 5 - BLOCKS Phase 7. Contains the entire rendering mechanism
   (T013–T015).
-- **Phase 7**: Depends on Phase 6. The only story — also the MVP for this amendment.
+- **Phase 7**: Depends on Phase 6. The only story - also the MVP for this amendment.
 - **Phase 8**: Depends on Phase 7 being complete.
 - **Parallel**: T014/T015 independent of T013 and each other (same file, different regions); T017,
   T018, T019 all parallel to each other and to T016 (same file, distinct independent cases); T020
@@ -242,7 +242,7 @@ content, and the existing fail-loud guarantee for a missing asset still holds.
 
 ## Phase 9: Opacity Tuning (2026-08-15)
 
-**Purpose**: Direct follow-up request — "change the opacity of the image to alpha of 0.05" — turns
+**Purpose**: Direct follow-up request - "change the opacity of the image to alpha of 0.05" - turns
 the watermark fainter still than the originally-clarified 0.3 (the user had already hand-tuned it to
 an intermediate 0.1 before this request landed).
 

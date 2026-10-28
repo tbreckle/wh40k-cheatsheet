@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate-version:
-    # On a `pull_request` (release/hotfix branch opened against develop/main), only verify —
+    # On a `pull_request` (release/hotfix branch opened against develop/main), only verify -
     # the push below already fixed the branch itself, so a mismatch here would mean something
     # bypassed that automation. On a `push` directly to the branch, auto-fix instead of failing:
     # rewrite pyproject.toml to the branch's own version, re-lock, and commit+push the result, so
@@ -74,23 +74,23 @@ jobs:
 
       # Split rather than a single `poe check` so a stalling gate is identifiable from the step
       # list alone, and so one slow gate can't consume the whole job's budget.
-      - name: Gate — format
+      - name: Gate - format
         timeout-minutes: 2
         run: uv run poe format-check
 
-      - name: Gate — lint
+      - name: Gate - lint
         timeout-minutes: 5
         run: uv run poe lint
 
-      - name: Gate — security
+      - name: Gate - security
         timeout-minutes: 2
         run: uv run poe security
 
-      - name: Gate — types
+      - name: Gate - types
         timeout-minutes: 2
         run: uv run poe types
 
-      - name: Gate — tests
+      - name: Gate - tests
         timeout-minutes: 10
         run: uv run pytest -v
 
@@ -126,10 +126,10 @@ jobs:
 
   publish-prerelease:
     # Every push directly to a release/*/hotfix/* branch (not a PR, not main) publishes/updates a
-    # GitHub Release for that branch's version, always marked pre-release — so a maintainer can
+    # GitHub Release for that branch's version, always marked pre-release - so a maintainer can
     # inspect exactly what will ship, on the public Releases page, before merging into main.
     # `always() &&` + explicit needs.check.result/needs.build.result checks (not bare
-    # `success()`) — see the comment on publish-release below for why both parts are required.
+    # `success()`) - see the comment on publish-release below for why both parts are required.
     if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.event_name == 'push' && (startsWith(github.ref_name, 'release/') || startsWith(github.ref_name, 'hotfix/'))
     needs: [check, build]
     runs-on: ubuntu-latest
@@ -188,18 +188,18 @@ jobs:
     # runs that stayed skipped despite check/build both passing (2026-09-14 bug fix, corrected
     # 2026-09-14):
     #  1. Bare `success()` is WRONG: it evaluates across this job's ENTIRE transitive dependency
-    #     chain, not just its own `needs: [check, build]` — and `build` itself depends on
+    #     chain, not just its own `needs: [check, build]` - and `build` itself depends on
     #     `validate-version`, which is *always* skipped on `main` by design (main is never a
     #     release/hotfix branch). `success()` treats that skip as non-success and fails, every
-    #     time. Fixed by checking needs.check.result/needs.build.result directly instead — that
+    #     time. Fixed by checking needs.check.result/needs.build.result directly instead - that
     #     only inspects the two jobs actually named in this job's own `needs:`.
-    #  2. That alone is STILL not enough: GitHub Actions has a SEPARATE implicit default —
-    #     independent of whatever your own `if:` expression says — that skips a job whenever any
+    #  2. That alone is STILL not enough: GitHub Actions has a SEPARATE implicit default -
+    #     independent of whatever your own `if:` expression says - that skips a job whenever any
     #     job anywhere in its dependency chain (direct or transitive) didn't succeed, and this
     #     default treats "skipped" the same as "failed." Only `always()` in the `if:` overrides
     #     it. `build`, above, already proves this: it only runs despite needing the
     #     sometimes-skipped `validate-version` because its own `if:` starts with `always() &&`.
-    #     Without that same prefix here, checking needs.*.result correctly is not enough — the
+    #     Without that same prefix here, checking needs.*.result correctly is not enough - the
     #     implicit default still wins and skips the job before your condition even gets to
     #     matter.
     if: always() && needs.check.result == 'success' && needs.build.result == 'success' && github.ref == 'refs/heads/main'
@@ -243,7 +243,7 @@ jobs:
           PRERELEASE: ${{ steps.version.outputs.prerelease }}
         run: |
           # A release for this tag may already exist and be marked pre-release, published by
-          # publish-prerelease from a push to the release/hotfix branch that's now being merged —
+          # publish-prerelease from a push to the release/hotfix branch that's now being merged -
           # `gh release edit` here promotes it (or re-affirms pre-release status, per FR-010).
           # --notes must be passed on edit too: `gh release edit` leaves unspecified fields as they
           # were, so without it the pre-release's "Not yet merged into main" text survives promotion.

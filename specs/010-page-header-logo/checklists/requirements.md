@@ -33,8 +33,8 @@
 
 - Original specification (top-right corner logo): no ambiguity required a clarifying question.
 - 2026-08-14 amendment (background watermark, 45° rotation, alpha 0.3): one ambiguity resolved via
-  `/speckit-clarify` — whether "full page" sizing means fitting entirely within the page bounds
+  `/speckit-clarify` - whether "full page" sizing means fitting entirely within the page bounds
   after rotation, or covering the page edge-to-edge with cropping. Resolved: fit, nothing cropped.
 - All checklist items pass; spec is ready for `/speckit-plan` (re-run recommended given the scope
-  of this amendment — positioning, sizing, and the FR-005/FR-006 fail-loud/no-overlap requirements
+  of this amendment - positioning, sizing, and the FR-005/FR-006 fail-loud/no-overlap requirements
   all changed shape).

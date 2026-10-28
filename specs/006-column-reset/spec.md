@@ -13,8 +13,8 @@
 ### User Story 1 - Force the next content to start fresh in the left column (Priority: P1)
 
 A maintainer authoring content wants a specific section to always begin at the top of the left
-column of the two-column layout — regardless of where the preceding content happened to end (left
-or right column) — so a loosely related section never straddles the column boundary or starts
+column of the two-column layout - regardless of where the preceding content happened to end (left
+or right column) - so a loosely related section never straddles the column boundary or starts
 part-way down the right column.
 
 **Why this priority**: This is the entire value of the feature. Without it, maintainers have no way
@@ -83,14 +83,14 @@ produces its own correct, independent effect without interfering with the other.
    own location.
 2. **Given** a column-reset marker placed immediately adjacent to a page-break marker with no content
    between them, **When** the PDF is generated, **Then** no blank page or blank column area is
-   produced — the more specific transition (the page break) determines the outcome at that point.
+   produced - the more specific transition (the page break) determines the outcome at that point.
 
 ---
 
 ### Edge Cases
 
 - A column-reset marker at the very start of the document (before any content) MUST NOT alter output
-  or create blank space — there is nothing to reset from.
+  or create blank space - there is nothing to reset from.
 - A column-reset marker at the very end of the document (after the last content) MUST NOT create
   trailing blank space.
 - Multiple consecutive column-reset markers with no content between them MUST collapse to a single
@@ -109,7 +109,7 @@ produces its own correct, independent effect without interfering with the other.
 - **FR-002**: Content following a column-reset marker MUST begin in a left column regardless of
   whether the immediately preceding content ended in a left or right column.
 - **FR-003**: A column-reset marker MUST NOT force a new page when sufficient room remains on the
-  current page — the reset MUST be able to take effect within the same page.
+  current page - the reset MUST be able to take effect within the same page.
 - **FR-004**: Content preceding a column-reset marker MUST render exactly as it would without that
   marker present.
 - **FR-005**: A column-reset marker at the very start of the document MUST NOT alter output or
@@ -155,17 +155,17 @@ produces its own correct, independent effect without interfering with the other.
 ## Assumptions
 
 - This feature extends the content-authoring model established in `002-pdf-generation` and used by
-  `005-page-breaks` (ordered content blocks rendered through a template) — a column-reset point is
+  `005-page-breaks` (ordered content blocks rendered through a template) - a column-reset point is
   one more kind of entry in that same ordered structure, authored the same way as a page-break point.
 - "Left column" refers to the first column of the two-column layout already used throughout the
-  generated document (`002-pdf-generation`'s two-column design) — this feature does not introduce a
+  generated document (`002-pdf-generation`'s two-column design) - this feature does not introduce a
   different column count or layout mode.
 - A column reset is explicitly **lighter-weight** than a page break: it realigns the column flow but
   only forces a new page when the current page genuinely has no room left, matching ordinary content
   overflow behavior. This is what justifies it being a distinct capability from
   `005-page-breaks`'s page-break marker rather than a duplicate of it.
 - This feature is about **explicit, maintainer-placed** markers, consistent with `005-page-breaks`'s
-  scope decision — automatic realignment inference (e.g., always resetting before certain section
+  scope decision - automatic realignment inference (e.g., always resetting before certain section
   types) is out of scope.
 - Column-reset points are edition/revision content, so they are versioned and reviewed the same way
   as the rest of the cheat sheet's source content, consistent with the project constitution's

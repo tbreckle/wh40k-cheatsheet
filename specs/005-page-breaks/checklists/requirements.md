@@ -34,7 +34,7 @@
 - Two judgment calls were resolved as reasonable defaults rather than blocking clarifications
   (documented in Assumptions): (1) "page break" means a full-page boundary, the conventional meaning
   of the term, not a narrower column-break notion; (2) scope is limited to **explicit,
-  maintainer-placed** break points — automatic break inference before certain section types is
+  maintainer-placed** break points - automatic break inference before certain section types is
   explicitly out of scope for this feature.
 - Scoped as an extension of `002-pdf-generation`'s content-block authoring model rather than a
   standalone capability, consistent with how `003-edition-revisions` and `004-cli-logging` were

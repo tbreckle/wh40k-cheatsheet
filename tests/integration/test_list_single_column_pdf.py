@@ -82,7 +82,7 @@ def test_single_column_list_box_width_approximates_full_content_width():
 def test_standard_list_stays_confined_to_one_column():
     html = _render([_list(["STANDARDMARKER item"])])
     filler_width = _find_block_width(html, "STANDARDMARKER", "ul")
-    # No flag set at all (omitted, not just false) — must match pre-feature behavior exactly.
+    # No flag set at all (omitted, not just false) - must match pre-feature behavior exactly.
     assert '<div class="block block--full-width">' not in html
     assert '<div class="block">' in html
     assert filler_width < 500  # well under a full A4 content width

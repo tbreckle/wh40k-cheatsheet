@@ -17,11 +17,11 @@ A content-block entry, authored inline in `document.blocks` exactly like any oth
 | `type` | `"page_break"` | The only required field; no other fields are meaningful |
 
 **Validation rules**
-- Has no visible content of its own (spec Key Entities) — the renderer emits no markup for it
+- Has no visible content of its own (spec Key Entities) - the renderer emits no markup for it
   directly; it only affects segmentation (FR-001, FR-010).
 - May appear any number of times, anywhere in `document.blocks` (FR-007).
 - A `page_break` immediately preceded or followed by another `page_break` (no other block between
-  them) collapses to a single segmentation boundary — see `Segment` below (FR-006).
+  them) collapses to a single segmentation boundary - see `Segment` below (FR-006).
 
 Example (inline with existing blocks, per `editions/11e/2026-08-01-00/{en,de}/content.yaml`
 convention):
@@ -41,7 +41,7 @@ document:
 ## Derived structure: `Segment`
 
 Computed at render time by `group_by_page_breaks(blocks)` (research.md §5); not authored, not
-persisted — purely a rendering-time grouping of the author's `document.blocks`.
+persisted - purely a rendering-time grouping of the author's `document.blocks`.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -50,13 +50,13 @@ persisted — purely a rendering-time grouping of the author's `document.blocks`
 **Derivation rules**
 1. Split `document.blocks` into runs, using each `page_break` block as a boundary (the marker itself
    is consumed, not included in either resulting run).
-2. Discard any run with zero blocks (FR-004/FR-005/FR-006 — this is what makes leading, trailing, and
+2. Discard any run with zero blocks (FR-004/FR-005/FR-006 - this is what makes leading, trailing, and
    consecutive markers safe).
 3. The resulting ordered list of non-empty runs is the list of `Segment`s rendered, each as its own
    `<div class="sheet">` (research.md §2).
 
 **Example**: `[phase, subsection, page_break, phase, page_break, page_break, table]` →
-`[[phase, subsection], [phase], [table]]` — three segments, i.e. three pages' worth of top-level
+`[[phase, subsection], [phase], [table]]` - three segments, i.e. three pages' worth of top-level
 containers (research.md §3 confirms the double-marker in the middle collapses correctly).
 
 ---
@@ -81,6 +81,6 @@ content.yaml (per edition/revision/language, feature 002/003 convention)
 
 ## State / flow
 
-Segmentation is a stateless, pure transform of the existing `document.blocks` list — same inputs
+Segmentation is a stateless, pure transform of the existing `document.blocks` list - same inputs
 always yield the same segments and the same page count. No new state, no new persistence, consistent
 with the stateless pipeline design established in `002-pdf-generation`.

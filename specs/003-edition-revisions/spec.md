@@ -16,7 +16,7 @@ A cheatsheet maintainer generates the document for an edition without naming a r
 automatically selects that edition's most recent revision so the newest corrected content is
 produced by default.
 
-**Why this priority**: This is the everyday path — maintainers almost always want the newest
+**Why this priority**: This is the everyday path - maintainers almost always want the newest
 corrected content. Automatic "latest" selection is the core value of the feature and a complete MVP
 on its own.
 
@@ -86,16 +86,16 @@ the latest identified; introduce a malformed revision identifier and confirm it 
 ### Edge Cases
 
 - What happens when two revisions would share the same identifier (duplicate `YYYY-MM-DD-NN`)? This
-  MUST be treated as an error — identifiers are unique per edition.
-- What happens at the daily limit — a 101st revision on one day (NN would exceed `99`)? The format
+  MUST be treated as an error - identifiers are unique per edition.
+- What happens at the daily limit - a 101st revision on one day (NN would exceed `99`)? The format
   caps sequence at `99` (max 100 revisions per day, `00`–`99`); an identifier beyond this MUST be
   rejected as malformed.
 - How is a revision date that is syntactically valid but not a real calendar date (e.g.,
   `2026-13-40-00`) handled? It MUST be rejected as malformed.
 - What happens when a requested revision is well-formed and exists but its content is incomplete
   (e.g., missing a language)? The existing content-validation behavior applies (reported, not
-  silently blanked) — revision selection does not bypass content checks.
-- How does "latest" behave across editions — is it always scoped to a single edition? Yes; the latest
+  silently blanked) - revision selection does not bypass content checks.
+- How does "latest" behave across editions - is it always scoped to a single edition? Yes; the latest
   revision is determined per edition, never across editions.
 
 ## Requirements *(mandatory)*
@@ -169,7 +169,7 @@ the latest identified; introduce a malformed revision identifier and confirm it 
 - Because `YYYY-MM-DD-NN` uses fixed-width, zero-padded, most-significant-first components, simple
   ascending ordering of the identifier equals chronological ordering; "latest" is the maximum.
 - The default revision granularity follows the existing per-(edition, language) output model, now
-  further qualified by revision — the maintainer's request may name an edition, optionally a
+  further qualified by revision - the maintainer's request may name an edition, optionally a
   language, and optionally a revision.
 - How revisions are physically organized within the source layout (e.g., a per-revision directory
   under an edition) is an implementation concern deferred to planning; this spec defines only the
@@ -182,4 +182,4 @@ the latest identified; introduce a malformed revision identifier and confirm it 
 - Depends on `002-pdf-generation` for the edition, language, template, and generation concepts that
   revisions qualify.
 - Relies on the project constitution's traceability constraint (each output attributable to its
-  source edition/version) — revisions make that attribution precise to a dated correction.
+  source edition/version) - revisions make that attribution precise to a dated correction.

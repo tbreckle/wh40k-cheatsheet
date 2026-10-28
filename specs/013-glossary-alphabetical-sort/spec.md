@@ -17,7 +17,7 @@ Real weapon-ability terms (e.g. `[ANTI-X Y+] (24.03)`, `[PISTOL] (24.27)`, seen 
 glossary) are authored with a leading `[`, per WH40K's own weapon-ability notation. Under the
 original fold (`casefold()` → NFD → drop combining marks), `[` (U+005B) compares before every
 lowercase letter, so every such term clustered at the front of the glossary regardless of its actual
-first letter — the Assumptions section below originally stated terms are "compared as written…no
+first letter - the Assumptions section below originally stated terms are "compared as written…no
 stripping…is performed beyond case and diacritic folding," which is amended by this section: a single
 **leading** `[` is now stripped before folding, so these terms sort under their first real letter and
 interleave correctly with unbracketed terms. This adds FR-011/SC-007 and the edge case below; every
@@ -46,7 +46,7 @@ it. Delivers the lookup speed benefit on its own, with no other change needed.
    alphabetical order by term.
 2. **Given** the English 11th edition content (already authored alphabetically), **When** the
    cheat sheet is generated, **Then** the glossary reads in exactly the same order as before this
-   feature — no entry moves, none is duplicated, none is dropped.
+   feature - no entry moves, none is duplicated, none is dropped.
 3. **Given** the German content, where translated terms follow the English source order (STURM,
    EXPLOSIV, SPALTEN, NAHBESCHUSS …), **When** the German cheat sheet is generated, **Then** the
    entries appear in German alphabetical order (ANFÜHRER, ANHALTENDE TREFFER X, ANTI-X Y+ …).
@@ -73,7 +73,7 @@ and confirm the term lands in its alphabetical position in the output.
 1. **Given** an author appends a new term at the end of the glossary block, **When** the cheat
    sheet is generated, **Then** the term appears in its correct alphabetical position, not last.
 2. **Given** an author reorders the entries in the content file, **When** the cheat sheet is
-   generated, **Then** the output is unchanged — authored order does not affect the result.
+   generated, **Then** the output is unchanged - authored order does not affect the result.
 
 ---
 
@@ -96,7 +96,7 @@ and confirm the term lands in its alphabetical position in the output.
 - **Term text vs. term name**: only the term name determines position; the definition body
   (plain text or markup) never influences ordering.
 - **Leading-bracket weapon-ability terms** (2026-09-13 amendment): a term written with a leading `[`
-  (e.g. `[ANTI-X Y+] (24.03)`) sorts as if that `[` were absent — under its first letter — rather
+  (e.g. `[ANTI-X Y+] (24.03)`) sorts as if that `[` were absent - under its first letter - rather
   than clustering before every other term. Only a leading `[` is stripped; a `[` appearing anywhere
   else in the term is left untouched and compared as written.
 
@@ -115,7 +115,7 @@ and confirm the term lands in its alphabetical position in the output.
   not separated into distinct runs.
 - **FR-005**: The system MUST produce the same order for the same content on every generation run,
   including for entries whose terms are identical (ties keep their authored relative order).
-- **FR-006**: The system MUST preserve every authored entry and its definition exactly — sorting
+- **FR-006**: The system MUST preserve every authored entry and its definition exactly - sorting
   changes position only, never content, count, or markup.
 - **FR-007**: The order in which entries are authored in the content file MUST NOT affect the
   generated output.
@@ -126,7 +126,7 @@ and confirm the term lands in its alphabetical position in the output.
 - **FR-010**: The authoring documentation MUST state that glossary order is produced by generation
   and that authors need not maintain alphabetical order by hand.
 - **FR-011** (2026-09-13 amendment): A term whose first character is `[` MUST sort as if that
-  leading `[` were absent — under its first letter — rather than being ordered ahead of every term
+  leading `[` were absent - under its first letter - rather than being ordered ahead of every term
   lacking a leading `[`. A `[` occurring anywhere other than the first character MUST NOT be
   affected.
 
@@ -146,7 +146,7 @@ and confirm the term lands in its alphabetical position in the output.
 - **SC-001**: 100% of generated cheat sheets present their Core Abilities glossary in alphabetical
   order, verified across every edition, revision, and language currently in the repository.
 - **SC-002**: A reader looking for a known core ability can locate it by alphabetical position
-  alone, without reading entries that precede or follow it — confirmed by checking that every
+  alone, without reading entries that precede or follow it - confirmed by checking that every
   adjacent pair of entries in the output is correctly ordered.
 - **SC-003**: Generating the same content twice produces an identical glossary order, so
   releases stay reproducible.
@@ -174,10 +174,10 @@ and confirm the term lands in its alphabetical position in the output.
   languages in scope today are English and German.
 - Terms are compared as written, including any bracketed English gloss used in translations; no
   stripping or normalisation of parenthetical content is performed beyond case and diacritic
-  folding — **except** a single leading `[` (2026-09-13 amendment, FR-011), which is stripped before
+  folding - **except** a single leading `[` (2026-09-13 amendment, FR-011), which is stripped before
   folding so weapon-ability terms like `[ANTI-X Y+]` sort under their first letter. A `[` anywhere
   else in a term (including a trailing bracketed gloss) is unaffected.
-- No new content authoring field is introduced — authors do not opt in or out of sorting, and no
+- No new content authoring field is introduced - authors do not opt in or out of sorting, and no
   existing content file needs to change for this feature to take effect.
 - Existing glossary presentation features (the `spanning` full-width flag, column and page break
   behaviour) are unaffected and remain as specified in `specs/007-spanning-headline/contracts/glossary-spanning-flag.md`.

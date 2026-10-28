@@ -13,12 +13,12 @@
 ### User Story 1 - Catch quality issues locally before pushing (Priority: P1)
 
 A contributor working on the WH40K Cheatsheet runs a single command before pushing their change
-and immediately sees every quality problem — style violations, likely bugs, security concerns, and
-type errors — reported in one place, so they can fix them before opening a pull request.
+and immediately sees every quality problem - style violations, likely bugs, security concerns, and
+type errors - reported in one place, so they can fix them before opening a pull request.
 
 **Why this priority**: Fast local feedback is what makes quality gates usable. If contributors can
 only discover failures after a slow CI round-trip, they stop trusting the gate and route around it.
-This story delivers the core value — a trustworthy, one-command quality check — and is a viable MVP
+This story delivers the core value - a trustworthy, one-command quality check - and is a viable MVP
 on its own.
 
 **Independent Test**: Introduce a deliberate style violation, an obvious bug pattern, a hard-coded
@@ -100,14 +100,14 @@ syntax is accepted.
   remain understandable, attributing each finding to the gate that raised it.
 - How does a contributor run the gates when only some tools are available? The command MUST report
   clearly which gate could not run rather than silently skipping it and reporting success.
-- What happens on a large codebase — do local runs stay fast enough to be run routinely?
+- What happens on a large codebase - do local runs stay fast enough to be run routinely?
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: The project MUST provide a single command that runs all quality gates — style/format,
-  correctness lint, security scan, and type check — and reports every finding in one run.
+- **FR-001**: The project MUST provide a single command that runs all quality gates - style/format,
+  correctness lint, security scan, and type check - and reports every finding in one run.
 - **FR-002**: The quality command MUST exit with a failure status if any gate reports a violation,
   and a success status only when all gates pass.
 - **FR-003**: Each finding MUST identify the gate that produced it, the file, and the line, in a

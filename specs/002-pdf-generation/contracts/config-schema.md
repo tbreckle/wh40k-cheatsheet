@@ -3,18 +3,18 @@
 Feature: [spec.md](../spec.md) · Plan: [plan.md](../plan.md) · Data model: [data-model.md](../data-model.md)
 
 The single YAML project configuration file. This contract is what config authors and the loader
-(`config/loader.py` + Pydantic models) must honor. Validated with `extra="forbid"` — unknown keys
+(`config/loader.py` + Pydantic models) must honor. Validated with `extra="forbid"` - unknown keys
 are errors.
 
 ## Shape
 
 ```yaml
-editions:                       # mandatory — map of edition id → edition
+editions:                       # mandatory - map of edition id → edition
   <edition-id>:                 # e.g. "10e", "9e"
-    template: <file-name>       # mandatory — default template for this edition
-    languages:                  # mandatory — non-empty map of language code → entry
+    template: <file-name>       # mandatory - default template for this edition
+    languages:                  # mandatory - non-empty map of language code → entry
       <lang-code>:              # e.g. en, de, it (simple language codes)
-        template: <file-name>   # optional — overrides the edition template for this language
+        template: <file-name>   # optional - overrides the edition template for this language
 ```
 
 ## Rules
@@ -27,7 +27,7 @@ editions:                       # mandatory — map of edition id → edition
 | C4 | Language keys are simple language codes (`^[a-z]{2}(-[A-Za-z0-9]+)?$`) | FR-018 |
 | C5 | A language entry MAY have `template`; if absent, the edition `template` is used | FR-017 |
 | C6 | Unknown/misspelled keys anywhere fail validation with the offending path | FR-008 |
-| C7 | The file is structure-only — no content/string/HTML paths appear here | FR-019 |
+| C7 | The file is structure-only - no content/string/HTML paths appear here | FR-019 |
 
 ## Valid example
 

@@ -20,16 +20,16 @@ intermediate** artifact.
 directive. It also aids debuggability (constitution observability intent).
 
 **Alternatives considered**:
-- *Direct-to-PDF (ReportLab-style)*: rejected — loses HTML/CSS layout power and the inspectable
+- *Direct-to-PDF (ReportLab-style)*: rejected - loses HTML/CSS layout power and the inspectable
   intermediate; not what was requested.
-- *Discard HTML after conversion*: rejected — keeping it is nearly free and greatly aids debugging.
+- *Discard HTML after conversion*: rejected - keeping it is nearly free and greatly aids debugging.
 
 ---
 
 ## 2. Configuration modeling & validation: Pydantic v2
 
-**Decision**: Model the project configuration with **Pydantic v2** models — `ProjectConfig`,
-`Edition`, `LanguageEntry` — with strict validation (no extra keys, required fields enforced).
+**Decision**: Model the project configuration with **Pydantic v2** models - `ProjectConfig`,
+`Edition`, `LanguageEntry` - with strict validation (no extra keys, required fields enforced).
 
 **Rationale**: Pydantic turns the spec's mandatory/optional-key rules (FR-015–FR-018) into
 declarative, self-validating types and produces precise, field-located error messages that satisfy
@@ -58,7 +58,7 @@ YAML syntax error and a schema error produce distinct, clear messages (FR-008).
 
 **Alternatives considered**:
 - *ruamel.yaml*: round-trip/comment preservation not needed for read-only config loading.
-- *`yaml.load` (unsafe)*: rejected — security risk, flagged by bandit.
+- *`yaml.load` (unsafe)*: rejected - security risk, flagged by bandit.
 
 ---
 
@@ -72,10 +72,10 @@ string content. Template selection uses the resolved template name (language ove
 default, FR-017). Strings and HTML fragments are passed in as the render context.
 
 **Key settings**:
-- `autoescape=select_autoescape(["html"])` — but **pre-authored HTML fragments** (FR-001) are
+- `autoescape=select_autoescape(["html"])` - but **pre-authored HTML fragments** (FR-001) are
   trusted content authored in-repo and are injected via `| safe` / `Markup` at explicit, reviewed
   points only. This trust boundary is documented so it is a deliberate, auditable choice.
-- `undefined=StrictUndefined` so a referenced-but-missing string raises rather than renders empty —
+- `undefined=StrictUndefined` so a referenced-but-missing string raises rather than renders empty -
   directly implementing FR-009 (report unresolved references).
 
 **Alternatives considered**:
@@ -89,7 +89,7 @@ default, FR-017). Strings and HTML fragments are passed in as the render context
 **Decision**: Convert the rendered HTML to PDF with **WeasyPrint**, driving layout via CSS (print
 stylesheets, `@page` rules).
 
-**Rationale**: WeasyPrint renders HTML/CSS to PDF entirely locally (offline — constitution
+**Rationale**: WeasyPrint renders HTML/CSS to PDF entirely locally (offline - constitution
 requirement) with strong CSS paged-media support, fitting a layout-driven cheatsheet. It was
 explicitly requested.
 
@@ -135,7 +135,7 @@ Assumptions). Pinning metadata removes the main source of run-to-run drift while
 stricter byte-level mode later if requested.
 
 **Alternatives considered**:
-- *Byte-identical guarantee*: not required now; would need deeper control over PDF object ordering —
+- *Byte-identical guarantee*: not required now; would need deeper control over PDF object ordering -
   deferred unless the reproducibility definition tightens.
 
 ---
@@ -144,7 +144,7 @@ stricter byte-level mode later if requested.
 
 **Decision**: Expose a **command** (a console entrypoint, also wired as a poe task consistent with
 feature 001) with two operations: `generate` (by edition, language, or all) and `list` (available
-editions/languages) — satisfying SC-001/SC-003/SC-007 and FR-013.
+editions/languages) - satisfying SC-001/SC-003/SC-007 and FR-013.
 
 **Rationale**: A CLI matches the "maintainer runs generation as a build step" assumption in the spec.
 Reusing the poe runner keeps one consistent developer entrypoint across features.

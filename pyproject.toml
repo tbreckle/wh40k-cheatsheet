@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "wh40k-cheatsheet"
 version = "0.3.0"
-description = "Generates templated, multi-language, multi-edition Warhammer 40,000 cheat sheet PDFs"
+description = "Generates templated, multi-language, multi-edition Warhammer 40000 cheat sheet PDFs"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
@@ -32,7 +32,7 @@ dev = [
 packages = ["src/wh40k_cheatsheet"]
 
 # --------------------------------------------------------------------------
-# ruff — format + fast lint (style/format and lint gates)
+# ruff - format + fast lint (style/format and lint gates)
 # --------------------------------------------------------------------------
 [tool.ruff]
 target-version = "py312"
@@ -66,14 +66,14 @@ select = [
     "D",          # pydocstyle (Google-style docstrings)
 ]
 ignore = [
-    "S603",  # subprocess call check — no subprocess usage planned
+    "S603",  # subprocess call check - no subprocess usage planned
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.ruff.lint.pylint]
-max-args = 6  # generate()/_generate_one() need a 6th (print_friendly) opt-in flag param
+max-args = 7  # generate() needs 6th/7th (print_friendly/skip_sections) opt-in flag params
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004", "D"]
@@ -82,7 +82,7 @@ max-args = 6  # generate()/_generate_one() need a 6th (print_friendly) opt-in fl
 quote-style = "double"
 
 # --------------------------------------------------------------------------
-# pylint — deeper correctness lint (disable what ruff already owns)
+# pylint - deeper correctness lint (disable what ruff already owns)
 # --------------------------------------------------------------------------
 [tool.pylint.main]
 py-version = "3.12"
@@ -93,7 +93,8 @@ load-plugins = ["pylint.extensions.docparams"]
 max-line-length = 120
 
 [tool.pylint.design]
-max-args = 6  # generate()/_generate_one() need a 6th (print_friendly) opt-in flag param
+max-args = 7  # generate() needs 6th/7th (print_friendly/skip_sections) opt-in flag params
+max-attributes = 8  # GeneratedDocument's 8th field is omitted_sections (feature 015)
 
 [tool.pylint.basic]
 no-docstring-rgx = "^$"
@@ -110,18 +111,18 @@ disable = [
     "line-too-long",       # owned by ruff E501
     "wrong-import-order",  # owned by ruff I
     "unused-import",       # owned by ruff F401
-    "C0103",                # naming — owned by ruff N
+    "C0103",                # naming - owned by ruff N
 ]
 
 # --------------------------------------------------------------------------
-# bandit — security scan
+# bandit - security scan
 # --------------------------------------------------------------------------
 [tool.bandit]
 targets = ["src"]
 exclude_dirs = ["tests", ".venv"]
 
 # --------------------------------------------------------------------------
-# ty — type checking
+# ty - type checking
 # --------------------------------------------------------------------------
 [tool.ty.environment]
 python-version = "3.12"
@@ -137,7 +138,7 @@ addopts = "-ra"
 faulthandler_timeout = 120
 
 # --------------------------------------------------------------------------
-# poe — the single aggregate command + per-gate tasks
+# poe - the single aggregate command + per-gate tasks
 # --------------------------------------------------------------------------
 [tool.poe.tasks]
 format-check = "ruff format --check src tests"

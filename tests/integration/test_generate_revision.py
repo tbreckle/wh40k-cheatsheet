@@ -13,7 +13,6 @@ def _project_root_with_extra_revisions(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
 
     base_revision_dir = root / "editions" / "11e" / "2026-06-01-00"
     later_same_day = root / "editions" / "11e" / "2026-06-01-01"
@@ -26,7 +25,6 @@ def _paths(root: Path) -> Paths:
         editions_root=root / "editions",
         templates_root=root / "templates",
         out_root=root / "out",
-        images_root=root / "images",
     )
 
 

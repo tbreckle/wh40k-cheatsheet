@@ -16,7 +16,7 @@ A maintainer runs `generate` and, while it executes, sees concise status message
 step (loading configuration, resolving the edition/revision, resolving content, rendering, and
 converting to PDF) instead of a silent wait followed by a final result line.
 
-**Why this priority**: This is the core value of the feature — visibility into a multi-step,
+**Why this priority**: This is the core value of the feature - visibility into a multi-step,
 multi-second operation so the maintainer knows the tool is working and roughly what it's doing. It
 stands alone as a complete improvement even without the verbose flag.
 
@@ -29,7 +29,7 @@ each pipeline stage, in order, before the final success line, without needing an
    they see an ordered status message for each major stage the run passes through, followed by the
    existing success output.
 2. **Given** a run that generates multiple languages, **When** each language is processed, **Then**
-   the status messages for one language's stages are not interleaved confusingly with another's —
+   the status messages for one language's stages are not interleaved confusingly with another's -
    output remains readable in the order the work happens.
 3. **Given** the `list` command, **When** it runs, **Then** its output remains as concise as today
    (no obligation for `list` to add step-by-step logging, since it does not perform multi-stage work).
@@ -39,8 +39,8 @@ each pipeline stage, in order, before the final success line, without needing an
 ### User Story 2 - Get detailed diagnostic output on demand (Priority: P2)
 
 A maintainer investigating an issue or curious about exactly what the tool is doing adds a verbose
-flag to the command and receives significantly more detail — resolved file paths, the template and
-revision chosen, and other diagnostic context — without changing any other behavior or output
+flag to the command and receives significantly more detail - resolved file paths, the template and
+revision chosen, and other diagnostic context - without changing any other behavior or output
 artifact.
 
 **Why this priority**: Deeper diagnostics matter for troubleshooting but are secondary to the
@@ -55,15 +55,15 @@ template/revision) while producing the identical PDF/HTML output as the non-verb
 1. **Given** a valid run, **When** the maintainer adds the verbose flag, **Then** additional
    diagnostic detail is printed beyond the default stage messages.
 2. **Given** the verbose flag is not supplied, **When** the command runs, **Then** output matches the
-   default (non-verbose) level described in User Story 1 — no diagnostic detail leaks through.
+   default (non-verbose) level described in User Story 1 - no diagnostic detail leaks through.
 3. **Given** the same command run with and without the verbose flag, **When** comparing the generated
-   PDF/HTML files, **Then** they are identical — verbosity affects console output only.
+   PDF/HTML files, **Then** they are identical - verbosity affects console output only.
 
 ---
 
 ### User Story 3 - Errors are always visible regardless of verbosity (Priority: P3)
 
-A maintainer whose run fails — at default or verbose level — sees the error clearly, so verbosity
+A maintainer whose run fails - at default or verbose level - sees the error clearly, so verbosity
 never hides or buries a failure.
 
 **Why this priority**: Correctness/safety net for the other two stories; lower priority because it
@@ -95,7 +95,7 @@ in both cases.
 - What happens if a stage completes near-instantly? Its status message MUST still appear (visibility
   is about clarity of steps, not just slow ones).
 - Status/diagnostic messages MUST NOT include the content of generated cheat sheets (only metadata
-  such as stage names, identifiers, and paths) — no risk of flooding output with rendered content.
+  such as stage names, identifiers, and paths) - no risk of flooding output with rendered content.
 
 ## Requirements *(mandatory)*
 
@@ -103,7 +103,7 @@ in both cases.
 
 - **FR-001**: The system MUST report a status message at each major stage of a `generate` run:
   configuration loaded, edition/revision resolved, content resolved, template rendered, PDF
-  converted — at the default (non-verbose) output level.
+  converted - at the default (non-verbose) output level.
 - **FR-002**: Status messages MUST be emitted in the order the corresponding work happens and MUST
   clearly identify which stage they describe.
 - **FR-003**: When generating multiple languages in one run, status messages MUST remain attributable
@@ -111,7 +111,7 @@ in both cases.
   ambiguous which run they belong to.
 - **FR-004**: The CLI MUST provide a flag that enables a verbose output mode, off by default.
 - **FR-005**: In verbose mode, the system MUST emit additional diagnostic detail beyond the default
-  stage messages — at minimum, resolved file paths and the resolved template/revision/language for
+  stage messages - at minimum, resolved file paths and the resolved template/revision/language for
   each generated document.
 - **FR-006**: Enabling verbose mode MUST NOT alter the generated HTML/PDF output in any way; it MUST
   only affect what is printed to the console.
@@ -120,10 +120,10 @@ in both cases.
 - **FR-008**: Error messages MUST remain visually/structurally distinguishable from routine
   status/diagnostic messages, especially when verbose mode produces a high volume of output.
 - **FR-009**: The existing final result output (e.g., success confirmation, `list` output) MUST
-  continue to appear at default verbosity — this feature adds visibility, it does not remove
+  continue to appear at default verbosity - this feature adds visibility, it does not remove
   existing output.
 - **FR-010**: Status and diagnostic messages MUST NOT include the substantive content of the cheat
-  sheet being generated (e.g., rule text) — only operational metadata (stage names, identifiers,
+  sheet being generated (e.g., rule text) - only operational metadata (stage names, identifiers,
   paths, timings).
 
 ### Key Entities *(include if feature involves data)*
@@ -156,7 +156,7 @@ in both cases.
 - "Logging" is interpreted as operator-facing console status/diagnostic output (progress visibility),
   not a requirement to persist logs to a file or integrate with an external log-aggregation system;
   those are out of scope unless later requested.
-- Default (non-verbose) output is informative but concise — one line per major stage. Verbose output
+- Default (non-verbose) output is informative but concise - one line per major stage. Verbose output
   is additive detail, not a replacement of the default lines.
 - The verbose flag applies per-invocation (a command-line flag), not a persistent configuration
   setting.
