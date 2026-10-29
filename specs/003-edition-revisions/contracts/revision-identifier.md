@@ -20,7 +20,7 @@ regex: ^\d{4}-\d{2}-\d{2}-\d{2}$
 | R2 | `YYYY-MM-DD` must be a real calendar date | FR-002, FR-009 |
 | R3 | `NN` is `00`–`99` (max 100 revisions/day) | FR-003 |
 | R4 | Ordering is total, by `(date, sequence)`; latest = maximum | FR-005 |
-| R5 | Canonical string form re-emits zero-padded `YYYY-MM-DD-NN` | — |
+| R5 | Canonical string form re-emits zero-padded `YYYY-MM-DD-NN` | - |
 | R6 | Identifiers are unique within an edition | FR-004 |
 
 ## Valid

@@ -2,7 +2,7 @@
 
 Feature: [spec.md](./spec.md) · Plan: [plan.md](./plan.md)
 
-This feature adds one new visible content-block kind. No changes to any derived structure — like
+This feature adds one new visible content-block kind. No changes to any derived structure - like
 `007-spanning-headline`, this block never participates in segmentation (research.md §1).
 
 ---
@@ -14,17 +14,17 @@ A content-block entry, authored inline in `document.blocks` exactly like the exi
 | Field | Type | Notes |
 |-------|------|-------|
 | `type` | `"subphase"` | Required |
-| `title` | `str` | The heading text, required — same authoring shape as `phase.title` |
+| `title` | `str` | The heading text, required - same authoring shape as `phase.title` |
 
 **Validation rules**
-- Carries visible content (its own title text) — unlike `page_break`/`column_reset`, it is not a
+- Carries visible content (its own title text) - unlike `page_break`/`column_reset`, it is not a
   structural-only marker.
 - May appear any number of times, anywhere in `document.blocks` (FR-005), independently of whether a
   `phase` block precedes it.
 - Renders identically regardless of which segment (page-forced, soft-reset, or default) it falls
-  into — it is dispatched by `render_block` the same way as every other visible block type
+  into - it is dispatched by `render_block` the same way as every other visible block type
   (research.md §1).
-- Has no interaction with `page_break`/`column_reset` markers at the data level — they may appear
+- Has no interaction with `page_break`/`column_reset` markers at the data level - they may appear
   adjacent to a `subphase` with no special handling required.
 
 Example:
@@ -56,12 +56,12 @@ Follows the existing `:root` custom-property pattern from `002-pdf-generation`/`
 content.yaml (per edition/revision/language)
    └── document.blocks: [phase, subphase, block, ...]
 
-                    │ group_by_breaks() — UNCHANGED, subphase is not a marker
+                    │ group_by_breaks() - UNCHANGED, subphase is not a marker
                     ▼
 
         [Segment(blocks=[..., subphase_block, ...], break_type=...), ...]
 
-                    │ template render — render_block() dispatches subphase
+                    │ template render - render_block() dispatches subphase
                     │ like any other visible block, within whichever .sheet it's in
                     ▼
 
@@ -75,6 +75,6 @@ content.yaml (per edition/revision/language)
 
 ## State / flow
 
-Stateless, pure rendering — identical inputs always produce identical output. No new persistence, no
+Stateless, pure rendering - identical inputs always produce identical output. No new persistence, no
 new derived structure; this is purely an additional branch in the existing `render_block` dispatch,
 plus one new CSS custom property.

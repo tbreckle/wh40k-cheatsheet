@@ -31,7 +31,7 @@ what the flag does, and what is guaranteed regardless of verbosity.
 ## Streams
 
 - **stderr**: every log record, at every level, via one `logging.StreamHandler(sys.stderr)`.
-- **stdout**: unchanged from features 002/003 — `generate`'s success lines and all of `list`'s output,
+- **stdout**: unchanged from features 002/003 - `generate`'s success lines and all of `list`'s output,
   via plain `print()`. Logging code never writes to stdout.
 
 ---
@@ -46,7 +46,7 @@ what the flag does, and what is guaranteed regardless of verbosity.
    not `--verbose` is passed. Verified by diffing outputs of two runs (one plain, one `--verbose`)
    against the same inputs.
 4. **Failures always visible** (FR-007/SC-004): any exception in `cli.KNOWN_ERRORS` is logged at
-   `CRITICAL` before `main()` returns `1` — this happens identically at default and verbose
+   `CRITICAL` before `main()` returns `1` - this happens identically at default and verbose
    thresholds, because `CRITICAL` (50) is always ≥ both `INFO` (20) and `DEBUG` (10).
 5. **Distinguishable failures** (FR-008): the formatter prefixes every line with its level name
    (`"%(levelname)s %(name)s: %(message)s"`), so a `CRITICAL` line is visually distinct from `INFO`/
@@ -54,7 +54,7 @@ what the flag does, and what is guaranteed regardless of verbosity.
 6. **Per-language attribution** (FR-003/SC-005): every stage message emitted while processing a
    specific (edition, revision, language) is prefixed with that triple, e.g.
    `INFO wh40k_cheatsheet.pipeline: [11e/2026-08-01-00/de] rendering template`.
-7. **No content leakage** (FR-010): no log message ever contains cheat-sheet rule text — only
+7. **No content leakage** (FR-010): no log message ever contains cheat-sheet rule text - only
    identifiers, stage names, and paths.
 8. **`list` stays concise** (US1-3): `list` is not required to add step-by-step `INFO` logging since
    it does no multi-stage work; its existing stdout output is unaffected.

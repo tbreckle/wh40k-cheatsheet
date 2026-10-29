@@ -12,7 +12,6 @@ def _project_root(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
     return root
 
 

@@ -18,7 +18,7 @@ other block kind.
 | `type` | `"column_reset"` | The only required field; no other fields are meaningful |
 
 **Validation rules**
-- Has no visible content of its own (spec Key Entities) — affects segmentation only.
+- Has no visible content of its own (spec Key Entities) - affects segmentation only.
 - May appear any number of times, anywhere in `document.blocks` (FR-008).
 - Distinct from `page_break`: does not, by itself, force a new page (FR-003).
 - When immediately adjacent to a `page_break` marker (no block between them, in either order), the
@@ -44,7 +44,7 @@ Computed at render time by `group_by_breaks(blocks)`; not authored, not persiste
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `blocks` | `list[dict]` | A contiguous run of non-marker blocks between two markers (or list boundaries) — unchanged from `005` |
+| `blocks` | `list[dict]` | A contiguous run of non-marker blocks between two markers (or list boundaries) - unchanged from `005` |
 | `break_type` | `"page" \| "soft" \| None` | **New.** `"page"` forces a new page (rendered without the `sheet--soft` class); `"soft"` realigns to the left column without forcing a page (rendered with `sheet--soft`); `None` only for the very first segment when no marker precedes it |
 
 **Derivation algorithm** (single linear pass, per research.md §3–4):
@@ -70,16 +70,16 @@ return segments
 1. Split `document.blocks` into runs, using each marker (`page_break` or `column_reset`) as a
    boundary; the marker itself is consumed, not included in either resulting run (unchanged from
    `005`).
-2. Discard any run with zero blocks (unchanged from `005` — this is what makes leading, trailing, and
+2. Discard any run with zero blocks (unchanged from `005` - this is what makes leading, trailing, and
    consecutive markers of *either* type safe).
 3. `pending` accumulates across a run of consecutive markers: `page_break` unconditionally sets it to
-   `"page"`; `column_reset` sets it to `"soft"` **only if not already `"page"`** — this is the
+   `"page"`; `column_reset` sets it to `"soft"` **only if not already `"page"`** - this is the
    priority-merge rule (research.md §3), and it is order-independent by construction.
 4. The resulting ordered list of `Segment`s is rendered, each as its own `<div class="sheet">`
    (`break_type == "page"`) or `<div class="sheet sheet--soft">` (`break_type == "soft"`).
 
 **Example**: `[a, column_reset, b, page_break, column_reset, c]` →
-`[Segment([a], None), Segment([b], "soft"), Segment([c], "page")]` — the middle marker run
+`[Segment([a], None), Segment([b], "soft"), Segment([c], "page")]` - the middle marker run
 (`page_break, column_reset`) resolves to `"page"` per the priority-merge rule.
 
 ---
@@ -113,6 +113,6 @@ content.yaml (per edition/revision/language)
 
 ## State / flow
 
-Segmentation remains a stateless, pure transform of `document.blocks` — same inputs always yield the
+Segmentation remains a stateless, pure transform of `document.blocks` - same inputs always yield the
 same segments, break types, and page layout. No new state, no new persistence, consistent with the
 stateless pipeline design established in `002-pdf-generation` and `005-page-breaks`.

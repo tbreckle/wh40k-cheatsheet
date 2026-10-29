@@ -6,12 +6,12 @@
 
 ## Summary
 
-Add a `column_reset` content block — a lighter-weight sibling to `005-page-breaks`'s `page_break`
-marker — that forces the following content to begin in the left column of the two-column layout
+Add a `column_reset` content block - a lighter-weight sibling to `005-page-breaks`'s `page_break`
+marker - that forces the following content to begin in the left column of the two-column layout
 **without** forcing a new page unless the current page genuinely has no room left. This requires
 generalizing `005-page-breaks`'s segmentation mechanism (`group_by_page_breaks`) into a
 type-aware version (`group_by_breaks`) that tracks, per segment, which kind of marker (if any)
-preceded it, and a small CSS addition — a modifier class `.sheet--soft` whose
+preceded it, and a small CSS addition - a modifier class `.sheet--soft` whose
 `.sheet + .sheet.sheet--soft { break-before: auto; }` rule overrides `005`'s default
 `.sheet + .sheet { break-before: page; }` specifically for column-reset-triggered segments. Where
 two marker types are adjacent with nothing between them, `page_break` always wins (forces the page),
@@ -23,18 +23,18 @@ the same discipline established in `005-page-breaks`.
 
 **Language/Version**: Python 3.12+ (shared with features 001–005)
 
-**Primary Dependencies**: None new — same Jinja2/WeasyPrint stack as `002`/`005`.
+**Primary Dependencies**: None new - same Jinja2/WeasyPrint stack as `002`/`005`.
 
-**Storage**: N/A — `column_reset` markers are ordinary entries in existing `content.yaml` files,
+**Storage**: N/A - `column_reset` markers are ordinary entries in existing `content.yaml` files,
 exactly like `005`'s `page_break`.
 
 **Testing**: pytest. Unit tests for the generalized segmentation function's break-type tracking
 (including the priority-merge rule) and integration tests asserting actual page counts and
 left-column landing position for various marker combinations, following `005`'s test conventions.
 
-**Target Platform**: Same as features 001–005 — local dev + CI (Linux), WeasyPrint-rendered PDF.
+**Target Platform**: Same as features 001–005 - local dev + CI (Linux), WeasyPrint-rendered PDF.
 
-**Project Type**: Single project — extends the same two files `005-page-breaks` touched:
+**Project Type**: Single project - extends the same two files `005-page-breaks` touched:
 `templates/cheatsheet.html.j2` and `src/wh40k_cheatsheet/render/html_renderer.py`.
 
 **Performance Goals**: Segmentation remains a single linear pass; no measurable impact on the
@@ -42,7 +42,7 @@ existing <10s per-PDF generation budget.
 
 **Constraints**: Must not change behavior for any document using only `page_break` markers or no
 markers at all (backward compatible with all `002`/`003`/`005` content, including the real `11e`
-content, which now uses one `page_break`). Must not require authors to restructure existing content —
+content, which now uses one `page_break`). Must not require authors to restructure existing content -
 `column_reset` is just one more block type in the same ordered list (FR-011).
 
 **Scale/Scope**: Touches the same two files as `005`; the segmentation function's signature and
@@ -76,10 +76,10 @@ specs/006-column-reset/
 ├── quickstart.md           # Phase 1 output
 ├── contracts/
 │   └── column-reset-block.md   # The column_reset block contract + priority-merge rule
-└── tasks.md                 # Phase 2 (/speckit-tasks — NOT created here)
+└── tasks.md                 # Phase 2 (/speckit-tasks - NOT created here)
 ```
 
-### Source Code (repository root) — changes to existing files
+### Source Code (repository root) - changes to existing files
 
 ```text
 templates/cheatsheet.html.j2
@@ -112,7 +112,7 @@ tests/
 **Structure Decision**: No new modules or dependencies. The existing segmentation function is
 evolved in place (renamed to reflect its now-broader responsibility) rather than duplicated, since a
 single linear pass must consider both marker types together to resolve the priority-merge rule
-correctly — two independent passes could not express "page_break wins when adjacent to
+correctly - two independent passes could not express "page_break wins when adjacent to
 column_reset."
 
 ## Complexity Tracking

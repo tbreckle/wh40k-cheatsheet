@@ -33,7 +33,7 @@ A corrected content set for an edition.
 |-------|------|-------|
 | `id` | `RevisionId` | Unique within its edition (FR-004). |
 | `edition_id` | `str` | Owning edition (selection is per-edition, FR-013). |
-| `path` | `Path` | `editions/<edition-id>/<revision-id>/` — root for its per-language content. |
+| `path` | `Path` | `editions/<edition-id>/<revision-id>/` - root for its per-language content. |
 
 **Validation rules**
 - Belongs to exactly one edition.

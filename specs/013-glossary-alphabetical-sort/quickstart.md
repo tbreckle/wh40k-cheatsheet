@@ -17,10 +17,10 @@ uv sync
 uv run poe check
 ```
 
-**Expected**: format, lint, bandit, `ty`, and the full pytest suite all pass — including the new
+**Expected**: format, lint, bandit, `ty`, and the full pytest suite all pass - including the new
 `tests/unit/test_glossary_order.py` and `tests/integration/test_glossary_order_cross_language.py`,
 and the pre-existing `tests/integration/test_reproducible.py` (an unstable sort would break its
-byte-identical guarantee — contract G5).
+byte-identical guarantee - contract G5).
 
 ## 2. Generate both languages of the current edition
 
@@ -43,13 +43,13 @@ print("\n".join(terms))
 PY
 ```
 
-**Expected** — 33 terms, beginning `ANFÜHRER / UNTERSTÜTZUNG`, `ANHALTENDE TREFFER X`, `ANTI-X Y+`,
+**Expected** - 33 terms, beginning `ANFÜHRER / UNTERSTÜTZUNG`, `ANHALTENDE TREFFER X`, `ANTI-X Y+`,
 `EINMALIG`, `EINZELGÄNGER`, … and containing `ÜBERSCHWERER LÄUFER` between `TÖDLICHE TREFFER` and
 `VERHEERENDE WUNDEN` (contract G1/G3). Before this feature the list started `ANTI-X Y+`, `STURM`,
-`EXPLOSIV X`, `SPALTEN X` — English source order.
+`EXPLOSIV X`, `SPALTEN X` - English source order.
 
 Repeat for `10e`, which has its own German glossary of 31 terms whose entries carry bracketed
-English glosses (`STURM (Assault)`) — those must act only as tie-breakers, never as the primary key:
+English glosses (`STURM (Assault)`) - those must act only as tie-breakers, never as the primary key:
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 10e
@@ -76,7 +76,7 @@ diff /tmp/en-before.html out/11e/*/en.html && echo "unchanged ✓"
 Temporarily reverse the `terms` list of a glossary block in
 `editions/11e/2026-08-01-00/en/content.yaml`, regenerate, and diff against the output from step 4.
 
-**Expected**: identical output — authored order has no effect (contract G7). Revert the content file
+**Expected**: identical output - authored order has no effect (contract G7). Revert the content file
 afterwards; this feature never requires a content change.
 
 ## 6. Confirm leading-bracket weapon-ability terms interleave correctly (2026-09-13 amendment)
@@ -86,8 +86,8 @@ uv run wh40k-cheatsheet generate --edition 10e
 ```
 
 **Expected**: the `10e` German glossary's bracketed weapon-ability terms (`[ANTI-X Y+] (24.03)`,
-`[PISTOL] (24.27)`, `[PSIONISCH] (24.29)`, …) sort under their first real letter — `[ANTI-X Y+]`
-near the start with other `A` terms, `[PISTOL]`/`[PSIONISCH]` among the `P` terms — rather than all
+`[PISTOL] (24.27)`, `[PSIONISCH] (24.29)`, …) sort under their first real letter - `[ANTI-X Y+]`
+near the start with other `A` terms, `[PISTOL]`/`[PSIONISCH]` among the `P` terms - rather than all
 clustering together ahead of every unbracketed term (contract G12; FR-011; SC-007).
 
 ## 7. Confirm layout and the spanning flag are untouched
@@ -98,8 +98,8 @@ uv run wh40k-cheatsheet generate --edition 11e --language en --print-friendly
 
 Open `out/11e/<latest-revision>/en.pdf` and `en-print.pdf`:
 
-- The CORE ABILITIES glossary still spans the full page width as one cleanly 2-column unit — not
+- The CORE ABILITIES glossary still spans the full page width as one cleanly 2-column unit - not
   fragmented into four narrow columns (feature 007's G2 still holds; contract G9).
 - The print-friendly variant is alphabetical too, with no extra wiring (contract G8).
-- Term text, punctuation, and any inline markup (`→`, `&gt;`, bold) render exactly as before —
+- Term text, punctuation, and any inline markup (`→`, `&gt;`, bold) render exactly as before -
   only positions moved (contract G6).

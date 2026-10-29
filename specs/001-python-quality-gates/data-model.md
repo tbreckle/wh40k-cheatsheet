@@ -3,7 +3,7 @@
 Feature: [spec.md](./spec.md) · Plan: [plan.md](./plan.md)
 
 This feature is configuration-and-process, not runtime data. The "entities" below are configuration
-and result structures realized in `pyproject.toml`, CI, and the gate runner's output — not database
+and result structures realized in `pyproject.toml`, CI, and the gate runner's output - not database
 tables. They map the spec's Key Entities to concrete artifacts.
 
 ---
@@ -20,7 +20,7 @@ One category of automated check. Four instances exist.
 | `command` | The poe sub-task that runs it |
 | `targets` | Paths scanned (`src/`, and `tests/` where applicable) |
 | `result` | `pass` \| `fail` (derived from exit code) |
-| `independent` | Always true — runs regardless of other gates' results (FR-004) |
+| `independent` | Always true - runs regardless of other gates' results (FR-004) |
 
 **Instances**
 
@@ -64,9 +64,9 @@ The single, version-controlled source of truth for what is enforced.
 
 | Field | Description |
 |-------|-------------|
-| `location` | `pyproject.toml` (only) — no per-tool dotfiles |
+| `location` | `pyproject.toml` (only) - no per-tool dotfiles |
 | `python_floor` | `requires-python = ">=3.12"` |
-| `line_length` | `120` — ruff `line-length` and pylint `max-line-length`, one shared value |
+| `line_length` | `120` - ruff `line-length` and pylint `max-line-length`, one shared value |
 | `build_system` | `[build-system]` → hatchling backend |
 | `enabled_rules` | Per-gate rule selection (ruff `lint.select`, pylint enable/disable, bandit, ty) |
 | `runner_tasks` | `[tool.poe.tasks]` defining `check`, `fix`, and per-gate sub-tasks |
@@ -85,7 +85,7 @@ An auditable, justified silencing of one finding.
 
 | Field | Description |
 |-------|-------------|
-| `scope` | A single finding on a single line — never file-wide or global |
+| `scope` | A single finding on a single line - never file-wide or global |
 | `mechanism` | `# noqa: <rule>` (ruff), `# pylint: disable=<check>` (+reason), `# nosec <id>` (bandit), ty inline ignore |
 | `reason` | Required human justification adjacent to the suppression |
 | `guard` | ruff `RUF100` flags unused/blanket `noqa`; review rejects unexplained disables |
@@ -106,5 +106,5 @@ Gate Configuration (pyproject.toml)
    (5 instances)                                   (one finding scope)
 ```
 
-No state machine is required; each gate run is stateless and idempotent — same inputs and
+No state machine is required; each gate run is stateless and idempotent - same inputs and
 configuration yield the same findings and verdict.

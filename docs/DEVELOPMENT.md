@@ -14,7 +14,7 @@ WeasyPrint needs native libraries installed on the host: Pango, cairo, GDK-PixBu
 ## Quality gates
 
 All tool configuration lives in `pyproject.toml` (no per-tool dotfiles). One command runs every
-gate — format check, lint (ruff + pylint), security (bandit), types (ty), tests (pytest):
+gate - format check, lint (ruff + pylint), security (bandit), types (ty), tests (pytest):
 
 ```bash
 uv run poe check
@@ -27,17 +27,17 @@ Auto-fix the mechanical subset: `uv run poe fix`.
 
 Enforced rule set (see `pyproject.toml` `[tool.ruff.lint]` / `[tool.pylint]`): pycodestyle,
 pyflakes, isort, pep8-naming, pyupgrade, bugbear, comprehensions, simplify, pathlib, bandit subset,
-pylint parity, perflint, refurb, and more — line length is **120 characters** everywhere.
+pylint parity, perflint, refurb, and more - line length is **120 characters** everywhere.
 
 A finding may be suppressed for one line only, with a reason: `# noqa: <rule>  # reason: ...`
 (ruff), `# pylint: disable=<check>` with an adjacent comment, or `# nosec <id>` (bandit). Blanket or
 unexplained suppressions are rejected in review; ruff's `RUF100` flags unused `noqa` comments.
 
-Every module, class, function, and method in `src/wh40k_cheatsheet` — public and private alike —
+Every module, class, function, and method in `src/wh40k_cheatsheet` - public and private alike -
 requires a [Google-style docstring](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
 (`tests/` is exempt). Enforced by ruff's `D`/pydocstyle rules (presence + formatting, public scope)
 and pylint's docstring checks plus its `docparams` extension (presence across public + private
-scope, and that `Args:`/`Returns:`/`Raises:` actually match the signature) — both fail `poe lint`
+scope, and that `Args:`/`Returns:`/`Raises:` actually match the signature) - both fail `poe lint`
 the same way an existing lint/type/security finding does. Full contract:
 `specs/008-google-style-docstrings/contracts/docstring-style.md`.
 
@@ -54,12 +54,12 @@ downloadable as a workflow artifact; only a merge into `main` ever publishes a G
 
 | Branch pattern | `check` (quality gate) | `validate-version` | `build` (`package`) | Artifact uploaded | `publish-release` |
 |---|---|---|---|---|---|
-| `feature/**` | ✅ | — | ✅ | **Yes** | Never |
-| `develop` | ✅ | — | ✅ | **Yes** | Never |
+| `feature/**` | ✅ | - | ✅ | **Yes** | Never |
+| `develop` | ✅ | - | ✅ | **Yes** | Never |
 | `release/**` (push) | ✅ | ✅ auto-bumps + commits, gates `build` | ✅ (only if version valid) | **Yes** | Never |
 | `hotfix/**` (push) | ✅ | ✅ auto-bumps + commits, gates `build` | ✅ (only if version valid) | **Yes** | Never |
 | `release/**`/`hotfix/**` (PR into develop/main) | ✅ | ✅ verify-only, gates `build` | ✅ (only if version valid) | **Yes** | Never |
-| `main` | ✅ | — | ✅ | **Yes** | ✅ (`needs: [check, build]`) |
+| `main` | ✅ | - | ✅ | **Yes** | ✅ (`needs: [check, build]`) |
 
 A `release/*`/`hotfix/*` branch's name encodes its target SemVer version (e.g. `release/1.2.0`).
 Full contract: `specs/012-gitflow-release-pipeline/contracts/ci-workflow.md`.
@@ -68,9 +68,9 @@ Full contract: `specs/012-gitflow-release-pipeline/contracts/ci-workflow.md`.
 
 The project's version lives in `pyproject.toml`'s `[project].version` and follows
 [SemVer 2.0.0](https://semver.org/). To cut a release, push a branch named `release/X.Y.Z` (or
-`hotfix/X.Y.Z`) — that's the only manual step. On every push to that branch, CI itself rewrites
+`hotfix/X.Y.Z`) - that's the only manual step. On every push to that branch, CI itself rewrites
 `pyproject.toml`'s version to `X.Y.Z`, re-runs `uv lock` so `uv.lock` stays in sync, and commits +
-pushes both back to the branch (2026-09-14 amendment) — you never hand-edit either file. A pull
+pushes both back to the branch (2026-09-14 amendment) - you never hand-edit either file. A pull
 request from that branch into `develop`/`main` only re-verifies the two already agree, as a safety
 net. Two CLI commands back this:
 
@@ -80,7 +80,7 @@ uv run wh40k-cheatsheet validate-version release/1.2.0          # verify a relea
 uv run wh40k-cheatsheet validate-version release/1.2.0 --fix    # ...or rewrite pyproject.toml to match it
 ```
 
-`package` stages every declared edition/language as `dist/<edition_id>-<language>.pdf`, flat —
+`package` stages every declared edition/language as `dist/<edition_id>-<language>.pdf`, flat -
 what CI attaches to a GitHub Release. `validate-version` is a no-op on any branch that isn't
 `release/*`/`hotfix/*`; with `--fix`, a version mismatch is corrected instead of failing the
 command (a malformed branch version still fails either way). Merging a `release/*`/`hotfix/*`

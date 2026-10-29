@@ -2,7 +2,7 @@
 
 Feature: [spec.md](../spec.md) · Plan: [plan.md](../plan.md) · Data model: [data-model.md](../data-model.md)
 
-Supersedes the original top-right-corner contract. Not an authoring contract — the watermark is
+Supersedes the original top-right-corner contract. Not an authoring contract - the watermark is
 unconditional, with no content-block flag to set.
 
 ---
@@ -13,7 +13,7 @@ unconditional, with no content-block flag to set.
 |---|-----------|-------|
 | G1 | The watermark appears behind every generated page's content, not in a page corner | `position: fixed` `<img>`, repeated per page by WeasyPrint; DOM order places it before all other body content so it paints behind (FR-001; research.md §1/§4) |
 | G2 | The watermark is rotated 45° | `transform: rotate(45deg)` (FR-002; SC-002) |
-| G3 | The watermark is scaled as large as possible while remaining fully visible within the page bounds after rotation, aspect ratio preserved | Pre-rotation size ≈227.42×69.56mm, computed so the rotated (square) bounding box exactly matches the page width — verified empirically (FR-003; SC-003; research.md §1) |
+| G3 | The watermark is scaled as large as possible while remaining fully visible within the page bounds after rotation, aspect ratio preserved | Pre-rotation size ≈227.42×69.56mm, computed so the rotated (square) bounding box exactly matches the page width - verified empirically (FR-003; SC-003; research.md §1) |
 | G4 | The watermark renders at ≈5% opacity | `opacity: 0.05` (FR-004; SC-002) |
 | G5 | The watermark never obscures existing header, footer, or body content | Strictly-behind stacking (no `z-index`) + low opacity, verified against real content in both languages with all text remaining readable (FR-005; SC-004) |
 | G6 | The watermark appears identically (position, size, rotation, opacity) on every page, regardless of language or content | Verified: same rendered position on every page of the real `11e` content in both `en` and `de` (FR-006) |
@@ -24,7 +24,7 @@ unconditional, with no content-block flag to set.
 
 | # | Guarantee | Basis |
 |---|-----------|-------|
-| F1 | If `images/logo_40k.png` is missing or unreadable, generation fails with a clear message naming the expected path — no PDF is emitted | Unchanged pre-flight existence check from the original corner-logo implementation (`Paths.images_root`, `pipeline._verify_logo_asset`) — this contract item and its enforcement mechanism are untouched by this amendment (FR-007) |
+| F1 | If `images/logo_40k.png` is missing or unreadable, generation fails with a clear message naming the expected path - no PDF is emitted | Unchanged pre-flight existence check from the original corner-logo implementation (`Paths.images_root`, `pipeline._verify_logo_asset`) - this contract item and its enforcement mechanism are untouched by this amendment (FR-007) |
 
 ---
 
@@ -32,7 +32,7 @@ unconditional, with no content-block flag to set.
 
 ```css
 @page {
-  margin: 7mm 6mm 8mm 6mm;   /* reverted to the original margin — no longer needs enlarging */
+  margin: 7mm 6mm 8mm 6mm;   /* reverted to the original margin - no longer needs enlarging */
 }
 .page-watermark {
   position: fixed;
@@ -42,7 +42,7 @@ unconditional, with no content-block flag to set.
   height: 69.56mm;
   transform: rotate(45deg);
   opacity: 0.05;
-  /* no z-index — DOM order alone puts this behind subsequent content; a negative
+  /* no z-index - DOM order alone puts this behind subsequent content; a negative
      z-index was tested and found to hide the watermark entirely (research.md §4) */
 }
 ```
@@ -51,7 +51,7 @@ unconditional, with no content-block flag to set.
 <img class="page-watermark" src="../images/logo_40k.png" alt="">
 ```
 
-Placed once, immediately after `<body>`, before the document's own content — WeasyPrint's
+Placed once, immediately after `<body>`, before the document's own content - WeasyPrint's
 `position: fixed` handling repeats it on every page automatically, unchanged mechanism from the
 original corner-logo implementation.
 

@@ -9,17 +9,17 @@ description: "Task list for Full-Width Spanning Headline implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/spanning-headline-block.md, contracts/glossary-spanning-flag.md, quickstart.md
 
-**Tests**: Test tasks ARE included — the spec defines validation scenarios and the constitution's
+**Tests**: Test tasks ARE included - the spec defines validation scenarios and the constitution's
 Testing Standards are non-negotiable.
 
 **Organization**: Grouped by user story so each is an independently testable increment.
 
 > **Leanest feature in this series**: Per plan.md, the entire implementation is a single-file
 > change to `templates/cheatsheet.html.j2` (one dispatch branch + one CSS rule). No Python code is
-> touched — `column-span: all` is orthogonal to `005-page-breaks`/`006-column-reset`'s segmentation,
+> touched - `column-span: all` is orthogonal to `005-page-breaks`/`006-column-reset`'s segmentation,
 > confirmed in research.md §2. Every user story below is therefore test-only, verifying a distinct
 > slice of the same two-line mechanism. The 2026-08-14 Phase 7 addition (glossary `spanning` flag)
-> is the one exception — it's a one-line conditional-class change reusing the same CSS rule, so it
+> is the one exception - it's a one-line conditional-class change reusing the same CSS rule, so it
 > carries its own single implementation task (T011) ahead of its tests.
 
 ## Format: `[ID] [P?] [Story?] Description`
@@ -60,14 +60,14 @@ headline's rendered box width approximating the full content width, not a single
 
 ### Tests for User Story 1 ⚠️
 
-- [X] T004 [US1] Integration test: a `spanning_headline`'s rendered box width approximates the full content width, versus a standard `phase` heading's single-column width, using the box-inspection methodology from research.md §1, in `tests/integration/test_spanning_headline_pdf.py` (FR-001/FR-002/FR-003; SC-001/SC-004) — verified via direct comparison of rendered `<h2>` block widths (spanning > 1.5× standard)
+- [X] T004 [US1] Integration test: a `spanning_headline`'s rendered box width approximates the full content width, versus a standard `phase` heading's single-column width, using the box-inspection methodology from research.md §1, in `tests/integration/test_spanning_headline_pdf.py` (FR-001/FR-002/FR-003; SC-001/SC-004) - verified via direct comparison of rendered `<h2>` block widths (spanning > 1.5× standard)
 - [X] T005 [P] [US1] Integration test: multiple `spanning_headline` blocks each render correctly and independently, and one at the very start and, separately, the very last block in the document renders without errors or unexpected blank space, in `tests/integration/test_spanning_headline_pdf.py` (FR-006/FR-007; SC-003)
 
 ### Implementation for User Story 1
 
-- No story-specific implementation — Setup + Foundational (T001–T003) already deliver this behavior; T004/T005 verify it against the P1 acceptance criteria.
+- No story-specific implementation - Setup + Foundational (T001–T003) already deliver this behavior; T004/T005 verify it against the P1 acceptance criteria.
 
-**Checkpoint**: MVP — a spanning headline reliably renders full-width and distinguishably.
+**Checkpoint**: MVP - a spanning headline reliably renders full-width and distinguishably.
 
 ---
 
@@ -81,14 +81,14 @@ render completely, in expected reading order.
 
 ### Tests for User Story 2 ⚠️
 
-- [X] T006 [US2] Integration test: content immediately before and after a `spanning_headline` renders completely and in correct reading order — before-content fills its column normally, after-content resumes fresh below the span, in `tests/integration/test_spanning_headline_pdf.py` (FR-004/FR-005; SC-002)
+- [X] T006 [US2] Integration test: content immediately before and after a `spanning_headline` renders completely and in correct reading order - before-content fills its column normally, after-content resumes fresh below the span, in `tests/integration/test_spanning_headline_pdf.py` (FR-004/FR-005; SC-002)
 - [X] T007 [P] [US2] Integration test: a document combining `spanning_headline` with `page_break` and `column_reset` at different points produces the correct effect for each, with no interference between the three features, in `tests/integration/test_spanning_headline_pdf.py` (FR-010)
 
 ### Implementation for User Story 2
 
-- No story-specific implementation — the orthogonal architecture (research.md §2) already guarantees this; T006/T007 verify it.
+- No story-specific implementation - the orthogonal architecture (research.md §2) already guarantees this; T006/T007 verify it.
 
-**Checkpoint**: US1 and US2 both work — spanning headlines render correctly and never corrupt surrounding content or interfere with existing pagination features.
+**Checkpoint**: US1 and US2 both work - spanning headlines render correctly and never corrupt surrounding content or interfere with existing pagination features.
 
 ---
 
@@ -106,9 +106,9 @@ render full-width at the equivalent content point.
 
 ### Implementation for User Story 3
 
-- No story-specific implementation — `render_block` operates purely on already-resolved per-language content, so it is inherently language-agnostic; T008 verifies this holds in practice.
+- No story-specific implementation - `render_block` operates purely on already-resolved per-language content, so it is inherently language-agnostic; T008 verifies this holds in practice.
 
-**Checkpoint**: All three stories independently functional — spanning headlines render correctly, preserve surrounding content, and are consistent across languages.
+**Checkpoint**: All three stories independently functional - spanning headlines render correctly, preserve surrounding content, and are consistent across languages.
 
 ---
 
@@ -116,8 +116,8 @@ render full-width at the equivalent content point.
 
 **Purpose**: End-to-end validation and documentation.
 
-- [X] T009 Run every scenario in `quickstart.md` end-to-end (regression check against real `11e` content, full-width rendering, surrounding-content integrity, multiple headlines, start/end placement, coexistence with `page_break`/`column_reset`, cross-language) and confirm expected outcomes — real `11e` content confirmed unaffected (3 pages, both languages, unchanged); all other scenarios covered by the automated test suite (8/8 new tests passing)
-- [X] T010 [P] Document `spanning_headline` in `README.md` — authoring syntax, one example — with a link to `specs/007-spanning-headline/contracts/spanning-headline-block.md`
+- [X] T009 Run every scenario in `quickstart.md` end-to-end (regression check against real `11e` content, full-width rendering, surrounding-content integrity, multiple headlines, start/end placement, coexistence with `page_break`/`column_reset`, cross-language) and confirm expected outcomes - real `11e` content confirmed unaffected (3 pages, both languages, unchanged); all other scenarios covered by the automated test suite (8/8 new tests passing)
+- [X] T010 [P] Document `spanning_headline` in `README.md` - authoring syntax, one example - with a link to `specs/007-spanning-headline/contracts/spanning-headline-block.md`
 
 ---
 
@@ -135,10 +135,10 @@ byte-for-byte unchanged.
 width approximating the full content width (same methodology as T004), while its term-list markup is
 identical to the same block with the flag omitted.
 
-- [X] T011 [US1] Add a conditional `phase--spanning` class to the glossary title in the `render_block` macro's `glossary` branch in `templates/cheatsheet.html.j2`: `<h2 class="phase{{ ' phase--spanning' if block.spanning | default(false) else '' }}">{{ block.title | default('Core Abilities') }}</h2>` — reuses the CSS rule from T002 verbatim, no new CSS (data-model.md; contracts/glossary-spanning-flag.md) — `| default(false)` guard added to satisfy `StrictUndefined` when the optional key is absent
+- [X] T011 [US1] Add a conditional `phase--spanning` class to the glossary title in the `render_block` macro's `glossary` branch in `templates/cheatsheet.html.j2`: `<h2 class="phase{{ ' phase--spanning' if block.spanning | default(false) else '' }}">{{ block.title | default('Core Abilities') }}</h2>` - reuses the CSS rule from T002 verbatim, no new CSS (data-model.md; contracts/glossary-spanning-flag.md) - `| default(false)` guard added to satisfy `StrictUndefined` when the optional key is absent
 - [X] T012 [P] [US1] Integration test: a `glossary` block with `spanning: true` renders its title box width approximating the full content width (same box-inspection methodology as T004), while its `<div class="glossary">` term-list markup is byte-identical to the same block rendered without the flag, in `tests/integration/test_glossary_spanning_pdf.py` (FR-011; SC-007)
-- [X] T013 [P] [US1] Integration test: a `glossary` block with `spanning` omitted (or falsy) renders identically to a `glossary` block from before this addition — explicit regression coverage for the default-off behavior, in `tests/integration/test_glossary_spanning_pdf.py` (data-model.md validation rules)
-- [X] T014 [P] Document the glossary `spanning` flag in `README.md` — one example — with a link to `specs/007-spanning-headline/contracts/glossary-spanning-flag.md`
+- [X] T013 [P] [US1] Integration test: a `glossary` block with `spanning` omitted (or falsy) renders identically to a `glossary` block from before this addition - explicit regression coverage for the default-off behavior, in `tests/integration/test_glossary_spanning_pdf.py` (data-model.md validation rules)
+- [X] T014 [P] Document the glossary `spanning` flag in `README.md` - one example - with a link to `specs/007-spanning-headline/contracts/glossary-spanning-flag.md`
 
 **Checkpoint**: The glossary spanning flag works, defaults to off with zero behavior change for
 existing content (including the real `11e` glossary block), and reuses the already-verified CSS
@@ -150,8 +150,8 @@ mechanism with no new empirical risk.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup — BLOCKS all user stories. Contains the entire
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup - BLOCKS all user stories. Contains the entire
   mechanism (T001–T003).
 - **User Stories (Phase 3–5)**: All depend on Foundational and consist of test tasks verifying
   different acceptance-criteria slices of the same mechanism.
@@ -167,7 +167,7 @@ mechanism with no new empirical risk.
 
 ### Within Each User Story
 
-- Tests only — there is no implementation step to sequence tests before, since Setup + Foundational
+- Tests only - there is no implementation step to sequence tests before, since Setup + Foundational
   already delivered the mechanism.
 
 ### Parallel Opportunities
@@ -177,7 +177,7 @@ mechanism with no new empirical risk.
 - **US1**: T005 parallel to T004 (same file, distinct independent cases).
 - **US2**: T007 parallel to T006 (same file, distinct independent cases).
 - **Polish**: T010 parallel to T009.
-- **Addition (Phase 7)**: T012, T013, and T014 are all parallel once T011 lands — T012/T013 are
+- **Addition (Phase 7)**: T012, T013, and T014 are all parallel once T011 lands - T012/T013 are
   distinct independent test cases in the same new test file, and T014 (README) touches a different
   file entirely.
 
@@ -198,10 +198,10 @@ Task: "Coexistence with page_break/column_reset test in tests/integration/test_s
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup (T001).
-2. Complete Phase 2: Foundational (T002–T003) — CRITICAL; this is the entire mechanism.
+2. Complete Phase 2: Foundational (T002–T003) - CRITICAL; this is the entire mechanism.
 3. Complete Phase 3: User Story 1 (T004–T005).
 4. **STOP and VALIDATE**: a spanning headline fixture reliably renders full-width and distinguishably.
-5. Demonstrable MVP — deliberate full-width visual separation.
+5. Demonstrable MVP - deliberate full-width visual separation.
 
 ### Incremental Delivery
 
@@ -219,7 +219,7 @@ Task: "Coexistence with page_break/column_reset test in tests/integration/test_s
   independent.
 - [Story] label maps each task to its user story for traceability.
 - Because this feature's entire implementation lives in Setup + Foundational, each story's
-  "Implementation" subsection intentionally contains no new tasks — only its Tests subsection does.
+  "Implementation" subsection intentionally contains no new tasks - only its Tests subsection does.
 - Tests (T004/T005, T006/T007, T008) must fail before Foundational (T001–T003) is complete, and pass
   once it is.
 - Commit after each task or logical group; stop at any checkpoint to validate a story independently.
@@ -230,13 +230,13 @@ Task: "Coexistence with page_break/column_reset test in tests/integration/test_s
 
 ---
 
-## Phase 8: Bug Fix (2026-08-15) — Spanning Glossary Fragmenting Into 4 Columns
+## Phase 8: Bug Fix (2026-08-15) - Spanning Glossary Fragmenting Into 4 Columns
 
 **Purpose**: Reported directly against real `11e` content: the CORE ABILITIES glossary (36 terms,
 `spanning: true`) rendered as 4 narrow columns instead of 2. Root cause: Phase 7 applied spanning to
 the glossary's `<h2>` title only, per the 2026-08-14 clarification; the `<div class="glossary">` term
 list, left in normal (non-spanning) flow, is tall enough to fragment across the outer article's
-2-column layout, and each fragment independently applies the div's own `column-count: 2` —> 4 visible
+2-column layout, and each fragment independently applies the div's own `column-count: 2` -> 4 visible
 columns. See spec.md's 2026-08-15 amendment and `contracts/glossary-spanning-flag.md`.
 
 - [X] T015 Add a `glossary--spanning` CSS class (`column-span: all;`) in `templates/cheatsheet.html.j2`, applied to the `<div class="glossary">` alongside the existing `phase--spanning` class on its `<h2>`, conditionally on `block.spanning`

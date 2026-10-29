@@ -6,6 +6,8 @@ from typing import Any
 
 import yaml
 
+from wh40k_cheatsheet.content.sections import validate_section_markers
+
 CONTENT_FILENAME = "content.yaml"
 
 logger = logging.getLogger(__name__)
@@ -28,8 +30,9 @@ def resolve_content(editions_root: Path, edition_id: str, revision_id: str, lang
         The parsed content mapping, with a top-level `document.blocks` guaranteed present.
 
     Raises:
-        ContentError: The expected `content.yaml` is missing, not valid YAML, or lacks the
-            required `document`/`document.blocks` structure.
+        ContentError: The expected `content.yaml` is missing, not valid YAML, lacks the
+            required `document`/`document.blocks` structure, or has invalid `section` markers
+            (see `content/sections.py`).
     """
     content_path = editions_root / edition_id / revision_id / language / CONTENT_FILENAME
     if not content_path.is_file():
@@ -49,6 +52,9 @@ def resolve_content(editions_root: Path, edition_id: str, revision_id: str, lang
         raise ContentError(f"{content_path}: 'document' must contain a 'blocks' list")
     blocks = document["blocks"]
     if isinstance(blocks, list):
+        problems = validate_section_markers(blocks)
+        if problems:
+            raise ContentError(f"{content_path}: invalid section markers: " + "; ".join(problems))
         type_counts: dict[str, int] = {}
         for block in blocks:
             block_type = block.get("type", "?") if isinstance(block, dict) else "?"

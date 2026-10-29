@@ -30,7 +30,7 @@ def parse_release_branch(branch: str) -> str | None:
 
     Returns:
         The raw string after the `release/`/`hotfix/` prefix (not yet validated as SemVer), or
-        `None` if `branch` doesn't start with either prefix — such branches have no version to
+        `None` if `branch` doesn't start with either prefix - such branches have no version to
         validate.
     """
     match = _RELEASE_BRANCH_PATTERN.match(branch)
@@ -93,14 +93,14 @@ def write_project_version(project_root: Path, version: str) -> bool:
     """Rewrite `pyproject.toml`'s `[project].version` field in place, if it differs.
 
     Edits the raw text of a single `version = "..."` line inside the `[project]` table, leaving
-    every other byte of the file — formatting, comments, key order, other tables' own `version`
-    keys — untouched. Deliberately avoids a TOML-writing dependency: `[project].version` is
+    every other byte of the file - formatting, comments, key order, other tables' own `version`
+    keys - untouched. Deliberately avoids a TOML-writing dependency: `[project].version` is
     always a simple one-line string assignment in this project's `pyproject.toml`, so a scoped
     line replacement is sufficient and keeps the diff minimal.
 
     Args:
         project_root: Directory containing `pyproject.toml`.
-        version: The new version string to write (not validated as SemVer here — callers that
+        version: The new version string to write (not validated as SemVer here - callers that
             need that guarantee, e.g. the CLI, validate before calling this).
 
     Returns:

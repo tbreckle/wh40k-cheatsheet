@@ -5,7 +5,7 @@ Validates the feature end-to-end once implemented. See
 [contracts/cli-validate-version-command.md](./contracts/cli-validate-version-command.md), and
 [contracts/ci-workflow.md](./contracts/ci-workflow.md) for the exact guarantees checked below.
 
-## Part 1 — local CLI validation (no GitHub required)
+## Part 1 - local CLI validation (no GitHub required)
 
 ### Prerequisites
 
@@ -21,7 +21,7 @@ uv run wh40k-cheatsheet package
 ls dist/
 ```
 
-**Expected**: `dist/11e-en.pdf` and `dist/11e-de.pdf` (today's declared edition/languages —
+**Expected**: `dist/11e-en.pdf` and `dist/11e-de.pdf` (today's declared edition/languages -
 contract G1/G2). Add a second edition or language to `project.yaml` and re-run: the new file
 appears with zero code changes (contract G4).
 
@@ -33,7 +33,7 @@ uv run wh40k-cheatsheet package; echo "exit: $?"
 ```
 
 **Expected**: non-zero exit, a clear error naming the broken edition/language/revision (contract
-G3/F1) — the CI step this maps to would fail the same way, so nothing broken is ever uploaded or
+G3/F1) - the CI step this maps to would fail the same way, so nothing broken is ever uploaded or
 released.
 
 ### 3. `validate-version` accepts a matching, well-formed version
@@ -78,32 +78,32 @@ even with `--fix`:
 uv run wh40k-cheatsheet validate-version release/not-semver --fix; echo "exit: $?"
 ```
 
-**Expected**: fails with exit `1`, identical to step 5 (contract G2 — `--fix` never suppresses this).
+**Expected**: fails with exit `1`, identical to step 5 (contract G2 - `--fix` never suppresses this).
 
 ### 6. Run the automated suite
 
 ```bash
 uv run pytest tests/unit/test_versioning.py tests/integration/test_package_command.py -v
-uv run poe check   # full gate — confirms no regression
+uv run poe check   # full gate - confirms no regression
 ```
 
-## Part 2 — end-to-end workflow validation (requires a GitHub remote)
+## Part 2 - end-to-end workflow validation (requires a GitHub remote)
 
 This part can only be exercised once the repository is pushed to GitHub with GitFlow branches
-(`main`, `develop`) established — it's a manual walkthrough, not something `pytest` runs.
+(`main`, `develop`) established - it's a manual walkthrough, not something `pytest` runs.
 
 1. Push a `feature/x` branch with a trivial change. **Expected**: the `check` and `build` jobs run;
    no `validate-version` job runs; no artifact is uploaded; nothing is published (contracts T1, J1,
    J3, J5/P5).
 2. Push a `release/0.2.0` branch **without** touching `pyproject.toml` first (2026-09-14
-   amendment — no manual bump needed). **Expected**: `validate-version` rewrites `pyproject.toml`
+   amendment - no manual bump needed). **Expected**: `validate-version` rewrites `pyproject.toml`
    to `0.2.0`, runs `uv lock`, and pushes a `chore: bump version to 0.2.0 [skip ci]` commit onto
    the branch; `check` and `build` then run and pass against that commit; `dist/*.pdf` is
    available as a downloadable "cheatsheet-pdfs" artifact on that workflow run; the repository's
    Releases page is unchanged (contracts J2, J3, J4). Because of `[skip ci]`, this push does not
    itself trigger a second workflow run.
 3. Open a pull request from `release/0.2.0` into `main`. **Expected**: `validate-version` runs in
-   verify-only mode and passes (the push in step 2 already fixed the branch) — it would only fail
+   verify-only mode and passes (the push in step 2 already fixed the branch) - it would only fail
    here if something bypassed that automation (contract J2's pull-request branch).
 4. Merge `release/0.2.0` into `main`. **Expected**: `check` and `build` run on the merge commit;
    `publish-release` runs after both succeed and publishes a GitHub Release tagged `v0.2.0`,

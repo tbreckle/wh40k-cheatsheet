@@ -9,20 +9,20 @@ entity/relationship model.
 
 | Field | Type | Default | Notes |
 |---|---|---|---|
-| `document.print_friendly` | `bool` | `false` | New optional key on the existing `document` render context (see `templates/cheatsheet.html.j2`'s context-shape comment). Absent or `false` renders exactly as before this feature (FR-008). `true` toggles the `print-friendly` class on `<body>` and omits the watermark `<img>` entirely. Not an authored `content.yaml` field — set by the pipeline, never by edition content. |
+| `document.print_friendly` | `bool` | `false` | New optional key on the existing `document` render context (see `templates/cheatsheet.html.j2`'s context-shape comment). Absent or `false` renders exactly as before this feature (FR-008). `true` toggles the `print-friendly` class on `<body>` and omits the watermark `<img>` entirely. Not an authored `content.yaml` field - set by the pipeline, never by edition content. |
 
 ## 2. Grayscale Palette Mapping
 
 Every existing color-bearing CSS custom property, resolved directly in the `:root` block via a
-server-side Jinja conditional on `print_friendly` (values chosen for (a) exact grayscale —
-R == G == B — satisfying FR-002/SC-001, and (b) distinguishable tonal steps between the three
+server-side Jinja conditional on `print_friendly` (values chosen for (a) exact grayscale -
+R == G == B - satisfying FR-002/SC-001, and (b) distinguishable tonal steps between the three
 stratagem-timing variants and the two callout variants, reinforced by their pre-existing icon/text
 labels, satisfying FR-005/SC-005).
 
 **Implementation note**: resolved at `:root` rather than via a `body.print-friendly` class
 override, because `@page` margin-box content (the running header/footer, which consumes
 `var(--green-dark)`/`var(--muted)`) inherits custom properties from the page context, not from
-`<body>` — a body-scoped override would silently fail to recolor the running header/footer. Since
+`<body>` - a body-scoped override would silently fail to recolor the running header/footer. Since
 each print-friendly document is already a wholly separate render pass (not a runtime CSS toggle
 within one static file), resolving the value once per property server-side is both correct and
 simpler than a CSS-only approach.
@@ -55,20 +55,20 @@ custom property today):
 | `table.data tbody tr:nth-child(even) td` | `background: #f2f4ef` | `background: #f0f0f0` | Zebra-striped table rows |
 
 Values intentionally left unchanged (already grayscale, no override needed): `#fff` (white text on
-dark headers), `rgba(255, 255, 255, .18)` (translucent white stratagem-cost badge — grayscale
+dark headers), `rgba(255, 255, 255, .18)` (translucent white stratagem-cost badge - grayscale
 regardless of alpha).
 
 ## 3. Output File Pairing
 
 | Field | Type | Notes |
 |---|---|---|
-| `GeneratedDocument.html_path` | `Path` | Unchanged — standard-rendering HTML, always written. |
-| `GeneratedDocument.pdf_path` | `Path` | Unchanged — standard-rendering PDF, always written. |
+| `GeneratedDocument.html_path` | `Path` | Unchanged - standard-rendering HTML, always written. |
+| `GeneratedDocument.pdf_path` | `Path` | Unchanged - standard-rendering PDF, always written. |
 | `GeneratedDocument.print_html_path` | `Path \| None` | New. Set to `{out_dir}/{language}-print.html` only when `print_friendly=True` was requested for this `generate()` call; `None` otherwise. |
 | `GeneratedDocument.print_pdf_path` | `Path \| None` | New. Set to `{out_dir}/{language}-print.pdf` only when `print_friendly=True` was requested; `None` otherwise. |
 
 Both pairs live in the same `out_root/{edition_id}/{revision.id}/` directory, keyed by the same
-`edition_id`/`revision`/`language` as the standard pair on the same `GeneratedDocument` — there is
+`edition_id`/`revision`/`language` as the standard pair on the same `GeneratedDocument` - there is
 one `GeneratedDocument` per (edition, revision, language), optionally carrying both file pairs.
 Filesystem shape:
 

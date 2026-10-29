@@ -14,7 +14,7 @@ EDITIONS_ROOT = REPO_ROOT / "editions"
 TEMPLATES_ROOT = REPO_ROOT / "templates"
 
 # Every (edition, language) known to declare a `glossary` block, per project.yaml/content.yaml.
-GLOSSARY_EDITIONS_LANGUAGES = [("11e", "en"), ("11e", "de"), ("10e", "de")]
+GLOSSARY_EDITIONS_LANGUAGES = [("11e", "en"), ("11e", "de")]
 
 
 def _fold(term: str) -> str:

@@ -6,8 +6,17 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from wh40k_cheatsheet.config import Edition, ProjectConfig
-from wh40k_cheatsheet.content import resolve_content
-from wh40k_cheatsheet.pdf import PdfError, render_pdf
+from wh40k_cheatsheet.content import ContentError, resolve_content
+from wh40k_cheatsheet.content.resolver import CONTENT_FILENAME
+from wh40k_cheatsheet.content.sections import (
+    SECTION_IDS,
+    has_content,
+    has_section_markers,
+    invalid_section_ids,
+    omit_sections,
+    output_stem,
+)
+from wh40k_cheatsheet.pdf import render_pdf
 from wh40k_cheatsheet.render import RenderError, render_html
 from wh40k_cheatsheet.revision import RevisionId, discover_revisions
 from wh40k_cheatsheet.revision.discovery import Revision
@@ -27,13 +36,11 @@ class Paths:
         editions_root: Directory containing per-edition/revision/language content.
         templates_root: Directory containing Jinja2 templates.
         out_root: Directory generated HTML/PDF output is written under.
-        images_root: Directory containing static image assets (e.g. the page logo).
     """
 
     editions_root: Path
     templates_root: Path
     out_root: Path
-    images_root: Path
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +57,8 @@ class GeneratedDocument:
             `None` if print-friendly generation was not requested.
         print_pdf_path: Path to the print-friendly PDF file, or `None` if print-friendly
             generation was not requested.
+        omitted_sections: Section ids actually omitted from this sheet, in canonical order;
+            `()` when no `skip_sections` selection was passed or none of it applied.
     """
 
     edition_id: str
@@ -59,6 +68,7 @@ class GeneratedDocument:
     pdf_path: Path
     print_html_path: Path | None = None
     print_pdf_path: Path | None = None
+    omitted_sections: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,24 +148,6 @@ def _resolve_languages(edition: Edition, edition_id: str, requested: str | None)
     return [requested]
 
 
-def _verify_logo_asset(paths: Paths) -> None:
-    """Verify the page-header logo image exists before rendering.
-
-    WeasyPrint itself does not fail loudly on a missing referenced image — it logs an
-    internal warning and silently continues — so this check exists to make a missing logo
-    a hard, visible generation failure instead (FR-005).
-
-    Args:
-        paths: Filesystem roots; `images_root` is checked for `logo_40k.png`.
-
-    Raises:
-        PdfError: The logo image is missing or not a regular file.
-    """
-    logo_path = paths.images_root / "logo_40k.png"
-    if not logo_path.is_file():
-        raise PdfError(f"logo image not found: {logo_path}")
-
-
 def _render_and_write(
     paths: Paths,
     template_name: str,
@@ -195,16 +187,45 @@ def _render_and_write(
     return html_path, pdf_path
 
 
-def _generate_one(
+@dataclass(frozen=True, slots=True)
+class _PreparedDocument:
+    """One language's already-resolved, already-filtered render context, ready to write.
+
+    Splitting "resolve + filter" (`_prepare_one`) from "render + write" (`_write_one`) is what
+    lets `generate()` resolve and validate every requested language *before* writing any file
+    for any of them - so a `skip_sections` selection that would empty a later language's sheet
+    is caught before an earlier language's sheet is ever written (FR-011).
+
+    Attributes:
+        edition_id: The edition being generated.
+        revision: The already-resolved revision being generated.
+        language: The language being generated.
+        template_name: The template resolved for this (edition, language).
+        stage_context: An `"edition/revision/language"` label for log attribution.
+        context: The Jinja2 render context, with any selected sections already omitted from
+            `document.blocks`.
+        omitted: The section ids actually omitted from this sheet, in canonical order.
+    """
+
+    edition_id: str
+    revision: Revision
+    language: str
+    template_name: str
+    stage_context: str
+    context: dict
+    omitted: tuple[str, ...]
+
+
+def _prepare_one(
     config: ProjectConfig,
     paths: Paths,
     edition_id: str,
     revision: Revision,
     language: str,
     *,
-    print_friendly: bool = False,
-) -> GeneratedDocument:
-    """Render and write the HTML and PDF for one already-resolved (edition, revision, language).
+    skip_sections: frozenset[str],
+) -> _PreparedDocument:
+    """Resolve one (edition, revision, language)'s content and apply any section omission.
 
     Args:
         config: The loaded project configuration.
@@ -212,17 +233,18 @@ def _generate_one(
         edition_id: The edition being generated.
         revision: The already-resolved revision being generated.
         language: The language being generated.
-        print_friendly: When `True`, additionally render and write a grayscale,
-            watermark-free HTML/PDF pair alongside the standard one (FR-006/FR-007).
+        skip_sections: Section ids to omit from this sheet, if present. Already validated
+            against `SECTION_IDS` by `generate()`.
 
     Returns:
-        A `GeneratedDocument` describing what was written and where.
+        A `_PreparedDocument` ready to be rendered and written by `_write_one`.
 
     Raises:
-        ContentError: The content file for this (edition, revision, language) is missing or
-            malformed; the message already names all three (content/resolver.py).
-        RenderError: Template rendering failed, e.g. an unresolved content reference; the
-            (edition, revision, language) triple is prefixed onto the message here for FR-009.
+        ContentError: The content file for this (edition, revision, language) is missing,
+            malformed, or (only when `skip_sections` is non-empty) has no `section` markers to
+            omit by; the message already names the content file (content/resolver.py, or here
+            for the marker-less case).
+        PipelineError: `skip_sections` would leave this sheet with no content at all (FR-011).
     """
     stage_context = f"{edition_id}/{revision.id}/{language}"
     template_name = config.editions[edition_id].resolve_template(language)
@@ -231,33 +253,79 @@ def _generate_one(
     context = resolve_content(paths.editions_root, edition_id, str(revision.id), language)
     logger.info("[%s] resolving content", stage_context)
 
-    out_dir = paths.out_root / edition_id / str(revision.id)
-    logger.debug("[%s] output directory: %s", stage_context, out_dir)
+    blocks = context["document"]["blocks"]
+    omitted: tuple[str, ...] = ()
+    if skip_sections:
+        if not has_section_markers(blocks):
+            content_path = paths.editions_root / edition_id / str(revision.id) / language / CONTENT_FILENAME
+            raise ContentError(f"{content_path}: content has no section markers; cannot skip sections")
+        result = omit_sections(blocks, skip_sections)
+        context = {**context, "document": {**context["document"], "blocks": result.blocks}}
+        omitted = result.omitted
+        if not has_content(result.blocks):
+            ordered_skip = ", ".join(sid for sid in SECTION_IDS if sid in skip_sections)
+            raise PipelineError(f"[{stage_context}] skipping {ordered_skip} would leave no content to generate")
+
+    return _PreparedDocument(
+        edition_id=edition_id,
+        revision=revision,
+        language=language,
+        template_name=template_name,
+        stage_context=stage_context,
+        context=context,
+        omitted=omitted,
+    )
+
+
+def _write_one(paths: Paths, prepared: _PreparedDocument, *, print_friendly: bool) -> GeneratedDocument:
+    """Render and write the HTML/PDF pair(s) for one already-prepared document.
+
+    Args:
+        paths: Filesystem roots for templates, content, and output.
+        prepared: The already-resolved, already-filtered document to render.
+        print_friendly: When `True`, additionally render and write a grayscale
+            HTML/PDF pair alongside the standard one (FR-006/FR-007).
+
+    Returns:
+        A `GeneratedDocument` describing what was written and where.
+
+    Raises:
+        RenderError: Template rendering failed, e.g. an unresolved content reference; the
+            (edition, revision, language) triple is prefixed onto the message here for FR-009.
+    """
+    out_dir = paths.out_root / prepared.edition_id / str(prepared.revision.id)
+    logger.debug("[%s] output directory: %s", prepared.stage_context, out_dir)
     html_path, pdf_path = _render_and_write(
-        paths, template_name, context, out_dir=out_dir, filename_stem=language, stage_context=stage_context
+        paths,
+        prepared.template_name,
+        prepared.context,
+        out_dir=out_dir,
+        filename_stem=output_stem(prepared.language, prepared.omitted, print_friendly=False),
+        stage_context=prepared.stage_context,
     )
 
     print_html_path: Path | None = None
     print_pdf_path: Path | None = None
     if print_friendly:
-        print_context = {**context, "document": {**context["document"], "print_friendly": True}}
+        print_context = {**prepared.context, "document": {**prepared.context["document"], "print_friendly": True}}
         print_html_path, print_pdf_path = _render_and_write(
             paths,
-            template_name,
+            prepared.template_name,
             print_context,
             out_dir=out_dir,
-            filename_stem=f"{language}-print",
-            stage_context=stage_context,
+            filename_stem=output_stem(prepared.language, prepared.omitted, print_friendly=True),
+            stage_context=prepared.stage_context,
         )
 
     return GeneratedDocument(
-        edition_id=edition_id,
-        revision=revision.id,
-        language=language,
+        edition_id=prepared.edition_id,
+        revision=prepared.revision.id,
+        language=prepared.language,
         html_path=html_path,
         pdf_path=pdf_path,
         print_html_path=print_html_path,
         print_pdf_path=print_pdf_path,
+        omitted_sections=prepared.omitted,
     )
 
 
@@ -269,6 +337,7 @@ def generate(
     language: str | None = None,
     *,
     print_friendly: bool = False,
+    skip_sections: frozenset[str] = frozenset(),
 ) -> list[GeneratedDocument]:
     """Generate HTML and PDF for one edition, across one or every declared language.
 
@@ -278,31 +347,43 @@ def generate(
         edition_id: The edition to generate.
         revision: A specific revision id to generate, or `None` for the latest.
         language: A specific language code to generate, or `None` for every declared language.
-        print_friendly: When `True`, additionally generate a grayscale, watermark-free PDF
+        print_friendly: When `True`, additionally generate a grayscale PDF
             (and its retained HTML) alongside the standard PDF for each document (FR-001).
+        skip_sections: Section ids (feature 015; see `content/sections.SECTION_IDS`) to omit
+            from every generated sheet. Empty (the default) leaves output byte-for-byte
+            identical to before this option existed.
 
     Returns:
         One `GeneratedDocument` per generated language, in the order generated.
 
     Raises:
-        PdfError: The page-header logo image is missing (FR-005).
+        PipelineError: `skip_sections` contains an id that isn't a valid section id, or would
+            leave any requested language's sheet with no content (FR-011) - raised before any
+            file is written for any language in this call.
     """
+    invalid = invalid_section_ids(skip_sections)
+    if invalid:
+        raise PipelineError(f"invalid section id(s) to skip: {', '.join(invalid)}. Valid ids: {', '.join(SECTION_IDS)}")
+
     edition = _resolve_edition(config, edition_id)
-    _verify_logo_asset(paths)
     resolved_revision = _resolve_revision(paths, edition_id, revision)
     languages = _resolve_languages(edition, edition_id, language)
     logger.info(
-        "generating edition '%s' revision '%s': %d language(s) (%s)%s",
+        "generating edition '%s' revision '%s': %d language(s) (%s)%s%s",
         edition_id,
         resolved_revision.id,
         len(languages),
         ", ".join(languages),
         " [print-friendly]" if print_friendly else "",
+        f" [skip: {', '.join(sid for sid in SECTION_IDS if sid in skip_sections)}]" if skip_sections else "",
     )
-    return [
-        _generate_one(config, paths, edition_id, resolved_revision, lang, print_friendly=print_friendly)
+    # Resolve and filter every language FIRST (raises before writing anything if any of them
+    # would end up empty), then render/write only once all of them are known to be non-empty.
+    prepared_documents = [
+        _prepare_one(config, paths, edition_id, resolved_revision, lang, skip_sections=skip_sections)
         for lang in languages
     ]
+    return [_write_one(paths, prepared, print_friendly=print_friendly) for prepared in prepared_documents]
 
 
 def package_all(config: ProjectConfig, paths: Paths, dist_dir: Path) -> list[Path]:
@@ -319,7 +400,6 @@ def package_all(config: ProjectConfig, paths: Paths, dist_dir: Path) -> list[Pat
         languages in each edition's declared order).
 
     Raises:
-        PdfError: The page-header logo image is missing (FR-005 of feature 010).
         ContentError: Any edition/language's content file is missing or malformed.
         RenderError: Template rendering failed for any edition/language.
     """

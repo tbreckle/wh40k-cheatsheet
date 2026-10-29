@@ -9,14 +9,14 @@ description: "Task list for CLI Progress Logging & Verbose Mode implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/logging-contract.md, quickstart.md
 
-**Tests**: Test tasks ARE included — the spec defines validation scenarios and the constitution's
+**Tests**: Test tasks ARE included - the spec defines validation scenarios and the constitution's
 Testing Standards are non-negotiable.
 
 **Organization**: Grouped by user story so each is an independently testable increment.
 
 > **Extends existing code**: This feature modifies `cli.py`, `pipeline.py`, `config/loader.py`,
 > `content/resolver.py`, `render/html_renderer.py`, and `pdf/weasyprint_pdf.py` from
-> `002-pdf-generation`/`003-edition-revisions`. No new third-party dependencies — stdlib `logging`
+> `002-pdf-generation`/`003-edition-revisions`. No new third-party dependencies - stdlib `logging`
 > only, per plan.md.
 
 ## Format: `[ID] [P?] [Story?] Description`
@@ -42,7 +42,7 @@ Testing Standards are non-negotiable.
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
 - [X] T003 Add a top-level `-v`/`--verbose` boolean flag (default `False`) to the argument parser in `src/wh40k_cheatsheet/cli.py` and call `configure_logging(args.verbose)` in `main()` before dispatching to the subcommand handler (depends on T001; research.md §4)
-- [X] T004 [P] Add a module-level `logger = logging.getLogger(__name__)` to `src/wh40k_cheatsheet/pipeline.py`, `src/wh40k_cheatsheet/config/loader.py`, `src/wh40k_cheatsheet/content/resolver.py`, `src/wh40k_cheatsheet/render/html_renderer.py`, and `src/wh40k_cheatsheet/pdf/weasyprint_pdf.py` (declarations only; no calls yet — data-model.md logger hierarchy)
+- [X] T004 [P] Add a module-level `logger = logging.getLogger(__name__)` to `src/wh40k_cheatsheet/pipeline.py`, `src/wh40k_cheatsheet/config/loader.py`, `src/wh40k_cheatsheet/content/resolver.py`, `src/wh40k_cheatsheet/render/html_renderer.py`, and `src/wh40k_cheatsheet/pdf/weasyprint_pdf.py` (declarations only; no calls yet - data-model.md logger hierarchy)
 
 **Checkpoint**: Flag exists and configures the logger; every module has a logger ready to use. No log lines emitted yet.
 
@@ -69,7 +69,7 @@ the existing stdout success line.
 - [X] T009 [US1] Log `INFO "[edition/revision/language] template rendered"` after a successful render in `src/wh40k_cheatsheet/render/html_renderer.py` (FR-001/FR-003)
 - [X] T010 [US1] Log `INFO "[edition/revision/language] PDF converted"` after a successful conversion in `src/wh40k_cheatsheet/pdf/weasyprint_pdf.py` (FR-001/FR-003)
 
-**Checkpoint**: MVP — a default `generate` run is fully visible stage-by-stage; `list` unaffected.
+**Checkpoint**: MVP - a default `generate` run is fully visible stage-by-stage; `list` unaffected.
 
 ---
 
@@ -93,7 +93,7 @@ verbose run prints additional `DEBUG` lines and produces byte-identical `.html`/
 - [X] T015 [US2] Log `DEBUG` with the resolved template name in `src/wh40k_cheatsheet/render/html_renderer.py` (FR-005)
 - [X] T016 [US2] Log `DEBUG` with the output PDF path in `src/wh40k_cheatsheet/pdf/weasyprint_pdf.py` (FR-005)
 
-**Checkpoint**: US1 and US2 both work — default stays concise, `--verbose` adds detail, output files unaffected.
+**Checkpoint**: US1 and US2 both work - default stays concise, `--verbose` adds detail, output files unaffected.
 
 ---
 
@@ -114,7 +114,7 @@ distinguishable at both default and verbose levels.
 
 - [X] T019 [US3] Replace the bare `print(f"Error: {exc}", file=sys.stderr)` in `src/wh40k_cheatsheet/cli.py` with `logger.critical(f"Error: {exc}")` using a module logger, preserving the existing exit-code-1 behavior (FR-007/FR-008; contracts/logging-contract.md)
 
-**Checkpoint**: All three stories independently functional — visible by default, detailed on demand, failures never hidden.
+**Checkpoint**: All three stories independently functional - visible by default, detailed on demand, failures never hidden.
 
 ---
 
@@ -131,8 +131,8 @@ distinguishable at both default and verbose levels.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup — BLOCKS all user stories (flag + loggers must exist before any log call is added).
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup - BLOCKS all user stories (flag + loggers must exist before any log call is added).
 - **US1 (Phase 3)**: Depends on Foundational. The MVP.
 - **US2 (Phase 4)**: Depends on US1's `INFO` calls existing (adds `DEBUG` alongside them in the same modules).
 - **US3 (Phase 5)**: Depends on Foundational (the `cli.py` logger); independent of US1/US2's specific log calls.
@@ -141,8 +141,8 @@ distinguishable at both default and verbose levels.
 ### User Story Dependencies
 
 - **US1 (P1)**: Independent once Foundational is done.
-- **US2 (P2)**: Extends the same modules US1 touches — sequenced after US1 to avoid rework, though logically additive.
-- **US3 (P3)**: Touches only `cli.py`'s failure path — independent of US1/US2's per-stage calls.
+- **US2 (P2)**: Extends the same modules US1 touches - sequenced after US1 to avoid rework, though logically additive.
+- **US3 (P3)**: Touches only `cli.py`'s failure path - independent of US1/US2's per-stage calls.
 
 ### Within Each User Story
 
@@ -163,7 +163,7 @@ distinguishable at both default and verbose levels.
 ## Parallel Example: User Story 1 implementation
 
 ```bash
-# Different files, each adding one INFO call — independent once T004's loggers exist:
+# Different files, each adding one INFO call - independent once T004's loggers exist:
 Task: "Log INFO 'configuration loaded' in src/wh40k_cheatsheet/config/loader.py"
 Task: "Log INFO stage messages in src/wh40k_cheatsheet/pipeline.py"
 Task: "Log INFO 'template rendered' in src/wh40k_cheatsheet/render/html_renderer.py"
@@ -177,10 +177,10 @@ Task: "Log INFO 'PDF converted' in src/wh40k_cheatsheet/pdf/weasyprint_pdf.py"
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup (T001–T002).
-2. Complete Phase 2: Foundational (T003–T004) — CRITICAL, blocks all stories.
+2. Complete Phase 2: Foundational (T003–T004) - CRITICAL, blocks all stories.
 3. Complete Phase 3: User Story 1 (T005–T010).
 4. **STOP and VALIDATE**: default `generate` run shows ordered `INFO` stage lines; stdout unchanged.
-5. Demonstrable MVP — visibility into what the generator is doing, by default.
+5. Demonstrable MVP - visibility into what the generator is doing, by default.
 
 ### Incremental Delivery
 
@@ -197,5 +197,5 @@ Task: "Log INFO 'PDF converted' in src/wh40k_cheatsheet/pdf/weasyprint_pdf.py"
 - [P] = different files, no dependencies. Tasks sharing a file (e.g., `cli.py`) run serially.
 - [Story] label maps each task to its user story for traceability.
 - Tests (T005/T006, T011/T012, T017/T018) must fail before their implementation lands.
-- No new dependencies — stdlib `logging` only.
+- No new dependencies - stdlib `logging` only.
 - Commit after each task or logical group; stop at any checkpoint to validate a story independently.

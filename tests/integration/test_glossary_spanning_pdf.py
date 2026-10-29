@@ -102,7 +102,7 @@ def test_glossary_spanning_true_title_spans_both_columns():
 def test_glossary_spanning_true_term_list_also_spans_both_columns():
     # Regression: a long (non-spanning) term list fragments across the outer 2-column
     # layout, and since .glossary sets its own column-count: 2, each outer fragment gets
-    # its own 2 sub-columns — 4 visible columns instead of 2. Spanning must apply to the
+    # its own 2 sub-columns - 4 visible columns instead of 2. Spanning must apply to the
     # glossary div itself (not just its title) so it renders as one full-width, 2-column
     # block, matching real CORE ABILITIES content (36 terms) on page 2 of the 11e sheet.
     html = _render([_paragraph("filler"), _glossary("SPANMARKER", spanning=True)])

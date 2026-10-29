@@ -1,6 +1,6 @@
 {#
 ============================================================================
-WH40K Cheat Sheet — Jinja2 / WeasyPrint template
+WH40K Cheat Sheet - Jinja2 / WeasyPrint template
 Modeled on wh40k_11e_cheat_sheet_v1.pdf (11th edition, 3-page, 2-column).
 
 Rendered by the feature-002 pipeline (Jinja2 -> HTML -> WeasyPrint -> PDF).
@@ -8,28 +8,16 @@ This is a COMPLETE HTML document with print CSS (@page), ready for WeasyPrint.
 Autoescape is ON: plain-text fields are escaped; fields ending in `_html`
 are trusted, pre-authored HTML fragments injected via `| safe`.
 
-The WH40K logo (images/logo_40k.png) appears as a large, faint (5% opacity),
-45-degree-rotated background watermark behind every page's content, via the
-fixed, unconditional `.page-watermark` <img> below — it is NOT an authored
-content-block flag, it always renders regardless of document.blocks content.
-DOM order (placed before the document's own content) keeps it painting behind
-everything; do not add z-index, which was found to hide it entirely (see
-feature-010's research.md). The pipeline verifies the logo file exists before
-rendering (fails loudly if missing, per feature-010) since WeasyPrint itself
-does not.
-
-document.print_friendly (bool, default false) — pipeline-set only, never an
+document.print_friendly (bool, default false) - pipeline-set only, never an
 authored content.yaml field (feature-011). When true: every :root color custom
 property resolves to its grayscale equivalent (computed server-side, since
-@page margin-box content inherits from the page context, not from <body> —
-a body-scoped override would not reach the running header/footer), and the
-watermark <img> above is omitted entirely (not merely hidden) via the Jinja
-conditional around it.
+@page margin-box content inherits from the page context, not from <body> -
+a body-scoped override would not reach the running header/footer).
 
 EXPECTED CONTEXT (all optional-safe; missing keys degrade gracefully):
 
 document:
-title: "Warhammer 40,000 — 11th Edition Cheat Sheet" # running header
+title: "Warhammer 40000 - 11th Edition Cheat Sheet" # running header
 subtitle: "Quick reference" # optional
 edition: "11e"
 revision: "2026-08-01-00" # shown in footer
@@ -50,11 +38,11 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
 
   <block> types (see full reference at bottom of this comment):
     phase | subphase | spanning_headline | subsection | paragraph | list | callout | table |
-    keyvals | glossary | stratagem | page_break | column_reset
+    keyvals | glossary | stratagem | page_break | column_reset | section
 
     { type: "phase", title: "1. COMMAND PHASE" }
     { type: "subphase", title: "1a. Battle-shock Step" } # like phase, but with a slightly
-    # brighter background — for a heading nested
+    # brighter background - for a heading nested
     # one level below a `phase`; visually
     # distinguished from `phase` purely by that
     # brighter color (same width/typography)
@@ -90,6 +78,15 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
     # a new page only if no room remains on the current one;
     # no other fields. Adjacent to a page_break with nothing
     # between them, page_break always wins (forces the page).
+    { type: "section", id: "core-rules" } # marks the start of a sheet section - one of
+    # core-rules | core-abilities |
+    # datasheet-characteristics | core-stratagems.
+    # Never rendered, never splits columns or pages
+    # (transparent to page_break/column_reset
+    # segmentation). Runs until the next `section`
+    # marker or the end of the document. What
+    # `generate --skip-<id>` uses to omit a whole
+    # section; see specs/015-skip-sheet-sections.
 
     Rich-markup convention: a single-text block/item may replace `text` with
     `html` (paragraph, callout, list item, keyval, glossary term). A multi-field
@@ -234,12 +231,12 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
 
     <head>
       <meta charset="utf-8">
-      <title>{{ document.title | default('Warhammer 40,000 Cheat Sheet') }}</title>
+      <title>{{ document.title | default('Warhammer 40000 Cheat Sheet') }}</title>
       <style>
         {#- print-friendly mode (feature-011): every custom property below is a grayscale
      equivalent when print_friendly is set. Resolved here at :root (rather than a
      body-scoped override) because @page margin-box content (the running header/footer)
-     inherits custom properties from the page context, not from <body> — a class-based
+     inherits custom properties from the page context, not from <body> - a class-based
      override on <body> would not reach var(--green-dark)/var(--muted) inside @top-center
      /@bottom-left/@bottom-right below. Distinct grey shades per stratagem-timing and
      callout variant preserve their non-color distinguishability (icon/text labels
@@ -247,7 +244,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
         :root {
           --green-dark: {{ '#262626' if print_friendly else '#1e4d34' }};
           --green-subphase: {{ '#3d3d3d' if print_friendly else '#256b46' }};
-          /* subphase header bars — slightly brighter than phase */
+          /* subphase header bars - slightly brighter than phase */
           --green-very-light: {{ '#f2f2f2' if print_friendly else '#66cdaa' }};
           /* phase header bars */
           --green-sub: {{ '#595959' if print_friendly else '#5f8a6e' }};
@@ -277,7 +274,7 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
           margin: 7mm 6mm 8mm 6mm;
 
           @top-center {
-            content: "{{ document.title | default('Warhammer 40,000 — Cheat Sheet') }}";
+            content: "{{ document.title | default('Warhammer 40000 - Cheat Sheet') }}";
             font: 700 7pt/1 "DejaVu Sans", sans-serif;
             color: var(--green-dark);
           }
@@ -308,24 +305,6 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
           color: var(--ink);
           font-size: 7.55pt;
           line-height: 1.2;
-        }
-
-        /* full-page diagonal watermark, repeats on every page via position:fixed; sized so
-     the rotated bounding box (a square, side = (w+h)*cos45deg) fits entirely within
-     the page without cropping (page width is the binding constraint for A4 portrait);
-     left/top account for position:fixed's containing block being the content box, not
-     the physical page edge (verified empirically). No z-index: DOM order alone (placed
-     before the document's own content) is what keeps it behind everything — a negative
-     z-index was tried and hides the watermark entirely (pushes it behind the page's own
-     background), so deliberately omitted. */
-        .page-watermark {
-          position: fixed;
-          left: -14.71mm;
-          top: 106.72mm;
-          width: 227.42mm;
-          height: 69.56mm;
-          transform: rotate(45deg);
-          opacity: 0.05;
         }
 
         /* two balanced columns, like the source sheet */
@@ -609,9 +588,6 @@ blocks: [ <block>, ... ] # ordered; flow across 2 balanced columns,
     </head>
 
     <body class="{{ 'print-friendly' if print_friendly else '' }}">
-      {%- if not print_friendly %}
-      <img class="page-watermark" src="../images/logo_40k.png" alt="">
-      {%- endif %}
       <article class="cheatsheet">
         {%- for segment in group_by_breaks(document.blocks if document is defined and document.blocks is defined else
         []) %}

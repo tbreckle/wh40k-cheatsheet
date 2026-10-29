@@ -11,7 +11,6 @@ def _paths() -> Paths:
         editions_root=REPO_ROOT / "editions",
         templates_root=REPO_ROOT / "templates",
         out_root=REPO_ROOT / "out",
-        images_root=REPO_ROOT / "images",
     )
 
 

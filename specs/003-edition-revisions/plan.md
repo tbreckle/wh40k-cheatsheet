@@ -32,12 +32,12 @@ selection and explicit-selection integration tests; malformed/absent-revision er
 
 **Target Platform**: Local dev + CI (Linux), same as feature 002.
 
-**Project Type**: Single project — extends the `src/wh40k_cheatsheet/` package.
+**Project Type**: Single project - extends the `src/wh40k_cheatsheet/` package.
 
 **Performance Goals**: Revision discovery + selection adds negligible overhead; overall generation
 stays within feature 002's <10s per (edition, language) PDF budget.
 
-**Constraints**: `project.yaml` remains structure-only (no revision lists) — revisions come from the
+**Constraints**: `project.yaml` remains structure-only (no revision lists) - revisions come from the
 filesystem. Identifier ordering must be total and deterministic so "latest" is unambiguous (FR-005).
 Selection is scoped per edition (FR-013).
 
@@ -54,7 +54,7 @@ revisions per edition over time. Discovery is a single directory listing per edi
 | II. Testing Standards (NON-NEGOTIABLE) | **Satisfied.** Identifier parsing/validation/ordering are pure and highly testable; latest/explicit selection and error paths get integration tests. |
 | III. User Experience Consistency | **Served.** Predictable default (latest) with explicit override; clear, consistent errors for malformed/unknown/absent revisions (never silent). |
 | IV. Performance Requirements | **Satisfied.** One directory listing + in-memory sort per edition; no measurable impact on the generation budget. |
-| Additional Constraints & Standards | **Advanced.** Revisions make the constitution's source-traceability requirement precise — every output is attributable to a dated correction (FR-012). Config stays version-controlled and structure-only. |
+| Additional Constraints & Standards | **Advanced.** Revisions make the constitution's source-traceability requirement precise - every output is attributable to a dated correction (FR-012). Config stays version-controlled and structure-only. |
 | Development Workflow & Quality Gates | **Satisfied.** Ships under the same PR-gated workflow as 001/002. |
 
 **Verdict**: PASS. No violations; Complexity Tracking not required.
@@ -72,10 +72,10 @@ specs/003-edition-revisions/
 ├── contracts/           # Phase 1 output
 │   ├── revision-identifier.md   # YYYY-MM-DD-NN grammar + ordering + validation contract
 │   └── revision-selection.md    # CLI generate/list behavior with revisions
-└── tasks.md             # Phase 2 (/speckit-tasks — NOT created here)
+└── tasks.md             # Phase 2 (/speckit-tasks - NOT created here)
 ```
 
-### Source Code (repository root) — changes to the feature-002 package
+### Source Code (repository root) - changes to the feature-002 package
 
 ```text
 src/wh40k_cheatsheet/

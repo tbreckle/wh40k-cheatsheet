@@ -9,7 +9,7 @@ description: "Task list for Subphase Heading implementation"
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/subphase-block.md, quickstart.md
 
-**Tests**: Test tasks ARE included — the spec defines validation scenarios and the constitution's
+**Tests**: Test tasks ARE included - the spec defines validation scenarios and the constitution's
 Testing Standards are non-negotiable.
 
 **Organization**: Grouped by user story so each is an independently testable increment.
@@ -65,9 +65,9 @@ background, and remains distinguishable from `phase` in print-friendly mode.
 
 ### Implementation for User Story 1
 
-- No story-specific implementation — Setup + Foundational (T001–T004) already deliver this behavior; T005–T008 verify it against the P1 acceptance criteria.
+- No story-specific implementation - Setup + Foundational (T001–T004) already deliver this behavior; T005–T008 verify it against the P1 acceptance criteria.
 
-**Checkpoint**: MVP — a `subphase` heading reliably renders brighter than `phase`, at the same width, and stays distinguishable in print-friendly mode.
+**Checkpoint**: MVP - a `subphase` heading reliably renders brighter than `phase`, at the same width, and stays distinguishable in print-friendly mode.
 
 ---
 
@@ -85,9 +85,9 @@ with the identical background color at the equivalent content point.
 
 ### Implementation for User Story 2
 
-- No story-specific implementation — `render_block` operates purely on already-resolved per-language content, so it is inherently language-agnostic; T009 verifies this holds in practice.
+- No story-specific implementation - `render_block` operates purely on already-resolved per-language content, so it is inherently language-agnostic; T009 verifies this holds in practice.
 
-**Checkpoint**: Both stories independently functional — `subphase` headings render correctly, distinguishably, and consistently across languages.
+**Checkpoint**: Both stories independently functional - `subphase` headings render correctly, distinguishably, and consistently across languages.
 
 ---
 
@@ -96,7 +96,7 @@ with the identical background color at the equivalent content point.
 **Purpose**: End-to-end validation and documentation.
 
 - [X] T010 Run every scenario in `quickstart.md` end-to-end (regression check against real `11e` content, brighter-background rendering, multiple headings, start/end placement, coexistence with `page_break`/`column_reset`, print-friendly distinguishability, cross-language) and confirm expected outcomes
-- [X] T011 [P] Document `subphase` in `docs/CONTENT_AUTHORING.md` — authoring syntax, one example — with a link to `specs/014-subphase-block/contracts/subphase-block.md`
+- [X] T011 [P] Document `subphase` in `docs/CONTENT_AUTHORING.md` - authoring syntax, one example - with a link to `specs/014-subphase-block/contracts/subphase-block.md`
 
 ---
 
@@ -104,8 +104,8 @@ with the identical background color at the equivalent content point.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup — BLOCKS all user stories. Contains the entire
+- **Setup (Phase 1)**: No dependencies - start immediately.
+- **Foundational (Phase 2)**: Depends on Setup - BLOCKS all user stories. Contains the entire
   mechanism (T001–T004).
 - **User Stories (Phase 3–4)**: All depend on Foundational and consist of test tasks verifying
   different acceptance-criteria slices of the same mechanism.
@@ -131,11 +131,11 @@ with the identical background color at the equivalent content point.
 ### MVP First (User Story 1 Only)
 
 1. Complete Phase 1: Setup (T001).
-2. Complete Phase 2: Foundational (T002–T004) — CRITICAL; this is the entire mechanism.
+2. Complete Phase 2: Foundational (T002–T004) - CRITICAL; this is the entire mechanism.
 3. Complete Phase 3: User Story 1 (T005–T008).
 4. **STOP and VALIDATE**: a `subphase` fixture reliably renders brighter than `phase`, at the same
    width, and stays distinguishable in print-friendly mode.
-5. Demonstrable MVP — a genuinely distinct, nested heading level.
+5. Demonstrable MVP - a genuinely distinct, nested heading level.
 
 ### Incremental Delivery
 
@@ -152,5 +152,5 @@ with the identical background color at the equivalent content point.
   independent.
 - [Story] label maps each task to its user story for traceability.
 - Because this feature's entire implementation lives in Setup + Foundational, each story's
-  "Implementation" subsection intentionally contains no new tasks — only its Tests subsection does.
+  "Implementation" subsection intentionally contains no new tasks - only its Tests subsection does.
 - Commit after each task or logical group; stop at any checkpoint to validate a story independently.

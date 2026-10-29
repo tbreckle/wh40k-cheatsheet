@@ -32,11 +32,11 @@
 ## Notes
 
 - Exact visual styling (colors, spacing, typography for the spanning treatment) is deliberately left
-  to planning (Assumptions) — the spec only requires full-width span + visual distinguishability from
+  to planning (Assumptions) - the spec only requires full-width span + visual distinguishability from
   the standard heading, keeping the spec free of implementation/design-system detail.
 - The spanning headline is scoped as a **visible content block** (carries its own heading text),
   distinguishing it conceptually from the invisible structural markers in `005-page-breaks` and
-  `006-column-reset` — this distinction is called out explicitly in Assumptions to avoid ambiguity
+  `006-column-reset` - this distinction is called out explicitly in Assumptions to avoid ambiguity
   with those prior features.
 - 2026-08-14 clarification session added FR-011/SC-007 (optional spanning flag on the existing
   glossary block, title-bar only). No implementation detail (e.g., a specific field/flag name) was

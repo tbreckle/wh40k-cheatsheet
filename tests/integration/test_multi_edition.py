@@ -21,9 +21,8 @@ def _project_root_with_second_edition(tmp_path: Path) -> Path:
     root.mkdir()
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
 
-    # Add a synthetic second edition, scoped to this temp copy only — real project.yaml/editions
+    # Add a synthetic second edition, scoped to this temp copy only - real project.yaml/editions
     # stay untouched; this exercises multi-edition selection without fabricating permanent content.
     second_content_dir = root / "editions" / "9e" / "2026-01-01-00" / "en"
     second_content_dir.mkdir(parents=True)
@@ -52,7 +51,6 @@ def _paths(root: Path) -> Paths:
         editions_root=root / "editions",
         templates_root=root / "templates",
         out_root=root / "out",
-        images_root=root / "images",
     )
 
 

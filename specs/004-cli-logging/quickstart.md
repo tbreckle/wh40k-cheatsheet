@@ -14,7 +14,7 @@ Same as feature 002/003: `uv sync`, WeasyPrint native libraries installed, `proj
 
 ## Validation scenarios
 
-### Scenario 1 — Default run shows per-stage status (US1, SC-001)
+### Scenario 1 - Default run shows per-stage status (US1, SC-001)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 11e --language en
@@ -24,7 +24,7 @@ uv run wh40k-cheatsheet generate --edition 11e --language en
 resolved, template rendered, PDF converted), in order; stdout still shows the existing
 `11e / 2026-08-01-00 / en -> out/...` result line, unchanged from before this feature.
 
-### Scenario 2 — Verbose adds diagnostic detail without changing output (US2, SC-002/SC-003)
+### Scenario 2 - Verbose adds diagnostic detail without changing output (US2, SC-002/SC-003)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 11e --language en -v
@@ -36,16 +36,16 @@ diff <(uv run wh40k-cheatsheet generate --edition 11e --language en) \
 template/revision). The generated `out/11e/2026-08-01-00/en.{html,pdf}` files are byte-identical
 between the two runs (`diff`/`cmp` on the files themselves, not the console output).
 
-### Scenario 3 — Multi-language run stays attributable (US1-2/US2, SC-005)
+### Scenario 3 - Multi-language run stays attributable (US1-2/US2, SC-005)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 11e
 ```
 
 **Expected**: stage messages for `en` and `de` are grouped and each line is prefixed with its own
-`[11e/2026-08-01-00/<lang>]` context — no message is ambiguous about which language it belongs to.
+`[11e/2026-08-01-00/<lang>]` context - no message is ambiguous about which language it belongs to.
 
-### Scenario 4 — Errors always visible, at any verbosity (US3, SC-004)
+### Scenario 4 - Errors always visible, at any verbosity (US3, SC-004)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition does-not-exist
@@ -55,13 +55,13 @@ uv run wh40k-cheatsheet generate --edition does-not-exist -v
 **Expected**: both invocations print a clearly visible `CRITICAL` line naming the problem and exit
 non-zero; the verbose run's extra `DEBUG` output does not bury or hide the failure.
 
-### Scenario 5 — `list` remains concise (US1-3)
+### Scenario 5 - `list` remains concise (US1-3)
 
 ```bash
 uv run wh40k-cheatsheet list
 ```
 
-**Expected**: output is unchanged from before this feature — no new step-by-step logging is required
+**Expected**: output is unchanged from before this feature - no new step-by-step logging is required
 for a command with no multi-stage work.
 
 ## Success signals

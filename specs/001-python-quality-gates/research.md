@@ -45,18 +45,18 @@ install time (FR-008) and is the single source of truth other tools inherit thei
 every gate and a `poe fix` for auto-fixable formatting/lint. CI runs the same `poe check`.
 
 **Rationale**: Keeps the aggregate-command definition *inside `pyproject.toml`* (the user's explicit
-requirement — no Makefile/justfile), satisfies FR-001/FR-006 (one command, identical local vs CI),
+requirement - no Makefile/justfile), satisfies FR-001/FR-006 (one command, identical local vs CI),
 and can be run via `uv run poe check`. poe runs each gate as an independent sub-task so a failure in
 one still lets the others report (FR-004/FR-011) while yielding an overall non-zero exit (FR-002).
 
 **Alternatives considered**:
-- *Makefile / justfile*: rejected — configuration would live outside `pyproject.toml`.
+- *Makefile / justfile*: rejected - configuration would live outside `pyproject.toml`.
 - *nox / tox*: powerful for multi-env matrices but heavier than needed and config-in-Python/ini.
 - *Plain shell script*: not cross-platform (Windows) and lives outside `pyproject.toml`.
 
 ---
 
-## 4. Gate 1 — Style & format + fast lint: ruff
+## 4. Gate 1 - Style & format + fast lint: ruff
 
 **Decision**: **ruff** provides both formatting (`ruff format`) and fast linting (`ruff check`),
 configured under `[tool.ruff]` with `target-version = "py312"`, **`line-length = 120`**, and a broad
@@ -65,18 +65,18 @@ lint, so format and lint agree on one number.
 
 **Rationale**: ruff is the modern standard, replacing black/isort/flake8/pyupgrade/pydocstyle at
 high speed. A strong selection enables (among others): `E`,`W` (pycodestyle), `F` (pyflakes),
-`I` (isort), `N` (pep8-naming), `UP` (pyupgrade — keeps code on 3.12+ idioms), `B` (bugbear),
+`I` (isort), `N` (pep8-naming), `UP` (pyupgrade - keeps code on 3.12+ idioms), `B` (bugbear),
 `A` (builtins), `C4` (comprehensions), `SIM` (simplify), `PTH` (pathlib), `RUF` (ruff-specific),
 `S` (flake8-bandit subset), `PL` (pylint parity), `TID`, `TCH`, `PERF`, `FURB`, `DTZ`, `RET`,
 `ARG`, `ERA`, `D` (docstrings). Auto-fix handles the mechanical subset.
 
 **Alternatives considered**:
 - *black + isort + flake8 + plugins*: the pre-ruff stack; slower, many tools, more config files.
-- *ruff defaults only*: rejected — spec requires an explicitly strong, enumerated rule set (FR-007).
+- *ruff defaults only*: rejected - spec requires an explicitly strong, enumerated rule set (FR-007).
 
 ---
 
-## 5. Gate 2 — Deep correctness lint: pylint
+## 5. Gate 2 - Deep correctness lint: pylint
 
 **Decision**: **pylint** configured under `[tool.pylint]` in `pyproject.toml`, run as its own gate
 with a high-signal rule set and **`max-line-length = 120`** (matching ruff); disable only the checks
@@ -94,7 +94,7 @@ categories in pylint so each gate has a clear lane while keeping pylint's unique
 
 ---
 
-## 6. Gate 3 — Security: bandit
+## 6. Gate 3 - Security: bandit
 
 **Decision**: **bandit** configured under `[tool.bandit]`, scanning `src/` for security weaknesses;
 tests excluded from some checks via bandit's test-path handling.
@@ -111,7 +111,7 @@ the single-config-file rule.
 
 ---
 
-## 7. Gate 4 — Type checking: ty
+## 7. Gate 4 - Type checking: ty
 
 **Decision**: **ty** (Astral's type checker) configured under `[tool.ty]`, targeting Python 3.12,
 run as the typing gate over `src/`.
@@ -171,12 +171,12 @@ operationalizes the constitution's "all gates green to merge".
 `# pylint: disable=<check>` with an adjacent justification comment, `# nosec <test-id>` (bandit),
 and ty's inline ignore syntax. Blanket, file-wide, or unexplained disables are disallowed by review.
 
-**Rationale**: Satisfies FR-009/SC-007 — a single finding can be silenced with a recorded reason
+**Rationale**: Satisfies FR-009/SC-007 - a single finding can be silenced with a recorded reason
 without weakening the gate elsewhere. Enforced socially via code review (constitution: exceptions
 documented per-change), and ruff's `RUF100` flags unused/blanket `noqa` to keep suppressions honest.
 
 **Alternatives considered**:
-- *Global disables in config*: rejected — weakens coverage repo-wide and hides intent.
+- *Global disables in config*: rejected - weakens coverage repo-wide and hides intent.
 
 ---
 
@@ -194,7 +194,7 @@ Centralizing the number in `pyproject.toml` and reusing it across gates preserve
 **Alternatives considered**:
 - *88 (ruff/black default)*: fine but narrower than requested; would force more wrapping.
 - *79 (PEP 8 classic)*: too tight for a modern codebase.
-- *No limit*: rejected — inconsistent formatting and unreviewable long lines.
+- *No limit*: rejected - inconsistent formatting and unreviewable long lines.
 
 ---
 
@@ -209,6 +209,6 @@ Centralizing the number in `pyproject.toml` and reusing it across gates preserve
 | Type checker choice | ty primary; mypy documented fallback |
 | CI provider & enforcement | GitHub Actions required check on PRs to `main` |
 | Suppression mechanism | Reasoned inline suppressions only; RUF100 guards |
-| Line length | 120 chars — ruff `line-length` + pylint `max-line-length`, single source |
+| Line length | 120 chars - ruff `line-length` + pylint `max-line-length`, single source |
 
 No open NEEDS CLARIFICATION items remain.

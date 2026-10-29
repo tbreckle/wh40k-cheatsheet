@@ -2,11 +2,13 @@
 # Transcribed from wh40k_11e_cheat_sheet_v1.pdf.
 # Load this file and render:  template.render(**yaml.safe_load(open(...)))
 document:
-  title: "Warhammer 40,000 - 11th Edition Cheat Sheet"
+  title: "Warhammer 40000 - 11th Edition Cheat Sheet"
   edition: "11e"
-  revision: "2026-08-01-00"
+  revision: "2026-06-01-00"
   language: "en"
   blocks:
+    - type: section
+      id: core-rules
     # ================= PAGE 1 =================
     - type: phase
       title: "1. COMMAND PHASE (08)"
@@ -300,6 +302,8 @@ document:
         - html: '<b>Objective:</b> Within 3" of objective. Must end within range of it if possible.'
 
     # ================= PAGE 3 - DATASHEET CHARACTERISTICS =================
+    - type: section
+      id: core-abilities
     - type: page_break
     # ---- Core Abilities glossary (full-width) ----
     - type: column_reset
@@ -435,6 +439,8 @@ document:
         - { term: "[TORRENT] (24.37)", text: "Automatically hits." }
         - { term: "[TWIN-LINKED] (24.38)", text: "Re-roll wound roll." }
 
+    - type: section
+      id: datasheet-characteristics
     - type: glossary
       title: "DATASHEET CHARACTERISTICS"
       spanning: yes
@@ -475,6 +481,8 @@ document:
           }
 
     # ================= PAGE 4 - STRATAGEMS =================
+    - type: section
+      id: core-stratagems
     - type: page_break
     - type: spanning_headline
       title: "STRATAGEMS"

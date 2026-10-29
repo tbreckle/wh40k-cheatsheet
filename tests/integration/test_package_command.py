@@ -7,6 +7,24 @@ from wh40k_cheatsheet.cli import main
 from wh40k_cheatsheet.config import load_project_config
 from wh40k_cheatsheet.content import ContentError
 from wh40k_cheatsheet.pipeline import Paths, package_all
+from wh40k_cheatsheet.revision import discover_revisions
+
+# Section id -> signature substring, per (edition, language), for the reference table in
+# specs/015-skip-sheet-sections/tasks.md.
+SECTION_SIGNATURES = {
+    ("11e", "en"): {
+        "core-rules": "1. COMMAND PHASE",
+        "core-abilities": "CORE ABILITIES",
+        "datasheet-characteristics": "DATASHEET CHARACTERISTICS",
+        "core-stratagems": "STRATAGEMS",
+    },
+    ("11e", "de"): {
+        "core-rules": "1. BEFEHLSPHASE",
+        "core-abilities": "KERNFÄHIGKEITEN",
+        "datasheet-characteristics": "DATENBLATT-KENNWERTE",
+        "core-stratagems": "GEFECHTSOPTIONEN",
+    },
+}
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -25,7 +43,6 @@ def _paths(root: Path = REPO_ROOT) -> Paths:
         editions_root=root / "editions",
         templates_root=root / "templates",
         out_root=root / "out",
-        images_root=root / "images",
     )
 
 
@@ -35,7 +52,6 @@ def _project_root(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
     return root
 
 
@@ -68,7 +84,7 @@ def test_package_all_stages_real_content_flat_and_named(tmp_path):
     staged = package_all(config, _paths(), tmp_path / "dist")
 
     # Subset, not exact-equality: the real project.yaml may declare more editions than just
-    # 11e (that's the point of FR-002/SC-005 — new editions are picked up automatically), so
+    # 11e (that's the point of FR-002/SC-005 - new editions are picked up automatically), so
     # this only asserts 11e's own outputs are present and correctly named, not that they're
     # the only ones.
     staged_names = {p.name for p in staged}
@@ -110,6 +126,25 @@ def test_cli_package_command_writes_files_and_prints_paths(tmp_path, capsys):
     assert (dist_dir / "11e-de.pdf").is_file()
     assert str(dist_dir / "11e-en.pdf") in captured.out
     assert str(dist_dir / "11e-de.pdf") in captured.out
+
+
+def test_package_all_never_produces_a_partial_sheet_and_keeps_every_section(tmp_path):
+    root = _project_root(tmp_path)
+    config = load_project_config(root / "project.yaml")
+
+    staged = package_all(config, _paths(root), tmp_path / "dist")
+
+    assert staged, "expected at least one staged file"
+    for path in staged:
+        assert "-no-" not in path.name, f"{path.name}: package_all must always build full sheets (FR-014)"
+
+    # package_all returns only the staged PDF paths, not GeneratedDocument objects, so read each
+    # edition/language's retained HTML back from `out/` to confirm every section it has survived.
+    for (edition_id, language), signatures in SECTION_SIGNATURES.items():
+        latest_revision = discover_revisions(root / "editions", edition_id).latest().id
+        html = (root / "out" / edition_id / str(latest_revision) / f"{language}.html").read_text(encoding="utf-8")
+        for section_id, signature in signatures.items():
+            assert signature in html, f"{edition_id}/{language}: missing {section_id} signature '{signature}'"
 
 
 def test_cli_package_command_defaults_dist_dir_to_dist(tmp_path):

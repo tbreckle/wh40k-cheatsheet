@@ -32,7 +32,7 @@
 ## Notes
 
 - "Logging" and "verbose flag" are the user's own product-level vocabulary (like "PDF" or "YAML" in
-  prior specs), not implementation choices — no specific logging library, log format, or handler
+  prior specs), not implementation choices - no specific logging library, log format, or handler
   configuration is named. The concrete mechanism (e.g., which CLI flag string, which output stream)
   is deferred to planning.
 - Scoped explicitly as an extension of the existing `generate`/`list` CLI from `002-pdf-generation`

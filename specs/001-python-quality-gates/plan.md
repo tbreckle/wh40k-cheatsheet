@@ -18,11 +18,11 @@ backend, with `uv` as the environment/dependency manager.
 
 **Language/Version**: Python 3.12+ (minimum supported is 3.12; `requires-python = ">=3.12"`)
 
-**Primary Dependencies**: Dev/quality toolchain — ruff, pylint, bandit, ty, pytest, plus a
+**Primary Dependencies**: Dev/quality toolchain - ruff, pylint, bandit, ty, pytest, plus a
 `pyproject.toml`-native task runner (poethepoet) for the aggregate command. `uv` as the package and
 environment manager. No runtime application dependencies are introduced by this feature.
 
-**Storage**: N/A — all configuration is version-controlled in `pyproject.toml`.
+**Storage**: N/A - all configuration is version-controlled in `pyproject.toml`.
 
 **Testing**: pytest (with pytest configuration in `[tool.pytest.ini_options]`); a seeded
 "bad example" fixture proves each gate catches its category.
@@ -30,7 +30,7 @@ environment manager. No runtime application dependencies are introduced by this 
 **Target Platform**: Local developer machines (Linux/macOS/Windows) and the CI runner
 (GitHub Actions, Linux).
 
-**Project Type**: Single project — tooling/infrastructure layer that all future application code
+**Project Type**: Single project - tooling/infrastructure layer that all future application code
 (the cheatsheet itself) will sit under.
 
 **Performance Goals**: Full local gate run completes in under 30 seconds on a typical developer
@@ -71,7 +71,7 @@ specs/001-python-quality-gates/
 ├── quickstart.md        # Phase 1 output
 ├── contracts/           # Phase 1 output
 │   └── quality-command.md
-└── tasks.md             # Phase 2 output (/speckit-tasks — NOT created here)
+└── tasks.md             # Phase 2 output (/speckit-tasks - NOT created here)
 ```
 
 ### Source Code (repository root)

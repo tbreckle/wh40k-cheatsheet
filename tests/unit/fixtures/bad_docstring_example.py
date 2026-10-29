@@ -1,6 +1,6 @@
 """Deliberately violates the docstring gate, for the gate self-test.
 
-Never imported for its behavior — only run through `pylint` as a subprocess in
+Never imported for its behavior - only run through `pylint` as a subprocess in
 `tests/integration/test_docstring_gate_selftest.py` to prove the gate catches:
 missing docstrings, an undocumented method, and Args that don't match the real signature.
 """

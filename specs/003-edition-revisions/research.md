@@ -47,7 +47,7 @@ computed from what actually exists, and new corrections are added by dropping in
 `RevisionId` is reported (FR-009), not silently skipped or mis-ordered (spec US3/Edge Cases).
 
 **Alternatives considered**:
-- *Declare revisions in `project.yaml`*: rejected — breaks 002's structure-only config and duplicates
+- *Declare revisions in `project.yaml`*: rejected - breaks 002's structure-only config and duplicates
   filesystem truth.
 - *A per-edition manifest file listing revisions*: extra bookkeeping with no benefit over directory
   discovery for this scale.
@@ -57,9 +57,9 @@ computed from what actually exists, and new corrections are added by dropping in
 ## 3. Templates across revisions
 
 **Decision**: Revisions do **not** change templates. Template resolution continues from feature 002
-— the edition template, optionally overridden per language. A revision corrects *content* only.
+- the edition template, optionally overridden per language. A revision corrects *content* only.
 
-**Rationale**: The spec defines a revision as a "corrected edition" — a content fix within the same
+**Rationale**: The spec defines a revision as a "corrected edition" - a content fix within the same
 edition identity, not a layout change. Keeping templates edition/language-scoped avoids duplicating
 template config per revision and matches the UX-consistency principle (same layout across
 corrections).
@@ -99,7 +99,7 @@ entries (rather than ignoring them) prevents a mistyped directory from silently 
 revision is "latest".
 
 **Alternatives considered**:
-- *Silently ignore non-matching directories*: rejected — could hide a mistyped intended revision and
+- *Silently ignore non-matching directories*: rejected - could hide a mistyped intended revision and
   mislead "latest".
 
 ---
@@ -122,7 +122,7 @@ thin threading, minimizing regression risk and keeping each change reviewable.
 
 ## 7. Reproducibility & performance
 
-**Decision**: No change to feature 002's reproducibility approach — output remains content-equivalent
+**Decision**: No change to feature 002's reproducibility approach - output remains content-equivalent
 per `(edition, revision, language)` via normalized PDF metadata. Discovery/selection cost is a single
 listing plus an in-memory sort, well within the <10s budget.
 
@@ -138,7 +138,7 @@ once published.
 |---------|------------|
 | Identifier model & ordering | `RevisionId` value object; validate date via stdlib + `NN` range; order by `(date, seq)`; latest = max |
 | Where revisions live | Filesystem: `editions/<edition>/<revision>/<lang>/`; NOT in `project.yaml` |
-| Templates per revision | Unchanged — edition/language template reused; revisions correct content only |
+| Templates per revision | Unchanged - edition/language template reused; revisions correct content only |
 | Selection | Resolve before content; default latest, explicit `--revision`; per-edition scope |
 | Discovery/validation | List + parse dirs; malformed reported; zero-revisions reported |
 | 002 integration | Additive: new `revision` module + revision threaded through resolver/pipeline/cli |

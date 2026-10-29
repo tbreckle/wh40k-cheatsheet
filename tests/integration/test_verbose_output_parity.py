@@ -13,15 +13,12 @@ def _project_root(tmp_path: Path) -> Path:
     shutil.copy(REPO_ROOT / "project.yaml", root / "project.yaml")
     shutil.copytree(REPO_ROOT / "editions", root / "editions")
     shutil.copytree(REPO_ROOT / "templates", root / "templates")
-    shutil.copytree(REPO_ROOT / "images", root / "images")
     return root
 
 
 def test_html_and_pdf_bytes_identical_with_and_without_verbose(tmp_path, capsys):
-    # A single shared root, not two separate copies: WeasyPrint resolves the page logo's
-    # relative image reference against the absolute base_url, and that resolved absolute
-    # path ends up reflected in the compressed PDF content stream — two directory copies
-    # with different absolute paths would differ there for a reason unrelated to verbosity.
+    # A single shared root, not two separate copies: two directory copies with different
+    # absolute paths could differ in the output for a reason unrelated to verbosity.
     root = _project_root(tmp_path)
     revision = next((root / "editions" / "11e").iterdir()).name
 

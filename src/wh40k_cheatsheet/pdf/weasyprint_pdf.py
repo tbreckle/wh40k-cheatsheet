@@ -17,7 +17,7 @@ def _describe_exception(exc: Exception) -> str:
     """Format an exception so the description is never blank.
 
     Some failures WeasyPrint raises internally (e.g. a bare `AssertionError` from its layout
-    engine) carry no message, so `str(exc)` alone can be empty — leaving a `PdfError` (and the
+    engine) carry no message, so `str(exc)` alone can be empty - leaving a `PdfError` (and the
     CLI's top-level `Error: ` line) with nothing after the colon. Prefixing the exception's
     type name guarantees a non-empty, still-useful description either way.
 
@@ -50,7 +50,7 @@ def render_pdf(html: str, base_url: Path, output_path: Path, *, stage_context: s
     started = time.perf_counter()
     try:
         # full_fonts=True: WeasyPrint's default font subsetting (HarfBuzz/fontTools) is
-        # not run-to-run deterministic — observed byte-level differences between two
+        # not run-to-run deterministic - observed byte-level differences between two
         # back-to-back generations of identical HTML. Embedding whole fonts avoids it.
         weasyprint.HTML(string=html, base_url=str(base_url)).write_pdf(str(tmp_path), full_fonts=True)
     except Exception as exc:

@@ -20,10 +20,10 @@ inspectable artifact. The generator runs on the Python 3.12+ / uv toolchain esta
 **Language/Version**: Python 3.12+ (`requires-python = ">=3.12"`, shared with feature 001)
 
 **Primary Dependencies**:
-- **pydantic** (v2) — typed models + validation for the project configuration structure
-- **PyYAML** — parse the YAML project configuration file
-- **Jinja2** — render templates into an HTML document (stage 1)
-- **WeasyPrint** — convert HTML → PDF (stage 2)
+- **pydantic** (v2) - typed models + validation for the project configuration structure
+- **PyYAML** - parse the YAML project configuration file
+- **Jinja2** - render templates into an HTML document (stage 1)
+- **WeasyPrint** - convert HTML → PDF (stage 2)
 
 **Storage**: Filesystem only. Inputs: YAML config, per-edition/per-language string catalogs and HTML
 fragments (by directory convention), Jinja2 templates. Outputs: HTML (intermediate) and PDF.
@@ -32,15 +32,15 @@ fragments (by directory convention), Jinja2 templates. Outputs: HTML (intermedia
 tests, content-resolution tests, and a PDF smoke test (valid, openable, non-empty PDF).
 
 **Target Platform**: Local developer machines and CI (Linux). WeasyPrint requires native libraries
-(Pango, cairo, GDK-PixBuf, HarfBuzz) present on the host — a documented environment prerequisite.
+(Pango, cairo, GDK-PixBuf, HarfBuzz) present on the host - a documented environment prerequisite.
 
-**Project Type**: Single project — a CLI/library application under `src/wh40k_cheatsheet/`.
+**Project Type**: Single project - a CLI/library application under `src/wh40k_cheatsheet/`.
 
 **Performance Goals**: Under 10 seconds per (language, edition) PDF for a typical cheatsheet on a
 standard developer machine (SC-006).
 
 **Constraints**: Fully offline (no network at generation time), consistent with the constitution's
-offline-capable goal. Output must be reproducible in content (SC-004) — WeasyPrint document metadata
+offline-capable goal. Output must be reproducible in content (SC-004) - WeasyPrint document metadata
 (e.g., creation timestamp) MUST be pinned/normalized so repeated runs are content-equivalent. The
 project configuration file is structure-only; content is located by convention (FR-019).
 
@@ -76,7 +76,7 @@ specs/002-pdf-generation/
 ├── contracts/           # Phase 1 output
 │   ├── config-schema.md         # YAML project-config schema contract
 │   └── generate-command.md      # CLI command contract
-└── tasks.md             # Phase 2 (/speckit-tasks — NOT created here)
+└── tasks.md             # Phase 2 (/speckit-tasks - NOT created here)
 ```
 
 ### Source Code (repository root)
@@ -115,7 +115,7 @@ tests/
 ```
 
 **Structure Decision**: Single-project src layout, extending the package seeded by feature 001. The
-pipeline is split into four cohesive modules — `config`, `content`, `render`, `pdf` — orchestrated by
+pipeline is split into four cohesive modules - `config`, `content`, `render`, `pdf` - orchestrated by
 `pipeline.py`, mirroring the two-stage "templates → HTML → PDF" flow and keeping each external
 dependency (PyYAML+Pydantic, Jinja2, WeasyPrint) behind a single module boundary for testability and
 future swap-ability.

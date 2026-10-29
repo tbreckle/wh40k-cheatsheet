@@ -24,7 +24,7 @@ uv sync
 
 ## Validation scenarios
 
-### Scenario 1 — Latest revision by default (US1, SC-001)
+### Scenario 1 - Latest revision by default (US1, SC-001)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 10e --language en
@@ -33,13 +33,13 @@ uv run wh40k-cheatsheet generate --edition 10e --language en
 **Expected**: output produced from `2026-08-01-01` (the highest revision), written under
 `out/10e/2026-08-01-01/en.{html,pdf}`.
 
-### Scenario 2 — Latest picks highest same-day sequence (US1-2)
+### Scenario 2 - Latest picks highest same-day sequence (US1-2)
 
 With `2026-08-01-00` and `2026-08-01-01` present, generate without `--revision`.
 
 **Expected**: `2026-08-01-01` is chosen (highest `NN` that day).
 
-### Scenario 3 — Explicit older revision (US2, SC-002)
+### Scenario 3 - Explicit older revision (US2, SC-002)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 10e --revision 2026-08-01-00 --language en
@@ -48,7 +48,7 @@ uv run wh40k-cheatsheet generate --edition 10e --revision 2026-08-01-00 --langua
 **Expected**: output produced from `2026-08-01-00`, not the latest; written under
 `out/10e/2026-08-01-00/en.{html,pdf}`.
 
-### Scenario 4 — Unknown revision lists available (US2-2, SC-004)
+### Scenario 4 - Unknown revision lists available (US2-2, SC-004)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 10e --revision 2026-07-01-00
@@ -57,7 +57,7 @@ uv run wh40k-cheatsheet generate --edition 10e --revision 2026-07-01-00
 **Expected**: failure naming the missing revision and listing the edition's available revisions; no
 output written.
 
-### Scenario 5 — Malformed revision rejected (US2-3, SC-003)
+### Scenario 5 - Malformed revision rejected (US2-3, SC-003)
 
 ```bash
 uv run wh40k-cheatsheet generate --edition 10e --revision 2026-13-40-00
@@ -65,7 +65,7 @@ uv run wh40k-cheatsheet generate --edition 10e --revision 2026-13-40-00
 
 **Expected**: failure describing the required `YYYY-MM-DD-NN` format (invalid calendar date).
 
-### Scenario 6 — List revisions in order (US3, SC-005)
+### Scenario 6 - List revisions in order (US3, SC-005)
 
 ```bash
 uv run wh40k-cheatsheet list
@@ -74,13 +74,13 @@ uv run wh40k-cheatsheet list
 **Expected**: for edition `10e`, revisions shown oldest → newest with the latest marked; no
 generation.
 
-### Scenario 7 — Malformed revision directory reported (US3-2, SC-003)
+### Scenario 7 - Malformed revision directory reported (US3-2, SC-003)
 
 Add a bad directory `editions/10e/2026-8-1/` and run `list` or `generate`.
 
 **Expected**: the malformed identifier is reported rather than silently ignored or mis-ordered.
 
-### Scenario 8 — Edition with no revisions (US3-3, FR-011)
+### Scenario 8 - Edition with no revisions (US3-3, FR-011)
 
 Point at an edition directory containing no valid revision subdirectories.
 

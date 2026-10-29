@@ -23,7 +23,7 @@ document:
 ```
 
 - No other fields are read from a `page_break` block.
-- Works identically in every language's `content.yaml` for a shared edition/revision (FR-008) — it
+- Works identically in every language's `content.yaml` for a shared edition/revision (FR-008) - it
   is authored per-language like the rest of the content, so equivalent placement across languages is
   the author's responsibility, not something the system infers.
 - Adding, moving, or deleting a `page_break` entry never requires touching any other block (FR-010).
@@ -40,7 +40,7 @@ document:
 | G4 | A marker at the very end produces no trailing blank page (FR-005) | ✅ §3 |
 | G5 | Consecutive markers collapse to one page transition (FR-006) | ✅ §3 |
 | G6 | Any number of markers, each independently effective (FR-007) | ✅ §2 (3-segment case) |
-| G7 | Content not adjacent to any marker is otherwise unaffected — existing per-element `break-inside: avoid` rules, column flow, etc. still apply within each segment (FR-009) | ✅ (unchanged per-segment CSS) |
+| G7 | Content not adjacent to any marker is otherwise unaffected - existing per-element `break-inside: avoid` rules, column flow, etc. still apply within each segment (FR-009) | ✅ (unchanged per-segment CSS) |
 | G8 | Page footer (`Page X / Y`) remains correct across segments | ✅ §4 |
 
 ---

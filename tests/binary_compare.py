@@ -2,7 +2,7 @@
 
 pytest's assertion rewriter hands a failed `==` on two byte sequences to
 difflib, whose comparison is quadratic; on multi-hundred-KB PDFs that can
-outrun a CI job's timeout instead of failing fast (see the "Gate — tests"
+outrun a CI job's timeout instead of failing fast (see the "Gate - tests"
 timeout on 2026-08-17). Use `assert_bytes_equal` in place of a bare
 `assert a == b` for large binary blobs.
 """

@@ -16,7 +16,7 @@ document:
   blocks:
     - type: subsection
       title: "..."
-    - type: column_reset     # everything after this starts in a left column — same page if room
+    - type: column_reset     # everything after this starts in a left column - same page if room
     - type: subsection
       title: "..."
 ```
@@ -29,7 +29,7 @@ document:
 
 ---
 
-## `column_reset` vs. `page_break` — the difference this contract guarantees
+## `column_reset` vs. `page_break` - the difference this contract guarantees
 
 | | `page_break` (`005`) | `column_reset` (this feature) |
 |---|---|---|
@@ -61,11 +61,11 @@ document:
 | `document.blocks` (types only) | Segments produced (`break_type`) | Pages |
 |---|---|---|
 | `[a, column_reset, b]` (room remains) | `[(a, None), (b, "soft")]` | 1 |
-| `[a, column_reset, b]` (page already full after `a`) | `[(a, None), (b, "soft")]` | 2 — `b` overflows naturally, still left-column |
+| `[a, column_reset, b]` (page already full after `a`) | `[(a, None), (b, "soft")]` | 2 - `b` overflows naturally, still left-column |
 | `[a, page_break, b]` (from `005`) | `[(a, None), (b, "page")]` | 2 (unchanged from `005`) |
-| `[a, page_break, column_reset, b]` | `[(a, None), (b, "page")]` | 2 — page wins |
-| `[a, column_reset, page_break, b]` | `[(a, None), (b, "page")]` | 2 — page wins, order-independent |
-| `[a, column_reset, column_reset, b]` | `[(a, None), (b, "soft")]` | 1 (if room) — consecutive collapse |
+| `[a, page_break, column_reset, b]` | `[(a, None), (b, "page")]` | 2 - page wins |
+| `[a, column_reset, page_break, b]` | `[(a, None), (b, "page")]` | 2 - page wins, order-independent |
+| `[a, column_reset, column_reset, b]` | `[(a, None), (b, "soft")]` | 1 (if room) - consecutive collapse |
 
 ---
 

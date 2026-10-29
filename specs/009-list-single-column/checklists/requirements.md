@@ -32,7 +32,7 @@
 ## Notes
 
 - One ambiguity ("what does single column mean, given no existing multi-column list layout to turn
-  off") was resolved during `/speckit-specify` via a clarifying question — recorded in spec.md's
+  off") was resolved during `/speckit-specify` via a clarifying question - recorded in spec.md's
   Clarifications section. Resolution: full-width single column, reusing the document's existing
   full-width visual language.
 - All checklist items pass; spec is ready for `/speckit-plan`.

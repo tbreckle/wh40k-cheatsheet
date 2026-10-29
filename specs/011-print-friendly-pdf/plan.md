@@ -14,18 +14,18 @@ fully backward-compatible) drives (a) a `body.print-friendly` CSS block that ove
 existing color custom property with a grayscale equivalent, and (b) a Jinja conditional that omits
 the `.page-watermark <img>` entirely rather than merely hiding it. The pipeline renders and writes
 this second HTML/PDF pair only when the flag is set, to `<language>-print.html`/`<language>-print.pdf`
-— sibling files that never overwrite the standard `<language>.html`/`<language>.pdf`. No new
+- sibling files that never overwrite the standard `<language>.html`/`<language>.pdf`. No new
 dependency, no change to content authoring, no change to default (flag-omitted) behavior.
 
 ## Technical Context
 
 **Language/Version**: Python 3.12+ (shared with features 001–010; no change)
 
-**Primary Dependencies**: None new — same Jinja2/WeasyPrint stack used since feature 002. The
+**Primary Dependencies**: None new - same Jinja2/WeasyPrint stack used since feature 002. The
 grayscale palette is expressed as plain CSS custom-property overrides; no image-processing or
 PDF-post-processing library is introduced.
 
-**Storage**: N/A — `images/logo_40k.png` remains the sole source asset, referenced only by the
+**Storage**: N/A - `images/logo_40k.png` remains the sole source asset, referenced only by the
 standard rendering; the print-friendly rendering never references it.
 
 **Testing**: pytest. New integration tests render real content with `print_friendly=True` via
@@ -39,7 +39,7 @@ extending `test_reproducible.py`'s byte-identical-output guarantee). A CLI-level
 `test_generate_single.py`'s pattern to assert both output files exist and are reported when
 `--print-friendly` is passed, and that only the standard file exists when it is not.
 
-**Target Platform**: Same as features 001–010 — local dev + CI (Linux), WeasyPrint-rendered PDF.
+**Target Platform**: Same as features 001–010 - local dev + CI (Linux), WeasyPrint-rendered PDF.
 
 **Project Type**: Single project. Touches `templates/cheatsheet.html.j2` (new grayscale CSS block +
 conditional watermark), `src/wh40k_cheatsheet/pipeline.py` (`generate`/`_generate_one` gain a
@@ -54,7 +54,7 @@ within that ceiling given the document's small size.
 **Constraints**: Must not alter any existing output byte when the flag is omitted (FR-008,
 SC-004's second half). Must never overwrite the standard PDF/HTML with the print-friendly variant
 or vice versa (FR-006). Must keep the four stratagem-timing variants and the two callout variants
-distinguishable without color (FR-005) — satisfied primarily by the icon/text labels each variant
+distinguishable without color (FR-005) - satisfied primarily by the icon/text labels each variant
 already carries (▶/◀/◆ and "YOUR TURN"/"OPPONENT'S TURN"/"EITHER PLAYER'S TURN"; ⚠/ℹ), reinforced
 by distinct grey shades per variant in the new palette.
 
@@ -70,9 +70,9 @@ block types, no changes to any existing `content.yaml`.
 
 | Principle | Assessment |
 |-----------|------------|
-| I. Code Quality | **Satisfied.** Small, single-responsibility additions: one CSS override block, one Jinja conditional, one threaded boolean parameter. No duplicated logic — the print-friendly render reuses the exact same template and pipeline functions, differing only via the context flag. |
-| II. Testing Standards (NON-NEGOTIABLE) | **Satisfied by design.** New integration tests assert grayscale-only computed styles, watermark absence, content/structure parity with the standard rendering, and byte-identical unaffected output when the flag is omitted — mirroring the box-tree assertion technique already established in `test_page_logo_pdf.py`. |
-| III. User Experience Consistency | **Satisfied.** Terminology, structure, and layout are unchanged; the four stratagem-timing and two callout variants remain distinguishable without color via their existing icon/text labels, reinforced by distinct grey shades — directly serving the "predictable across equivalent situations" and accessibility (WCAG contrast) requirements. |
+| I. Code Quality | **Satisfied.** Small, single-responsibility additions: one CSS override block, one Jinja conditional, one threaded boolean parameter. No duplicated logic - the print-friendly render reuses the exact same template and pipeline functions, differing only via the context flag. |
+| II. Testing Standards (NON-NEGOTIABLE) | **Satisfied by design.** New integration tests assert grayscale-only computed styles, watermark absence, content/structure parity with the standard rendering, and byte-identical unaffected output when the flag is omitted - mirroring the box-tree assertion technique already established in `test_page_logo_pdf.py`. |
+| III. User Experience Consistency | **Satisfied.** Terminology, structure, and layout are unchanged; the four stratagem-timing and two callout variants remain distinguishable without color via their existing icon/text labels, reinforced by distinct grey shades - directly serving the "predictable across equivalent situations" and accessibility (WCAG contrast) requirements. |
 | IV. Performance Requirements | **Satisfied.** The extra render/PDF pass only runs when explicitly opted into via the flag; default `generate` behavior and timing are unaffected. |
 | Additional Constraints & Standards | **Satisfied.** No new dependency; the grayscale palette is data (CSS values) sourced from the existing template, not a new external asset. |
 | Development Workflow & Quality Gates | **Satisfied.** Ships through the same PR-gated `poe check` workflow; no new surface for the `008` docstring gate beyond the two changed Python functions, which will carry the same Google-style docstrings as their neighbors. |
@@ -91,23 +91,23 @@ specs/011-print-friendly-pdf/
 ├── quickstart.md          # Phase 1 output (/speckit-plan command)
 ├── contracts/
 │   └── print-friendly-flag.md   # Phase 1 output (/speckit-plan command)
-└── tasks.md                 # Phase 2 (/speckit-tasks — NOT created here)
+└── tasks.md                 # Phase 2 (/speckit-tasks - NOT created here)
 ```
 
-### Source Code (repository root) — changes to existing files
+### Source Code (repository root) - changes to existing files
 
 ```text
 templates/cheatsheet.html.j2
     # CHANGED: every `:root` color custom property now resolves via a server-side Jinja
     #   conditional on a `print_friendly` flag, to its grayscale equivalent (see
-    #   data-model.md for the full mapping) — resolved at :root rather than a body-scoped
+    #   data-model.md for the full mapping) - resolved at :root rather than a body-scoped
     #   class override, since @page margin-box content (running header/footer) inherits
     #   custom properties from the page context, not from <body> (found during
     #   implementation; research.md §1 amendment)
-    # ADDED: `<body class="{{ 'print-friendly' if print_friendly else '' }}">` — retained
+    # ADDED: `<body class="{{ 'print-friendly' if print_friendly else '' }}">` - retained
     #   for self-documentation; no CSS rule depends on it
     # CHANGED: the `.page-watermark <img>` tag is now wrapped in
-    #   `{% if not print_friendly %}...{% endif %}` — omitted entirely (not merely hidden)
+    #   `{% if not print_friendly %}...{% endif %}` - omitted entirely (not merely hidden)
     #   in the print-friendly rendering
     # CHANGED: header doc comment updated to document the new `print_friendly` context key
 
@@ -136,7 +136,7 @@ tests/integration/test_print_friendly_pdf.py
 **Structure Decision**: Single project, same layout as features 002–010. The template carries the
 entire visual difference (a CSS override block + one conditional); the two Python changes are
 threading a boolean through the existing render/write call already made once per document, made
-again under the new flag — no new module, no new abstraction.
+again under the new flag - no new module, no new abstraction.
 
 ## Complexity Tracking
 

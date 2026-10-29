@@ -2,7 +2,7 @@
 
 Feature: [spec.md](../spec.md) · Plan: [plan.md](../plan.md)
 
-The quality gates expose a **command contract** — the interface contributors and CI depend on. It is
+The quality gates expose a **command contract** - the interface contributors and CI depend on. It is
 defined as poethepoet tasks in `[tool.poe.tasks]` and invoked through uv. This contract is what
 downstream tasks and CI must honor; the exact rule contents are configuration detail.
 
@@ -33,7 +33,7 @@ downstream tasks and CI must honor; the exact rule contents are configuration de
    gates are surfaced in one run, not short-circuited at the first failure.
 3. **Attributed findings** (FR-003): every reported finding names its gate, file, and line.
 4. **Fail loud on missing tool** (FR-011): if a gate's tool cannot execute, `poe check` reports that
-   explicitly and returns non-zero — it MUST NOT report success by skipping.
+   explicitly and returns non-zero - it MUST NOT report success by skipping.
 5. **Local == CI** (FR-006/SC-005): the same command and the same `pyproject.toml` configuration
    produce the same pass/fail verdict in both environments.
 6. **Python floor** (FR-008): all gates evaluate against Python 3.12+ semantics.

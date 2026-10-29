@@ -13,21 +13,13 @@ def _paths(root: Path) -> Paths:
         editions_root=root / "editions",
         templates_root=root / "templates",
         out_root=root / "out",
-        images_root=root / "images",
     )
-
-
-def _create_dummy_logo(root: Path) -> None:
-    images_dir = root / "images"
-    images_dir.mkdir(exist_ok=True)
-    (images_dir / "logo_40k.png").write_bytes(b"")
 
 
 def test_content_file_missing_entirely_reports_edition_revision_and_language(tmp_path):
     (tmp_path / "editions" / "10e" / "2026-01-01-00" / "en").mkdir(parents=True)
     (tmp_path / "templates").mkdir()
     (tmp_path / "templates" / "base.html.j2").write_text("{{ document.blocks }}")
-    _create_dummy_logo(tmp_path)
     config = ProjectConfig(editions={"10e": Edition(template="base.html.j2", languages={"en": LanguageEntry()})})
 
     with pytest.raises(ContentError) as exc_info:
@@ -44,9 +36,8 @@ def test_unresolved_content_reference_reports_edition_revision_and_language(tmp_
     content_dir.mkdir(parents=True)
     (content_dir / "content.yaml").write_text("document:\n  blocks:\n    - type: paragraph\n")
     (tmp_path / "templates").mkdir()
-    # References block.text with no default filter — undefined under StrictUndefined when absent.
+    # References block.text with no default filter - undefined under StrictUndefined when absent.
     (tmp_path / "templates" / "base.html.j2").write_text("{{ document.blocks[0].text }}")
-    _create_dummy_logo(tmp_path)
     config = ProjectConfig(editions={"10e": Edition(template="base.html.j2", languages={"en": LanguageEntry()})})
 
     with pytest.raises(RenderError) as exc_info:
